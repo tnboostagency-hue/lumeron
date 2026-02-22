@@ -1,0 +1,362 @@
+/* Updated: Cyberani-Inspired Redesign */
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Lenis Smooth Scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Primary font - Avenir Next Arabic */
+@font-face {
+  font-family: 'Avenir Next Arabic';
+  src: local('Avenir Next Arabic'), local('AvenirNextArabic-Regular');
+  font-display: swap;
+}
+
+@theme {
+  /* Light, enterprise color palette */
+  --color-background: #ffffff;
+  --color-background-secondary: #f8fafc;
+  --color-foreground: #111827;
+
+  --color-card: #ffffff;
+  --color-card-foreground: #111827;
+
+  --color-popover: #ffffff;
+  --color-popover-foreground: #111827;
+
+  --color-primary: #229388;
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: #f1f5f9;
+  --color-secondary-foreground: #111827;
+
+  --color-muted: #f8fafc;
+  --color-muted-foreground: #64748b;
+
+  --color-accent: #3ec8ba;
+  --color-accent-foreground: #ffffff;
+
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #fafafa;
+
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-ring: #229388;
+
+  /* Typography - Avenir Next Arabic as primary */
+  --font-sans: "Avenir Next Arabic", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Avenir Next Arabic", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Border radius */
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --radius-full: 50px;
+
+  /* Brand colors */
+  --color-lumeron-teal-light: #3ec8ba;
+  --color-lumeron-teal-dark: #229388;
+  --color-lumeron-teal: #229388;
+  --color-lumeron-dark: #111827;
+  --color-glass-border: rgba(226, 232, 240, 0.6);
+  --color-glass-bg: rgba(255, 255, 255, 0.9);
+
+  /* Enterprise blue for depth */
+  --color-enterprise-blue: #1e3a5f;
+
+  --animate-gradient: gradient-shift 8s ease infinite;
+
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+}
+
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #111827;
+    --card: #ffffff;
+    --card-foreground: #111827;
+    --popover: #ffffff;
+    --popover-foreground: #111827;
+    --primary: #229388;
+    --primary-foreground: #ffffff;
+    --secondary: #f1f5f9;
+    --secondary-foreground: #111827;
+    --muted: #f8fafc;
+    --muted-foreground: #64748b;
+    --accent: #3ec8ba;
+    --accent-foreground: #ffffff;
+    --destructive: #ef4444;
+    --destructive-foreground: #fafafa;
+    --border: #e2e8f0;
+    --input: #e2e8f0;
+    --ring: #229388;
+    --radius: 20px;
+  }
+}
+
+@layer utilities {
+  .bg-animated-gradient {
+    background: linear-gradient(-45deg, #229388, #3ec8ba, #229388, #3ec8ba);
+    background-size: 400% 400%;
+    animation: gradient-shift 15s ease infinite;
+  }
+  
+  .bg-hero-gradient {
+    background: linear-gradient(135deg, #f0fdfc 0%, #ffffff 50%, #e8faf8 100%);
+  }
+  
+  .bg-section-alt {
+    background-color: #f8fafc;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Avenir Next Arabic", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-size: 18px;
+    line-height: 1.7;
+  }
+
+  /* Typography - All headings use Avenir Next Arabic */
+  h1, .text-hero {
+    font-family: "Avenir Next Arabic", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-size: clamp(48px, 8vw, 80px);
+    font-weight: 700;
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    color: var(--foreground);
+  }
+
+  h2, .text-section-title {
+    font-family: "Avenir Next Arabic", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--foreground);
+  }
+
+  h3, .text-card-title {
+    font-family: "Avenir Next Arabic", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--foreground);
+  }
+
+  h4 {
+    font-family: "Avenir Next Arabic", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--foreground);
+  }
+
+  p {
+    font-family: "Avenir Next Arabic", "Inter", ui-sans-serif, system-ui, sans-serif;
+    color: var(--muted-foreground);
+    line-height: 1.7;
+  }
+
+  .text-subheadline {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--muted-foreground);
+  }
+
+  .text-tagline {
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--primary);
+  }
+
+  .container {
+    width: 100%;
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .glass-card {
+    background: var(--color-glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Primary Button - Clean enterprise style */
+  .btn-primary {
+    background: #229388;
+    color: #ffffff;
+    border-radius: var(--radius-full);
+    padding: 14px 36px;
+    font-family: "Avenir Next Arabic", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    box-shadow: 0 2px 8px rgba(34, 147, 136, 0.25);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(34, 147, 136, 0.35);
+    background: #1a7a70;
+  }
+
+  /* Secondary Button - Light variant for dark backgrounds */
+  .btn-secondary {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-radius: var(--radius-full);
+    padding: 14px 36px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    font-family: "Avenir Next Arabic", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+  }
+
+  /* Outline Button - For light backgrounds */
+  .btn-outline {
+    background: transparent;
+    color: #229388;
+    border-radius: var(--radius-full);
+    padding: 14px 36px;
+    border: 2px solid #229388;
+    font-family: "Avenir Next Arabic", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-outline:hover {
+    background: #229388;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(34, 147, 136, 0.25);
+  }
+
+  .section-padding {
+    padding-top: 100px;
+    padding-bottom: 100px;
+  }
+
+  .nav-blur {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.45) 0%,
+      rgba(255, 255, 255, 0.25) 40%,
+      rgba(240, 253, 252, 0.3) 70%,
+      rgba(255, 255, 255, 0.4) 100%
+    );
+    backdrop-filter: blur(60px) saturate(1.8) brightness(1.05);
+    -webkit-backdrop-filter: blur(60px) saturate(1.8) brightness(1.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.06),
+      0 1px 0 rgba(255, 255, 255, 0.7) inset,
+      0 -1px 0 rgba(0, 0, 0, 0.03) inset;
+  }
+
+  /* Form inputs */
+  .form-input {
+    width: 100%;
+    height: 52px;
+    padding: 0 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-family: "Avenir Next Arabic", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    background: #ffffff;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: #229388;
+    box-shadow: 0 0 0 3px rgba(34, 147, 136, 0.1);
+  }
+
+  .form-input::placeholder {
+    color: var(--muted-foreground);
+  }
+
+  .form-textarea {
+    width: 100%;
+    min-height: 140px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-family: "Avenir Next Arabic", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    background: #ffffff;
+    resize: vertical;
+  }
+
+  .form-textarea:focus {
+    outline: none;
+    border-color: #229388;
+    box-shadow: 0 0 0 3px rgba(34, 147, 136, 0.1);
+  }
+}
