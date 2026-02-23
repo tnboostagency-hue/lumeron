@@ -3,3 +3,34 @@
 2026-02-19T14:49:36.997Z [console][warn] Image with src "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/b1cd8c82-7d59-48f9-9b1f-b8b6ad292087/Honeywell-1771512112984.png?width=400&height=400&resize=contain" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
 2026-02-19T14:49:37.030Z [console][warn] Image with src "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/b1cd8c82-7d59-48f9-9b1f-b8b6ad292087/CPI-1771512112829.png?width=400&height=400&resize=contain" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
 2026-02-19T14:49:37.045Z [console][warn] Image with src "https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/b1cd8c82-7d59-48f9-9b1f-b8b6ad292087/ThingWorx-1771512112829.png?width=400&height=400&resize=contain" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+2026-02-23T11:42:02.391Z [console][error] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <ScrollAndFocusHandler segmentPath={[...]}>
+      <InnerScrollAndFocusHandler segmentPath={[...]} focusAndScrollRef={{apply:false, ...}}>
+        <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+          <LoadingBoundary loading={null}>
+            <HTTPAccessFallbackBoundary notFound={[...]} forbidden={undefined} unauthorized={undefined}>
+              <HTTPAccessFallbackErrorBoundary pathname="/" notFound={[...]} forbidden={undefined} ...>
+                <RedirectBoundary>
+                  <RedirectErrorBoundary router={{...}}>
+                    <InnerLayoutRouter url="/" tree={[...]} cacheNode={{lazyData:null, ...}} segmentPath={[...]}>
+                      <ClientPageRoot Component={function Home} searchParams={{}} params={{}}>
+                        <Home params={Promise} searchParams={Promise}>
+                          <main data-orchids-id="src/app/pa..." data-orchids-name="main" className="flex min-h...">
+                            <ScrollProgress>
+                            <Navbar>
+                            <ContactModal>
+                            <Hero data-orchids-id="src/app/pa..." data-orchids-name="Hero">
+                              <section
+                                data-orchids-id="src/components/sections/hero.t...
