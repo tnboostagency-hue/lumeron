@@ -5,10 +5,12 @@ import { Play, ArrowRight } from 'lucide-react';
 import { motion, type Variants } from 'framer-motion';
 import FloatingElement from '@/components/animations/floating-element';
 import { useLanguage } from '@/context/LanguageContext';
+import VideoModal from '@/components/sections/video-modal';
 
 export default function Hero() {
   const { lang, t } = useLanguage();
-  const words = lang === 'ar' 
+  const [videoOpen, setVideoOpen] = useState(false);
+  const words = lang === 'ar'
     ? ["المستقبل", "التحول", "الاقتصاد", "الابتكار", "البنية التحتية"]
     : ["FUTURE", "TRANSFORMATION", "ECONOMY", "INNOVATION", "INFRASTRUCTURE"];
     
@@ -86,11 +88,13 @@ export default function Hero() {
   };
 
     return (
-        <section className="relative w-full overflow-hidden flex flex-col justify-center pt-[80px] md:min-h-screen" style={{ minHeight: typeof window !== 'undefined' && window.innerWidth >= 768 ? 'calc(var(--vh, 1vh) * 100)' : undefined }}>
+    <>
+      <VideoModal isOpen={videoOpen} onClose={() => setVideoOpen(false)} />
+      <section className="relative w-full overflow-hidden flex flex-col justify-center pt-[80px] md:min-h-screen" style={{ minHeight: typeof window !== 'undefined' && window.innerWidth >= 768 ? 'calc(var(--vh, 1vh) * 100)' : undefined }}>
           {/* Video Background */}
           <div className="absolute inset-0 z-0">
             <iframe
-              src="https://streamable.com/e/l0kk95?autoplay=1&nocontrols=1&muted=1&loop=1"
+              src="https://streamable.com/e/j2uo7d?autoplay=1&muted=1&nocontrols=1"
               allow="autoplay; fullscreen"
               allowFullScreen
               className="border-none"
@@ -160,18 +164,8 @@ export default function Hero() {
             <motion.h2 variants={itemVariants} className="text-foreground text-[19px] xs:text-[22px] sm:text-[26px] md:text-[32px] lg:text-[38px] font-semibold leading-[1.2] mb-4 tracking-[-0.02em]">
               {t.hero.subtitle}
               <br />
-              <span className="relative inline-flex flex-col">
-                <span className={`h-[14px] mb-0.5 overflow-hidden ${lang === 'ar' ? 'hidden' : 'block'}`}>
-                  <motion.span
-                    key={`${index}-${subIndex}`}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 0.5, y: 0 }}
-                    className="text-[9px] sm:text-[11px] font-mono tracking-[0.15em] text-[#229388] block"
-                  >
-                    {getMorse(words[index].substring(0, subIndex))}
-                  </motion.span>
-                </span>
-                <span className="bg-gradient-to-r from-[#229388] to-[#3ec8ba] bg-clip-text text-transparent">
+                <span className="relative inline-flex flex-col">
+                  <span className="bg-gradient-to-r from-[#229388] to-[#3ec8ba] bg-clip-text text-transparent">
                   {lang === 'ar' ? words[index].substring(0, subIndex) : `${t.hero.highlight.split(' ')[0]} ${words[index].substring(0, subIndex)}`}
                   <span className={`inline-block w-[3px] h-[0.65em] ${lang === 'ar' ? 'mr-1' : 'ml-1'} align-middle bg-[#229388] rounded-sm ${isMorse ? 'opacity-100' : 'animate-pulse'}`} />
                 </span>
@@ -191,7 +185,7 @@ export default function Hero() {
                 <ArrowRight className={`w-4 h-4 flex-shrink-0 ${lang === 'ar' ? 'rotate-180' : ''}`} />
               </a>
               
-              <button className="btn-outline group flex items-center justify-center gap-3 px-6 h-[46px] text-[14px]">
+              <button onClick={() => setVideoOpen(true)} className="btn-outline group flex items-center justify-center gap-3 px-6 h-[46px] text-[14px]">
                 <div className="flex items-center justify-center w-6 h-6 bg-primary/10 rounded-full transition-colors group-hover:bg-white/20 flex-shrink-0">
                   <Play className={`w-3 h-3 fill-current ${lang === 'ar' ? 'rotate-180' : ''}`} />
                 </div>
@@ -204,5 +198,6 @@ export default function Hero() {
       {/* Bottom fade to white */}
       <div className="absolute bottom-0 left-0 w-full h-8 md:h-32 bg-gradient-to-t from-white to-transparent z-[5]" />
     </section>
+    </>
   );
 }

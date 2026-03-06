@@ -25,6 +25,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.png?v=2" type="image/png" />
+        <link rel="shortcut icon" href="/favicon.png?v=2" type="image/png" />
+        <link rel="apple-touch-icon" href="/favicon.png?v=2" />
+      </head>
       <body className="antialiased font-sans">
           <LanguageProvider>
             <SmoothScrollProvider>

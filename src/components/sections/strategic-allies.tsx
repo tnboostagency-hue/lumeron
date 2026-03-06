@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Shield, Cpu, CloudLightning, Activity } from 'lucide-react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -24,50 +24,56 @@ const allies = [
   { name: 'HPE', logo: 'https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/b1cd8c82-7d59-48f9-9b1f-b8b6ad292087/HPE-1771512112829.png?width=400&height=400&resize=contain' },
 ];
 
-// Split into two rows
-const row1 = allies.slice(0, 8);
-const row2 = allies.slice(8);
+// Split into three rows for better "table-like" distribution
+const row1 = allies.slice(0, 5);
+const row2 = allies.slice(5, 10);
+const row3 = allies.slice(10, 15);
 
 interface MarqueeRowProps {
   items: typeof allies;
   direction?: 'left' | 'right';
+  speed?: number;
+  offset?: string;
 }
 
-const MarqueeRow: React.FC<MarqueeRowProps> = ({ items, direction = 'left' }) => {
-  // Duplicate for seamless loop
-  const doubled = [...items, ...items];
+const MarqueeRow: React.FC<MarqueeRowProps> = ({ items, direction = 'left', speed = 25, offset = '0px' }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  // Quadruple for seamless loop at any width
+  const loopedItems = [...items, ...items, ...items, ...items];
   const translateTo = direction === 'left' ? '-50%' : '0%';
   const translateFrom = direction === 'left' ? '0%' : '-50%';
 
   return (
-    <div className="relative w-full overflow-hidden">
-      {/* Left fade */}
-      <div className="pointer-events-none absolute left-0 top-0 h-full w-24 z-10 bg-gradient-to-r from-white to-transparent" />
-      {/* Right fade */}
-      <div className="pointer-events-none absolute right-0 top-0 h-full w-24 z-10 bg-gradient-to-l from-white to-transparent" />
-
+    <div 
+      className="relative w-full overflow-hidden bg-white border-t border-slate-200/60"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <motion.div
-        className="flex gap-10 md:gap-14 items-center"
-        style={{ width: 'max-content' }}
-        animate={{ x: [translateFrom, translateTo] }}
+        className="flex items-center"
+        style={{ width: 'max-content', marginLeft: offset }}
+        animate={{ x: isHovered ? undefined : [translateFrom, translateTo] }}
         transition={{
-          duration: 22,
+          duration: speed,
           ease: 'linear',
           repeat: Infinity,
         }}
       >
-        {doubled.map((ally, i) => (
-          <div
-            key={`${ally.name}-${i}`}
-            className="relative flex-shrink-0 w-[100px] sm:w-[120px] md:w-[140px] h-[52px] md:h-[60px] grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+        {loopedItems.map((ally, i) => (
+          <div 
+            key={`${ally.name}-${i}`} 
+            className="flex items-center justify-center w-[200px] h-[100px] md:w-[300px] md:h-[160px] border-r border-slate-200/60 px-8 py-6 group transition-colors duration-300 hover:bg-slate-50/50"
           >
-            <Image
-              src={ally.logo}
-              alt={ally.name}
-              fill
-              sizes="140px"
-              className="object-contain"
-            />
+            <div className="relative w-full h-full grayscale-0 opacity-100 transition-all duration-300 group-hover:scale-105">
+              <Image
+                src={ally.logo}
+                alt={ally.name}
+                fill
+                sizes="(max-width: 768px) 200px, 300px"
+                className="object-contain"
+              />
+            </div>
           </div>
         ))}
       </motion.div>
@@ -86,7 +92,7 @@ const StrategicAllies: React.FC = () => {
   ];
 
   return (
-    <section className="bg-white py-[80px] md:py-[120px] flex flex-col items-center justify-center overflow-hidden">
+    <section id="partners" className="bg-white py-[80px] md:py-[120px] flex flex-col items-center justify-center overflow-hidden">
       <div className="container px-6 md:px-8 max-w-[1440px] mx-auto">
 
         {/* Stats Grid */}
@@ -97,11 +103,11 @@ const StrategicAllies: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12 mb-16 md:mb-24"
         >
-          {stats.map((stat, index) => (
-            <div key={index} className="flex flex-col items-center text-center group">
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-4 transition-all duration-300 group-hover:bg-primary group-hover:text-white">
-                <stat.icon size={24} strokeWidth={1.5} />
-              </div>
+            {stats.map((stat, index) => (
+              <div key={index} className="flex flex-col items-center text-center group">
+                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-4 transition-all duration-300 group-hover:bg-primary group-hover:text-white shadow-sm group-hover:shadow-md">
+                  <stat.icon size={24} strokeWidth={1.5} />
+                </div>
               <p className="text-[22px] sm:text-[28px] md:text-[36px] font-semibold text-foreground tracking-tight mb-1 leading-tight">{stat.value}</p>
               <p className="text-[12px] md:text-[13px] font-semibold text-primary uppercase tracking-widest">{stat.label}</p>
             </div>
@@ -128,10 +134,11 @@ const StrategicAllies: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* Marquee rows — full bleed */}
-      <div className="w-full flex flex-col gap-8">
-        <MarqueeRow items={row1} direction="left" />
-        <MarqueeRow items={row2} direction="right" />
+      {/* Marquee rows — 3 rows sliding in opposite directions with no offset for clean table look */}
+      <div className="w-full flex flex-col border-b border-slate-200/60">
+        <MarqueeRow items={row1} direction="left" speed={50} offset="0px" />
+        <MarqueeRow items={row2} direction="right" speed={55} offset="0px" />
+        <MarqueeRow items={row3} direction="left" speed={45} offset="0px" />
       </div>
     </section>
   );

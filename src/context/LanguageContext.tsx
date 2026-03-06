@@ -23,12 +23,14 @@ const dictionary = {
     services: {
       title: "Our Capabilities",
       subtitle: "Accelerating the digital economy through resilient infrastructure, managed services, and cutting-edge innovations.",
-      dataCenters: "Data Centers",
-      cybersecurity: "Cybersecurity",
-      innovations: "Innovations & Future Tech",
-      managedServices: "Managed Services",
-      readMore: "Read More",
-      viewAll: "View All Services",
+        ai: "Artificial Intelligence & Advanced Analytics",
+        dataCenters: "Digital Infrastructure & Data Centers",
+        industrial: "Industrial Digitalization (Industry 4.0)",
+        cybersecurity: "Cybersecurity & Digital Trust",
+        smartInfra: "Smart Infrastructure & Connectivity",
+        innovations: "Innovations & Future Tech",
+        readMore: "Read More",
+        viewAll: "View All Services",
     },
     mission: {
       badge: "BUILT FOR THE NATION. GUIDED BY VISION.",
@@ -112,7 +114,7 @@ const dictionary = {
       ]
     },
     footer: {
-      location: "Riyadh, Kingdom of Saudi Arabia",
+      location: "Al Khobar, Kingdom of Saudi Arabia",
       copyright: "© 2025 Lumeron. All rights reserved.",
       privacy: "Privacy Notice",
     },
@@ -144,12 +146,14 @@ const dictionary = {
     services: {
       title: "قدراتنا",
       subtitle: "تسريع الاقتصاد الرقمي من خلال بنية تحتية مرنة وخدمات مدارة وابتكارات متطورة.",
-      dataCenters: "مراكز البيانات",
-      cybersecurity: "الأمن السيبراني",
-      innovations: "الابتكارات وتقنيات المستقبل",
-      managedServices: "الخدمات المدارة",
-      readMore: "اقرأ المزيد",
-      viewAll: "عرض جميع الخدمات",
+        ai: "الذكاء الاصطناعي والتحليلات المتقدمة",
+        dataCenters: "البنية التحتية الرقمية ومراكز البيانات",
+        industrial: "التحول الصناعي الرقمي (الصناعة 4.0)",
+        cybersecurity: "الأمن السيبراني والثقة الرقمية",
+        smartInfra: "البنية التحتية الذكية والاتصالات",
+        innovations: "الابتكارات وتقنيات المستقبل",
+        readMore: "اقرأ المزيد",
+        viewAll: "عرض جميع الخدمات",
     },
     mission: {
       badge: "بنيت للوطن. تسترشد بالرؤية.",
@@ -233,7 +237,7 @@ const dictionary = {
       ]
     },
     footer: {
-      location: "الرياض، المملكة العربية السعودية",
+      location: "الخبر، المملكة العربية السعودية",
       copyright: "© 2025 لوميرون. جميع الحقوق محفوظة.",
       privacy: "إشعار الخصوصية",
     },

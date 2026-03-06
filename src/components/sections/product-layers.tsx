@@ -24,7 +24,7 @@ const ProductLayers = () => {
     {
       id: "managed-services",
       tagline: lang === 'ar' ? "حماية استباقية" : "PROACTIVE PROTECTION",
-      title: t.services.managedServices,
+      title: t.services.smartInfra,
       description: lang === 'ar'
         ? "أمن سيبراني شامل ومراقبة على مدار الساعة طوال أيام الأسبوع. نحن نحمي الأنظمة الحيوية من التهديدات المتطورة، مما يضمن استمرارية التشغيل بتكاليف يمكن التنبؤ بها واتفاقيات مستوى خدمة مضمونة."
         : "Comprehensive cybersecurity and 24/7 monitoring. We protect critical systems from evolving threats, ensuring operational continuity with predictable costs and guaranteed SLAs.",

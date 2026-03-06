@@ -17,8 +17,9 @@ const Navbar = () => {
   const serviceLinks = [
     { name: t.services.dataCenters, href: "/services/data-centers" },
     { name: t.services.cybersecurity, href: "/services/cybersecurity" },
-    { name: t.services.innovations, href: "/services/innovations" },
-    { name: t.services.managedServices, href: "/services/managed-services" },
+    { name: t.services.industrial, href: "/services/industrial" },
+    { name: t.services.ai, href: "/services/ai" },
+    { name: t.services.smartInfra, href: "/services/smart-infrastructure" },
   ];
 
   useEffect(() => {
@@ -71,8 +72,8 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Desktop nav — About Us | Services | Contact */}
-          <div className="hidden lg:flex items-center space-x-10 absolute left-1/2 -translate-x-1/2">
+          {/* Desktop nav — About Us | Services | Careers | News | Contact */}
+          <div className="hidden lg:flex items-center space-x-8 absolute left-1/2 -translate-x-1/2">
             {/* About Us */}
             <Link
               href="/about"
@@ -107,6 +108,22 @@ const Navbar = () => {
                 </div>
               </div>
             </div>
+
+            {/* Careers */}
+            <Link
+              href="/careers"
+              className="text-[15px] font-semibold flex items-center gap-1.5 transition-all hover:opacity-70 whitespace-nowrap text-foreground"
+            >
+              {lang === "ar" ? "الوظائف" : "Careers"}
+            </Link>
+
+            {/* News */}
+            <Link
+              href="/news"
+              className="text-[15px] font-semibold flex items-center gap-1.5 transition-all hover:opacity-70 whitespace-nowrap text-foreground"
+            >
+              {lang === "ar" ? "الأخبار" : "News"}
+            </Link>
 
             {/* Contact */}
             <button
@@ -200,6 +217,24 @@ const Navbar = () => {
                 </div>
               </div>
             </div>
+
+            {/* Careers */}
+            <Link
+              href="/careers"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-2xl font-bold text-foreground py-2"
+            >
+              {lang === "ar" ? "الوظائف" : "Careers"}
+            </Link>
+
+            {/* News */}
+            <Link
+              href="/news"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-2xl font-bold text-foreground py-2"
+            >
+              {lang === "ar" ? "الأخبار" : "News"}
+            </Link>
 
             {/* Contact */}
             <button

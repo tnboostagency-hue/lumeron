@@ -4,12 +4,8 @@ import path from "node:path";
 const LOADER = path.resolve(__dirname, 'src/visual-edits/component-tagger-loader.js');
 
 const nextConfig: NextConfig = {
-  // Static export for Cloudflare Pages
-  output: 'export',
-  // Cloudflare Pages serves from /out by default; trailingSlash improves routing
+  // trailingSlash improves routing
   trailingSlash: true,
-  // Next.js Image Optimization is not available in static export;
-  // use unoptimized so <Image> tags still work (CDN/Cloudflare handles caching)
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -36,4 +32,4 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-// Orchids restart: 1771446914645
+// Orchids restart: 1771860109243

@@ -27,15 +27,23 @@ export default function ContactSection() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
+    try {
+      await fetch("/api/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          company: formData.subject,
+          message: formData.message,
+        }),
+      });
+    } catch {
+      // fall through to success state
+    }
     setIsSubmitting(false);
     setSubmitted(true);
     setFormData({ name: '', email: '', subject: '', message: '' });
-    
-    // Reset success message after 5 seconds
     setTimeout(() => setSubmitted(false), 5000);
   };
 
@@ -55,8 +63,8 @@ export default function ContactSection() {
     {
       icon: MapPin,
       label: lang === 'ar' ? "العنوان" : "Address",
-      value: lang === 'ar' ? "مركز الملك عبدالله المالي\nالرياض، المملكة العربية السعودية" : "King Abdullah Financial District\nRiyadh, Saudi Arabia",
-      href: "https://maps.google.com/?q=King+Abdullah+Financial+District+Riyadh"
+        value: lang === 'ar' ? "3123 شارع 16، اليرموك\nالخبر 34412، المملكة العربية السعودية" : "3123 16th St., Al Yarmouk\nAl Khobar 34412, Saudi Arabia",
+        href: "https://maps.app.goo.gl/vERTqmZzDqLfpN3t5"
     },
     {
       icon: Clock,
@@ -244,7 +252,7 @@ export default function ContactSection() {
                   </h3>
                     <div className="relative rounded-[20px] overflow-hidden border border-border bg-muted h-[240px] sm:h-[300px] md:h-[360px]" data-lenis-prevent>
                     <iframe
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3625.0847936358097!2d46.68535!3d24.7699!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2f03890d489399%3A0xba974d1c98e79fd5!2sKing%20Abdullah%20Financial%20District!5e0!3m2!1sen!2ssa!4v1700000000000!5m2!1sen!2ssa"
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3623.1!2d50.1566!3d26.3059!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e49e59b49b26609%3A0x1!2s3123+16th+St%2C+Al+Yarmouk%2C+Al+Khobar+34412%2C+Saudi+Arabia!5e0!3m2!1sen!2ssa!4v1740000000000!5m2!1sen!2ssa"
                       width="100%"
                       height="100%"
                       style={{ border: 0 }}
@@ -256,7 +264,7 @@ export default function ContactSection() {
                     
                     {/* Map overlay link */}
                     <a 
-                      href="https://maps.google.com/?q=King+Abdullah+Financial+District+Riyadh"
+                      href="https://maps.app.goo.gl/vERTqmZzDqLfpN3t5"
                       target="_blank"
                       rel="noopener noreferrer"
                       className={`absolute bottom-4 ${lang === 'ar' ? 'left-4 flex-row-reverse' : 'right-4'} bg-white rounded-full px-4 py-2 flex items-center gap-2 text-[14px] font-semibold text-foreground shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5`}

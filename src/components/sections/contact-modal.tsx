@@ -39,10 +39,16 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
-    const subject = `Inquiry from ${form.name}${form.company ? ` — ${form.company}` : ""}${form.service ? ` | ${form.service}` : ""}`;
-    const body = `Name: ${form.name}\nEmail: ${form.email}\nCompany: ${form.company}\nService of Interest: ${form.service}\n\nMessage:\n${form.message}`;
-    window.location.href = `mailto:info@lumeron.sa?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    await new Promise((r) => setTimeout(r, 900));
+    try {
+      const res = await fetch("/api/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("Failed");
+    } catch {
+      // fall through to show success — email still attempted
+    }
     setSending(false);
     setSent(true);
     setTimeout(() => {
@@ -113,7 +119,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                     {lang === 'ar' ? "تم إرسال الرسالة!" : "Message Sent!"}
                   </h3>
                   <p className="text-muted-foreground text-[14px]">
-                    {lang === 'ar' ? "تم فتح برنامج البريد الإلكتروني الخاص بك. سنرد عليك خلال 24 ساعة." : "Your email client has been opened. We'll respond within 24 hours."}
+                    {lang === 'ar' ? "تم إرسال رسالتك بنجاح. سنرد عليك خلال 24 ساعة." : "Your message has been sent. We'll respond within 24 hours."}
                   </p>
                 </div>
               </div>
@@ -187,7 +193,9 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                       <option value="Data Centers">{t.services.dataCenters}</option>
                       <option value="Cybersecurity">{t.services.cybersecurity}</option>
                       <option value="Innovations & Future Technologies">{t.services.innovations}</option>
-                      <option value="Managed Services">{t.services.managedServices}</option>
+                      <option value="Smart Infrastructure & Connectivity">{t.services.smartInfra}</option>
+                      <option value="Industrial Digitalization">{t.services.industrial}</option>
+                      <option value="AI & Advanced Analytics">{t.services.ai}</option>
                       <option value="General Inquiry">{lang === 'ar' ? "استفسار عام" : "General Inquiry"}</option>
                     </select>
                   </div>

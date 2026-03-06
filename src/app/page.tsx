@@ -6,7 +6,7 @@ import Hero from "@/components/sections/hero";
 import ServicesCarousel from "@/components/sections/services-carousel";
 import MissionStatement from "@/components/sections/mission-statement";
 import StrategicAllies from "@/components/sections/strategic-allies";
-import ProductLayers from "@/components/sections/product-layers";
+import SlidingTagsSection from "@/components/sections/sliding-tags-section";
 import CTABottom from "@/components/sections/cta-bottom";
 import ContactSection from "@/components/sections/contact-section";
 import Footer from "@/components/sections/footer";
@@ -24,7 +24,7 @@ export default function Home() {
       <Hero />
       <ServicesCarousel />
       <MissionStatement />
-      <ProductLayers />
+        <SlidingTagsSection />
       <StrategicAllies />
       <CTABottom onConnectClick={() => setModalOpen(true)} />
       <ContactSection />

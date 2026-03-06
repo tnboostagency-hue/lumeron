@@ -242,6 +242,83 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* ROADMAP */}
+      <section className="py-32 bg-[#f8fafc] border-t border-[#e2e8f0]">
+        <div className="container mx-auto px-6 md:px-8">
+          <div className="text-center mb-20">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="w-5 h-px bg-[#229388]" />
+              <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#229388]">{lang === 'ar' ? 'خارطة الطريق' : 'Our Roadmap'}</span>
+              <div className="w-5 h-px bg-[#229388]" />
+            </div>
+            <h2 className="font-bold mb-4" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(28px,3.5vw,44px)", color: "#111827", letterSpacing: "-0.025em" }}>
+              {lang === 'ar' ? 'مسيرة بناء المستقبل الرقمي' : 'Building tomorrow\'s digital foundation'}
+            </h2>
+            <p className="text-[15px] text-[#64748b] max-w-[480px] mx-auto leading-[1.7]">
+              {lang === 'ar' ? 'خمس مراحل استراتيجية تُرسّخ ريادة لوميرون في البنية التحتية الرقمية السيادية.' : 'Five strategic phases cementing Lumeron\'s leadership in sovereign digital infrastructure.'}
+            </p>
+          </div>
+
+          {/* Roadmap phases */}
+          <div className="relative">
+            {/* Horizontal connector line — desktop */}
+            <div className="hidden lg:block absolute top-[52px] left-[10%] right-[10%] h-px" style={{ background: "linear-gradient(90deg,transparent,rgba(34,147,136,0.25) 15%,rgba(34,147,136,0.4) 50%,rgba(34,147,136,0.25) 85%,transparent)" }} />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-4 relative z-10">
+              {[
+                { phase: "01", years: "2016–2020", title: lang === 'ar' ? "التأسيس" : "Foundation", desc: lang === 'ar' ? "إرساء البنية التحتية وإطلاق الخدمات المدارة" : "Infrastructure establishment & managed services launch", active: false, done: true },
+                { phase: "02", years: "2020–2022", title: lang === 'ar' ? "التوسع" : "Expansion", desc: lang === 'ar' ? "توسعة الأمن السيبراني ومراكز البيانات على نطاق واسع" : "Cybersecurity & data center scale-up across the GCC", active: false, done: true },
+                { phase: "03", years: "2022–2024", title: lang === 'ar' ? "الابتكار" : "Innovation", desc: lang === 'ar' ? "إطلاق الذكاء الاصطناعي والرقمنة الصناعية" : "AI systems & Industrial Digitalization division launched", active: true, done: false },
+                { phase: "04", years: "2024–2026", title: lang === 'ar' ? "الريادة" : "Leadership", desc: lang === 'ar' ? "البنية التحتية الذكية والتوافق مع رؤية 2030" : "Smart infrastructure & Vision 2030 alignment at scale", active: true, done: false },
+                { phase: "05", years: "2026+", title: lang === 'ar' ? "السيادة" : "Sovereignty", desc: lang === 'ar' ? "منصة السيادة الرقمية الوطنية الكاملة" : "Full national digital sovereignty platform realised", active: false, done: false },
+              ].map((p, i) => (
+                <div key={p.phase} className={`flex flex-col items-center text-center group`}>
+                  {/* Phase circle */}
+                  <div
+                    className="w-[52px] h-[52px] rounded-full flex items-center justify-center font-bold text-[15px] mb-5 relative z-10 transition-transform duration-300 group-hover:scale-110 flex-shrink-0"
+                    style={{
+                      background: p.done
+                        ? "linear-gradient(135deg,#229388,#3ec8ba)"
+                        : p.active
+                        ? "linear-gradient(135deg,#3ec8ba,#229388)"
+                        : "white",
+                      color: p.done || p.active ? "white" : "#94a3b8",
+                      border: p.done || p.active ? "none" : "2px solid #e2e8f0",
+                      boxShadow: p.active ? "0 0 0 6px rgba(34,147,136,0.12)" : p.done ? "0 4px 12px rgba(34,147,136,0.25)" : "none",
+                      fontFamily: '"Avenir Next Arabic","Inter",sans-serif',
+                    }}
+                  >
+                    {p.done ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    ) : p.phase}
+                  </div>
+
+                  {/* Card */}
+                  <div
+                    className="rounded-2xl p-5 w-full transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-lg"
+                    style={{
+                      background: p.active ? "white" : p.done ? "white" : "rgba(248,250,252,0.8)",
+                      border: p.active ? "1px solid rgba(34,147,136,0.3)" : "1px solid #e2e8f0",
+                      boxShadow: p.active ? "0 4px 20px rgba(34,147,136,0.1)" : "0 2px 8px rgba(0,0,0,0.04)",
+                    }}
+                  >
+                    {p.active && (
+                      <div className="inline-flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.15em] px-2.5 py-1 rounded-full mb-3" style={{ background: "rgba(34,147,136,0.1)", color: "#229388" }}>
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#229388] animate-pulse flex-shrink-0" />
+                        {lang === 'ar' ? 'الآن' : 'Active'}
+                      </div>
+                    )}
+                    <div className="text-[11px] font-bold text-[#229388] mb-1.5 tracking-[0.06em]">{p.years}</div>
+                    <h3 className="font-bold text-[16px] text-[#111827] mb-2" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif' }}>{p.title}</h3>
+                    <p className="text-[12px] text-[#64748b] leading-[1.7]">{p.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA STRIP */}
       <section
         className={`py-20 px-6 md:px-8 flex flex-col md:flex-row items-center justify-between gap-8 ${lang === 'ar' ? 'md:flex-row-reverse' : ''}`}

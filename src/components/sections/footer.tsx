@@ -12,6 +12,8 @@ const Footer = () => {
   const navLinks = [
     { label: t.nav.about, href: "/about" },
     { label: t.nav.services, href: "/#services" },
+    { label: lang === 'ar' ? "الوظائف" : "Careers", href: "/careers" },
+    { label: lang === 'ar' ? "الأخبار" : "News", href: "/news" },
     { label: t.nav.contact, href: "/#contact" },
     { label: t.footer.privacy, href: "/privacy" },
   ];
