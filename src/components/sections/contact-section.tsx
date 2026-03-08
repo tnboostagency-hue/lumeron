@@ -16,6 +16,7 @@ export default function ContactSection() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({
@@ -27,8 +28,9 @@ export default function ContactSection() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitError(false);
     try {
-      await fetch("/api/send", {
+      const res = await fetch("/api/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -38,8 +40,15 @@ export default function ContactSection() {
           message: formData.message,
         }),
       });
+      if (!res.ok) {
+        setSubmitError(true);
+        setIsSubmitting(false);
+        return;
+      }
     } catch {
-      // fall through to success state
+      setSubmitError(true);
+      setIsSubmitting(false);
+      return;
     }
     setIsSubmitting(false);
     setSubmitted(true);
@@ -109,6 +118,17 @@ export default function ContactSection() {
                       </div>
                       <h4 className="text-xl font-semibold text-foreground mb-2">{lang === 'ar' ? "تم إرسال الرسالة!" : "Message Sent!"}</h4>
                       <p className="text-muted-foreground">{lang === 'ar' ? "سنرد عليك في غضون 24 ساعة." : "We'll get back to you within 24 hours."}</p>
+                    </div>
+                  ) : submitError ? (
+                    <div className="flex flex-col items-center justify-center py-12 text-center">
+                      <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center text-red-500 mb-4">
+                        <Send size={28} />
+                      </div>
+                      <h4 className="text-xl font-semibold text-foreground mb-2">{lang === 'ar' ? "حدث خطأ" : "Something went wrong"}</h4>
+                      <p className="text-muted-foreground mb-6">{lang === 'ar' ? "لم نتمكن من إرسال رسالتك. يرجى المحاولة مرة أخرى أو التواصل معنا مباشرة." : "We couldn't send your message. Please try again or contact us directly at info@lumeron.sa"}</p>
+                      <button onClick={() => setSubmitError(false)} className="btn-primary px-6 py-3 text-sm">
+                        {lang === 'ar' ? "حاول مجدداً" : "Try Again"}
+                      </button>
                     </div>
                   ) : (
                     <form onSubmit={handleSubmit} className="space-y-5">

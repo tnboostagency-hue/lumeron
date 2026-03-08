@@ -13,10 +13,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    // Notify Lumeron team
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: "Lumeron Careers <onboarding@resend.dev>",
-      to: ["lumeron.sa@gmail.com"], // Update to info@lumeron.sa after verifying domain at resend.com/domains
+      to: ["lumeron.sa@gmail.com"],
       replyTo: email,
       subject: `Job Application: ${position} — ${name}`,
       html: `
@@ -62,58 +61,10 @@ export async function POST(req: NextRequest) {
       `,
     });
 
-    // Send thank-you auto-reply to the applicant
-    await resend.emails.send({
-      from: "Lumeron Careers <onboarding@resend.dev>",
-      to: [email],
-      subject: `Application received — ${position} at Lumeron`,
-      html: `
-        <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f9fafb; border-radius: 12px; overflow: hidden;">
-          <div style="background: linear-gradient(135deg, #1a7a70 0%, #229388 50%, #3ec8ba 100%); padding: 40px 40px 32px;">
-            <p style="color: rgba(255,255,255,0.75); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 12px;">Lumeron Careers</p>
-            <h1 style="color: white; margin: 0; font-size: 26px; font-weight: 700; line-height: 1.2;">Your application has been received.</h1>
-            <p style="color: rgba(255,255,255,0.85); margin: 10px 0 0; font-size: 15px; line-height: 1.6;">We'll review it and get back to you soon.</p>
-          </div>
-          <div style="padding: 36px 40px; background: white;">
-            <p style="color: #111827; font-size: 16px; line-height: 1.7; margin: 0 0 20px;">
-              Hi <strong>${name.split(" ")[0]}</strong>,
-            </p>
-            <p style="color: #374151; font-size: 15px; line-height: 1.8; margin: 0 0 20px;">
-              Thank you for applying for the <strong>${position}</strong> role at Lumeron. We've received your application and our talent team will carefully review it.
-            </p>
-            <p style="color: #374151; font-size: 15px; line-height: 1.8; margin: 0 0 32px;">
-              If your profile is a strong match, we'll reach out within <strong>5–7 business days</strong> to discuss next steps. We appreciate your interest in joining our team and helping build the digital future of Saudi Arabia.
-            </p>
-            <div style="background: #f0fdf8; border: 1px solid rgba(34,147,136,0.2); border-radius: 10px; padding: 20px 24px; margin-bottom: 32px;">
-              <p style="color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin: 0 0 12px;">Application details</p>
-              <table style="width: 100%; border-collapse: collapse;">
-                <tr>
-                  <td style="padding: 6px 0; color: #64748b; font-size: 13px; width: 120px;">Position</td>
-                  <td style="padding: 6px 0; color: #111827; font-size: 13px; font-weight: 600;">${position}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 6px 0; color: #64748b; font-size: 13px;">Name</td>
-                  <td style="padding: 6px 0; color: #111827; font-size: 13px; font-weight: 600;">${name}</td>
-                </tr>
-                ${phone ? `<tr>
-                  <td style="padding: 6px 0; color: #64748b; font-size: 13px;">Phone</td>
-                  <td style="padding: 6px 0; color: #111827; font-size: 13px; font-weight: 600;">${phone}</td>
-                </tr>` : ""}
-              </table>
-            </div>
-            <p style="color: #374151; font-size: 14px; line-height: 1.7; margin: 0;">
-              Questions? Reply to this email or contact us at <a href="mailto:info@lumeron.sa" style="color: #229388; font-weight: 600; text-decoration: none;">info@lumeron.sa</a>.
-            </p>
-          </div>
-          <div style="padding: 24px 40px; background: #f9fafb; border-top: 1px solid #f0f0f0;">
-            <p style="color: #9ca3af; font-size: 12px; margin: 0; line-height: 1.6;">
-              <strong style="color: #229388;">Lumeron</strong> — MASCO Group Technology Arm<br/>
-              3123 16th St., Al Yarmouk, Al Khobar 34412, Saudi Arabia
-            </p>
-          </div>
-        </div>
-      `,
-    });
+    if (error) {
+      console.error("Resend error:", error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
 
     return NextResponse.json({ success: true });
   } catch (err) {

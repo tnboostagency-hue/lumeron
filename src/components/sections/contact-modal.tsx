@@ -14,6 +14,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
   const [form, setForm] = useState({ name: "", email: "", company: "", service: "", message: "" });
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [sendError, setSendError] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -39,15 +40,22 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
+    setSendError(false);
     try {
       const res = await fetch("/api/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-      if (!res.ok) throw new Error("Failed");
+      if (!res.ok) {
+        setSendError(true);
+        setSending(false);
+        return;
+      }
     } catch {
-      // fall through to show success — email still attempted
+      setSendError(true);
+      setSending(false);
+      return;
     }
     setSending(false);
     setSent(true);
@@ -121,6 +129,28 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                   <p className="text-muted-foreground text-[14px]">
                     {lang === 'ar' ? "تم إرسال رسالتك بنجاح. سنرد عليك خلال 24 ساعة." : "Your message has been sent. We'll respond within 24 hours."}
                   </p>
+                </div>
+              </div>
+            ) : sendError ? (
+              <div className="flex flex-col items-center text-center py-6 gap-4">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center bg-red-100">
+                  <X size={30} strokeWidth={1.8} className="text-red-500" />
+                </div>
+                <div>
+                  <h3 className="text-[22px] font-semibold text-foreground mb-1">
+                    {lang === 'ar' ? "حدث خطأ" : "Something went wrong"}
+                  </h3>
+                  <p className="text-muted-foreground text-[14px] mb-4">
+                    {lang === 'ar'
+                      ? "لم نتمكن من إرسال رسالتك. يرجى المحاولة مرة أخرى أو التواصل معنا مباشرة."
+                      : "We couldn't send your message. Please try again or contact us at info@lumeron.sa"}
+                  </p>
+                  <button
+                    onClick={() => setSendError(false)}
+                    className="btn-primary px-6 py-2.5 text-[14px]"
+                  >
+                    {lang === 'ar' ? "حاول مجدداً" : "Try Again"}
+                  </button>
                 </div>
               </div>
             ) : (
