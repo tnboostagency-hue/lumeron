@@ -34,7 +34,7 @@ const MissionStatement: React.FC = () => {
   ];
 
   return (
-        <section className="relative w-full py-[80px] md:py-[140px] bg-[#0f172a] overflow-hidden">
+        <section className="relative w-full py-[80px] md:py-[140px] overflow-hidden" style={{ background: 'linear-gradient(135deg, #0d2e2c 0%, #0f3532 50%, #0d2e2c 100%)' }}>
         {/* Background elements with parallax */}
         <div className="absolute inset-0 z-0">
           <ParallaxWrapper speed={-0.25} className="absolute top-0 right-0">

@@ -5,7 +5,8 @@ import Navbar from "@/components/sections/navbar";
 import Hero from "@/components/sections/hero";
 import ServicesCarousel from "@/components/sections/services-carousel";
 import MissionStatement from "@/components/sections/mission-statement";
-import StrategicAllies from "@/components/sections/strategic-allies";
+import OurClients from "@/components/sections/Our-clients";
+import StrategyAllies from "@/components/sections/strategy-allies";
 import SlidingTagsSection from "@/components/sections/sliding-tags-section";
 import CTABottom from "@/components/sections/cta-bottom";
 import ContactSection from "@/components/sections/contact-section";
@@ -25,8 +26,9 @@ export default function Home() {
       <ServicesCarousel />
       <MissionStatement />
         <SlidingTagsSection />
-      <StrategicAllies />
+      <OurClients />
       <CTABottom onConnectClick={() => setModalOpen(true)} />
+      <StrategyAllies />
       <ContactSection />
       <Footer />
     </main>
