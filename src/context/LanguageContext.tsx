@@ -114,7 +114,7 @@ const dictionary = {
       ]
     },
     footer: {
-      location: "Al Khobar, Kingdom of Saudi Arabia",
+      location: "Prince Turkey Street, Al Fardan Tower, Floor 3, Al Khobar 34413, Saudi Arabia",
       copyright: "© 2025 Lumeron. All rights reserved.",
       privacy: "Privacy Notice",
     },
@@ -237,7 +237,7 @@ const dictionary = {
       ]
     },
     footer: {
-      location: "الخبر، المملكة العربية السعودية",
+      location: "شارع الأمير تركي، برج الفرادان، الطابق الثالث، الخبر 34413",
       copyright: "© 2025 لوميرون. جميع الحقوق محفوظة.",
       privacy: "إشعار الخصوصية",
     },
@@ -263,13 +263,23 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [lang, setLang] = useState<Language>("en");
+const LANG_COOKIE = "lang";
+const LANG_COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
 
+function setLangCookie(value: string) {
+  if (typeof document === "undefined") return;
+  document.cookie = `${LANG_COOKIE}=${value}; path=/; max-age=${LANG_COOKIE_MAX_AGE}; SameSite=Lax`;
+}
+
+export const LanguageProvider: React.FC<{ children: React.ReactNode; initialLang?: Language }> = ({ children, initialLang = "en" }) => {
+  const [lang, setLang] = useState<Language>(initialLang);
+
+  // Sync from localStorage on mount (e.g. user had Arabic before cookie existed)
   useEffect(() => {
-    const saved = localStorage.getItem("lang") as Language;
+    const saved = localStorage.getItem(LANG_COOKIE) as Language | null;
     if (saved && (saved === "en" || saved === "ar")) {
-      setLang(saved);
+      setLang((prev) => (prev !== saved ? saved : prev));
+      setLangCookie(saved);
       document.documentElement.lang = saved;
       document.documentElement.dir = saved === "ar" ? "rtl" : "ltr";
     }
@@ -277,7 +287,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const setLanguage = (newLang: Language) => {
     setLang(newLang);
-    localStorage.setItem("lang", newLang);
+    localStorage.setItem(LANG_COOKIE, newLang);
+    setLangCookie(newLang);
     document.documentElement.lang = newLang;
     document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
   };

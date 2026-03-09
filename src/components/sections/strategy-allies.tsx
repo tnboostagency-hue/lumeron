@@ -69,50 +69,11 @@ const allies = [
   { name: 'Ally 61', logo: '/logos/strategic-allies/logo_61.png' },
 ];
 
-const ROWS = 4;
-const perRow = Math.ceil(allies.length / ROWS);
-const rows = Array.from({ length: ROWS }, (_, i) =>
-  allies.slice(i * perRow, (i + 1) * perRow)
+const COLS_PER_ROW = 8;
+const rows = Array.from(
+  { length: Math.ceil(allies.length / COLS_PER_ROW) },
+  (_, i) => allies.slice(i * COLS_PER_ROW, (i + 1) * COLS_PER_ROW)
 );
-
-interface MarqueeRowProps {
-  items: typeof allies;
-  direction: 'left' | 'right';
-  speed: number;
-}
-
-const MarqueeRow: React.FC<MarqueeRowProps> = ({ items, direction, speed }) => {
-  const doubled = [...items, ...items];
-  return (
-    <div className="relative w-full overflow-hidden">
-      <div
-        className="flex"
-        style={{
-          animation: `marquee-${direction} ${speed}s linear infinite`,
-          width: 'max-content',
-        }}
-      >
-        {doubled.map((ally, idx) => (
-          <div
-            key={`${ally.logo}-${idx}`}
-            className="flex-shrink-0 flex items-center justify-center mx-4 group"
-            style={{ width: '160px', height: '80px' }}
-          >
-            <div className="relative w-full h-full transition-all duration-300 group-hover:scale-110">
-              <Image
-                src={ally.logo}
-                alt={ally.name}
-                fill
-                sizes="160px"
-                className="object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300"
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
 
 const StrategyAllies: React.FC = () => {
   const { lang } = useLanguage();
@@ -123,17 +84,6 @@ const StrategyAllies: React.FC = () => {
       className="relative py-20 md:py-28 overflow-hidden"
       style={{ background: '#ffffff' }}
     >
-      <style>{`
-        @keyframes marquee-left {
-          0%   { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        @keyframes marquee-right {
-          0%   { transform: translateX(-50%); }
-          100% { transform: translateX(0); }
-        }
-      `}</style>
-
       {/* Subtle dot background */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -142,12 +92,6 @@ const StrategyAllies: React.FC = () => {
           backgroundSize: '28px 28px',
         }}
       />
-
-      {/* Edge fades */}
-      <div className="absolute inset-y-0 left-0 w-32 pointer-events-none z-10"
-        style={{ background: 'linear-gradient(to right, #ffffff, transparent)' }} />
-      <div className="absolute inset-y-0 right-0 w-32 pointer-events-none z-10"
-        style={{ background: 'linear-gradient(to left, #ffffff, transparent)' }} />
 
       {/* Header */}
       <div className="relative z-10 container px-6 md:px-8 max-w-[900px] mx-auto mb-14 text-center">
@@ -190,24 +134,64 @@ const StrategyAllies: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* 4 Marquee rows — alternating directions */}
-      <div className="relative z-0 flex flex-col gap-4">
-        {rows.map((row, i) => (
-          <MarqueeRow
-            key={i}
-            items={row}
-            direction={i % 2 === 0 ? 'left' : 'right'}
-            speed={28 + i * 4}
-          />
-        ))}
+      {/* Fixed table — partner logos in a stable grid */}
+      <div className="relative z-10 container px-6 md:px-8 max-w-[1200px] mx-auto">
+        <div
+          className="w-full overflow-hidden rounded-xl border border-[#e2e8f0] bg-white"
+          style={{ boxShadow: '0 2px 16px rgba(34,147,136,0.06)' }}
+        >
+          <table className="w-full border-collapse" style={{ tableLayout: 'fixed' }}>
+            <tbody>
+              {rows.map((row, rowIdx) => (
+                <tr
+                  key={rowIdx}
+                  style={{
+                    borderBottom: rowIdx < rows.length - 1 ? '1px solid #e2e8f0' : 'none',
+                  }}
+                >
+                  {row.map((ally, colIdx) => (
+                    <td
+                      key={ally.logo}
+                      className="p-4 md:p-6 group transition-colors duration-200 hover:bg-[#f0fdfc] align-middle text-center"
+                      style={{
+                        width: `${100 / COLS_PER_ROW}%`,
+                        borderRight: colIdx < row.length - 1 ? '1px solid #e2e8f0' : 'none',
+                        minHeight: '100px',
+                      }}
+                    >
+                      <div className="relative w-full max-w-[140px] h-[56px] md:h-[64px] mx-auto">
+                        <Image
+                          src={ally.logo}
+                          alt={ally.name}
+                          fill
+                          sizes="140px"
+                          className="object-contain opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                        />
+                      </div>
+                    </td>
+                  ))}
+                  {/* Fill empty cells in last row */}
+                  {row.length < COLS_PER_ROW &&
+                    Array.from({ length: COLS_PER_ROW - row.length }).map((_, i) => (
+                      <td
+                        key={`empty-${i}`}
+                        style={{
+                          width: `${100 / COLS_PER_ROW}%`,
+                          borderRight: row.length + i < COLS_PER_ROW - 1 ? '1px solid #e2e8f0' : 'none',
+                          minHeight: '100px',
+                        }}
+                      />
+                    ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Bottom label */}
-      <div className="relative z-10 container px-6 md:px-8 max-w-[1440px] mx-auto mt-12 text-center">
-        <p
-          className="text-[11px] font-semibold tracking-[0.12em] uppercase"
-          style={{ color: 'rgba(255,255,255,0.25)' }}
-        >
+      <div className="relative z-10 container px-6 md:px-8 max-w-[1440px] mx-auto mt-10 text-center">
+        <p className="text-[12px] font-medium tracking-[0.08em] uppercase text-[#94a3b8]">
           {lang === 'ar'
             ? '· حلفاء موثوقون في رؤية المملكة 2030 ·'
             : '· Trusted strategic allies across Saudi Vision 2030 ·'}

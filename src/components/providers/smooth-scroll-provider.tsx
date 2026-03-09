@@ -11,19 +11,13 @@ export default function SmoothScrollProvider({ children }: SmoothScrollProviderP
   const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
-    // Check for reduced motion preference
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setReducedMotion(mediaQuery.matches);
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      setReducedMotion(e.matches);
-    };
-
+    const handleChange = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
-  // Disable smooth scroll if user prefers reduced motion
   if (reducedMotion) {
     return <>{children}</>;
   }

@@ -125,13 +125,13 @@ const Navbar = () => {
               {lang === "ar" ? "الأخبار" : "News"}
             </Link>
 
-            {/* Contact */}
-            <button
-              onClick={() => setModalOpen(true)}
+            {/* Contact — leads to contact section on home page */}
+            <Link
+              href="/#contact"
               className="text-[15px] font-semibold flex items-center gap-1.5 transition-all hover:opacity-70 whitespace-nowrap text-foreground"
             >
               {t.nav.contact}
-            </button>
+            </Link>
           </div>
 
           {/* Right side */}
@@ -236,13 +236,14 @@ const Navbar = () => {
               {lang === "ar" ? "الأخبار" : "News"}
             </Link>
 
-            {/* Contact */}
-            <button
-              onClick={() => { setIsMobileMenuOpen(false); setModalOpen(true); }}
+            {/* Contact — leads to contact section on home page */}
+            <Link
+              href="/#contact"
+              onClick={() => setIsMobileMenuOpen(false)}
               className="text-2xl font-bold text-foreground text-left py-2"
             >
               {t.nav.contact}
-            </button>
+            </Link>
           </div>
 
           <div className="mt-auto pt-10 border-t border-border flex flex-col space-y-6">

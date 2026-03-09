@@ -686,56 +686,56 @@ export default function ServicesCarousel() {
     >
       {/* ── Section Header ────────────────────────────────────── */}
       <div className="container mx-auto px-5 sm:px-8 max-w-[1440px] pt-[80px] pb-[60px] lg:pt-[120px] lg:pb-[80px]">
-        <div className="flex items-center gap-3 mb-4">
+        <div className={`flex items-center gap-3 mb-4 ${isAr ? 'flex-row-reverse' : ''}`}>
           <div className="w-2 h-2 bg-[#229388] flex-shrink-0" />
           <span className="uppercase tracking-[0.18em] text-[11px] text-[#229388] font-semibold">
             {isAr ? 'خدماتنا وقدراتنا' : 'Our Services & Capabilities'}
           </span>
         </div>
         <div className="w-full h-px bg-gradient-to-r from-[#229388] via-[#3ec8ba] to-transparent mb-5 opacity-60" />
-        <h2 className="text-[32px] sm:text-[40px] md:text-[52px] lg:text-[60px] font-semibold leading-[1.05] tracking-[-0.02em] text-foreground max-w-[800px]">
+        <h2 className={`text-[32px] sm:text-[40px] md:text-[52px] lg:text-[60px] font-semibold leading-[1.05] tracking-[-0.02em] text-foreground max-w-[800px] ${isAr ? 'text-right' : ''}`}>
           {isAr ? (
             <>تقنيات <span className="text-[#229388]">تُشكّل</span> المستقبل</>
           ) : (
             <>Technologies that <span className="text-[#229388]">shape</span> the future</>
           )}
         </h2>
-        <p className="mt-4 text-[16px] sm:text-[18px] text-gray-500 max-w-[680px] leading-[1.65]">
+        <p className={`mt-4 text-[16px] sm:text-[18px] text-gray-500 max-w-[680px] leading-[1.65] ${isAr ? 'text-right' : ''}`}>
           {isAr
             ? 'تسريع الاقتصاد الرقمي من خلال بنية تحتية مرنة وخدمات مدارة وابتكارات متطورة.'
             : 'Accelerating the digital economy through resilient infrastructure, managed services, and cutting-edge innovations.'}
         </p>
       </div>
 
-      {/* ── Timeline Split Layout ─────────────────────────────── */}
+      {/* ── Timeline Split Layout — columns synced; left sticky + vertically centred ───────── */}
       <div className="container mx-auto px-5 sm:px-8 max-w-[1440px]">
-        <div ref={scrollZoneRef} className="flex gap-12 xl:gap-20 flex-col lg:flex-row" style={{ alignItems: 'flex-start', overflow: 'visible' }}>
+        <div ref={scrollZoneRef} className="flex gap-12 xl:gap-20 flex-col lg:flex-row lg:items-stretch overflow-visible">
 
           {/* ══════════════════════════════════════════════════════
-              LEFT PANEL — CSS sticky + fade transition
+              LEFT PANEL — wrapper for layout; inner div is sticky + centred
           ══════════════════════════════════════════════════════ */}
-          <div
-            ref={leftPanelRef}
-            className="hidden lg:block lg:w-[42%] xl:w-[44%]"
-            style={{
-              position: 'sticky',
-              top: '96px',
-              alignSelf: 'flex-start',
-              flexShrink: 0,
-              opacity: panelVisible ? 1 : 0,
-              transition: 'opacity 0.3s ease',
-            }}
-          >
-            {/* 3-D Canvas — unique per service */}
-              <div
-                className="relative w-full mb-8 rounded-2xl overflow-hidden"
-                style={{ height: '340px', background: 'linear-gradient(135deg,#f7fffe 0%,#edfbf9 100%)' }}
-              >
-                <ServiceCanvas serviceId={active.id} color={active.color} />
+          <div className="hidden lg:block lg:w-[42%] xl:w-[44%] lg:flex-shrink-0">
+            <div
+              ref={leftPanelRef}
+              className="sticky z-10"
+              style={{
+                top: '50vh',
+                transform: 'translateY(-50%)',
+                opacity: panelVisible ? 1 : 0,
+                transition: 'opacity 0.3s ease',
+                visibility: 'visible',
+              }}
+            >
+            {/* 3-D Canvas */}
+            <div
+              className="relative w-full mb-8 rounded-2xl overflow-hidden"
+              style={{ height: '340px', background: 'linear-gradient(135deg,#f7fffe 0%,#edfbf9 100%)' }}
+            >
+              <ServiceCanvas serviceId={active.id} color={active.color} />
 
               {/* Number watermark */}
               <div
-                className="absolute bottom-4 right-6 font-bold leading-none select-none pointer-events-none"
+                className={`absolute bottom-4 font-bold leading-none select-none pointer-events-none ${isAr ? 'left-6' : 'right-6'}`}
                 style={{ fontSize: '72px', color: active.color, opacity: 0.12 }}
               >
                 {active.number}
@@ -766,14 +766,14 @@ export default function ServicesCarousel() {
               </div>
             </div>
 
-            {/* Service info — transitions smoothly as activeIdx changes */}
+            {/* Service info — transitions smoothly as activeIdx changes, synced with right column */}
             <div
               key={active.id}
-              className="animate-fadeIn"
+              className={`animate-fadeIn ${isAr ? 'text-right' : ''}`}
               style={{ animation: 'fadeSlideIn 0.45s ease forwards' }}
             >
               {/* Eyebrow */}
-              <div className="flex items-center gap-2.5 mb-3">
+              <div className={`flex items-center gap-2.5 mb-3 ${isAr ? 'flex-row-reverse' : ''}`}>
                 <div className="w-2 h-2 flex-shrink-0" style={{ background: active.color }} />
                 <span
                   className="text-[11px] uppercase tracking-[0.18em] font-semibold"
@@ -816,6 +816,7 @@ export default function ServicesCarousel() {
                   <path d="M12.8078 0L20.202 7.39706V8.58824L12.8078 16L11.3554 14.5441L16.8277 9.05882H0V6.92647H16.8277L11.3554 1.44118L12.8078 0Z" fill="white" />
                 </svg>
               </Link>
+            </div>
             </div>
           </div>
 
@@ -864,7 +865,7 @@ export default function ServicesCarousel() {
           </div>
 
           {/* ══════════════════════════════════════════════════════
-              RIGHT PANEL — scrollable service blocks
+              RIGHT PANEL — scrollable service blocks (synced with left via activeIdx)
           ══════════════════════════════════════════════════════ */}
           <div className="w-full lg:w-[52%] xl:w-[50%] pb-24">
 

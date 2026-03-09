@@ -73,10 +73,13 @@ export default function InnovationsPage() {
         </div>
 
         <div className="container mx-auto px-6 md:px-8 pb-20 relative z-10">
-          <div className={`flex items-center gap-3 mb-7 ${lang === 'ar' ? 'flex-row-reverse' : ''}`}>
+          <div className={`flex items-center gap-3 mb-3 ${lang === 'ar' ? 'flex-row-reverse' : ''}`}>
             <div className="w-6 h-px bg-[#229388]" />
-            <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-[#229388]">{t.services.innovations}</span>
+            <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-[#229388]">Service</span>
           </div>
+          <h2 className={`font-bold text-foreground mb-7 ${lang === 'ar' ? 'text-right' : ''}`} style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(28px,4vw,42px)", letterSpacing: "-0.02em", color: "#111827" }}>
+            {t.services.innovations}
+          </h2>
           <h1
             className={`font-bold leading-[0.95] tracking-tight mb-10 ${lang === 'ar' ? 'text-right' : ''}`}
             style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(52px,8vw,96px)", color: "#111827", letterSpacing: "-0.03em" }}

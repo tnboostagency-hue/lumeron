@@ -37,14 +37,24 @@ const MorseDash = ({ delay = 0 }: { delay?: number }) => (
   />
 );
 
+const MAX_LOADING_MS = 4000; // safety: never show preloader longer than this
+
 export default function Preloader() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2500);
-    return () => clearTimeout(timer);
+    const done = () => setLoading((prev) => (prev ? false : prev));
+    const timer = setTimeout(done, 2500);
+    const safety = setTimeout(done, MAX_LOADING_MS);
+    if (typeof window !== "undefined") {
+      if (document.readyState === "complete") done();
+      else window.addEventListener("load", done);
+    }
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(safety);
+      if (typeof window !== "undefined") window.removeEventListener("load", done);
+    };
   }, []);
 
   return (

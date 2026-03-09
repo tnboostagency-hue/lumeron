@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import "./globals.css";
 import VisualEditsMessenger from "../visual-edits/VisualEditsMessenger";
 import ErrorReporter from "@/components/ErrorReporter";
@@ -18,20 +19,25 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const langCookie = cookieStore.get("lang")?.value;
+  const initialLang = langCookie === "ar" || langCookie === "en" ? langCookie : "en";
+  const isRtl = initialLang === "ar";
+
   return (
-    <html lang="en">
+    <html lang={initialLang} dir={isRtl ? "rtl" : "ltr"} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.png?v=2" type="image/png" />
         <link rel="shortcut icon" href="/favicon.png?v=2" type="image/png" />
         <link rel="apple-touch-icon" href="/favicon.png?v=2" />
       </head>
       <body className="antialiased font-sans">
-          <LanguageProvider>
+          <LanguageProvider initialLang={initialLang}>
             <SmoothScrollProvider>
               <ScrollToTop />
               <Preloader />

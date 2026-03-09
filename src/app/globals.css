@@ -145,12 +145,19 @@ html.lenis body {
     -webkit-font-smoothing: antialiased;
   }
 
+  /* RTL: Arabic language support */
+  html[lang="ar"],
+  html[dir="rtl"] {
+    font-family: "Avenir Next Arabic", "Inter", ui-sans-serif, system-ui, sans-serif;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: "Avenir Next Arabic", "Inter", ui-sans-serif, system-ui, sans-serif;
     font-size: 18px;
     line-height: 1.7;
   }
+
 
   /* Typography - All headings use Avenir Next Arabic */
   h1, .text-hero {
