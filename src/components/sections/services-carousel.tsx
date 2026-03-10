@@ -684,8 +684,8 @@ export default function ServicesCarousel() {
       className="bg-white relative z-[2] pb-32 lg:pb-40"
       dir={isAr ? 'rtl' : 'ltr'}
     >
-      {/* ── Section Header ────────────────────────────────────── */}
-      <div className="container mx-auto px-5 sm:px-8 max-w-[1440px] pt-[80px] pb-[60px] lg:pt-[120px] lg:pb-[80px]">
+      {/* ── Section Header (stack above sticky left panel) ──────── */}
+      <div className="container mx-auto px-5 sm:px-8 max-w-[1440px] pt-[80px] pb-[60px] lg:pt-[120px] lg:pb-[80px] relative z-20">
         <div className={`flex items-center gap-3 mb-4 ${isAr ? 'flex-row-reverse' : ''}`}>
           <div className="w-2 h-2 bg-[#229388] flex-shrink-0" />
           <span className="uppercase tracking-[0.18em] text-[11px] text-[#229388] font-semibold">
@@ -719,8 +719,7 @@ export default function ServicesCarousel() {
               ref={leftPanelRef}
               className="sticky z-10"
               style={{
-                top: '50vh',
-                transform: 'translateY(-50%)',
+                top: 0,
                 opacity: panelVisible ? 1 : 0,
                 transition: 'opacity 0.3s ease',
                 visibility: 'visible',
