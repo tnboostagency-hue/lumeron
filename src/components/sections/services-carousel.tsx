@@ -867,14 +867,14 @@ export default function ServicesCarousel() {
           {/* ══════════════════════════════════════════════════════
               RIGHT PANEL — scrollable service blocks (synced with left via activeIdx)
           ══════════════════════════════════════════════════════ */}
-          <div className="w-full lg:w-[52%] xl:w-[50%] pb-24">
+          <div className="w-full lg:w-[52%] xl:w-[50%] pb-24 overflow-visible">
 
             {/* Mobile: show 3D canvas + info inline above each block */}
             {SERVICES.map((service, sIdx) => (
               <div
                 key={service.id}
                 ref={el => { rowRefs.current[sIdx] = el; }}
-                className="mb-20 lg:mb-28"
+                className="mb-24 lg:mb-32"
               >
                 {/* ── Mobile canvas (hidden on desktop) ── */}
                 <div className="lg:hidden mb-6">
@@ -914,7 +914,7 @@ export default function ServicesCarousel() {
                 </div>
 
                 {/* ── Step cards ── */}
-                <div className="flex flex-col gap-7">
+                <div className="flex flex-col gap-7 pb-4 overflow-visible">
                   {service.steps.map((step, stIdx) => (
                     <StepCard
                       key={stIdx}
@@ -1019,7 +1019,7 @@ function StepCard({
           {isAr ? step.headingAr : step.headingEn}
         </h5>
         <p
-          className="text-[13.5px] leading-[1.72] transition-colors duration-300"
+          className="text-[13.5px] leading-[1.72] transition-colors duration-300 overflow-visible"
           style={{ color: isActive ? '#6b7280' : '#d4d4d4' }}
         >
           {isAr ? step.bodyAr : step.bodyEn}
