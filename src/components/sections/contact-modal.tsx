@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { X, Send, CheckCircle } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -16,6 +17,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
   const [sent, setSent] = useState(false);
   const [sendError, setSendError] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -29,13 +31,20 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
     return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
 
+  // When opening, scroll overlay to top so centered content is in view (no scrolling to find it)
+  useEffect(() => {
+    if (isOpen && overlayRef.current) {
+      overlayRef.current.scrollTop = 0;
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [onClose]);
 
-  if (!mounted) return null;
+  if (!mounted || typeof document === "undefined") return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,9 +75,12 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
     }, 3000);
   };
 
-  return (
-    /* Outer: full-screen scroll container */
+  return createPortal(
+    /* Portal to body so modal is not affected by ancestor transforms (e.g. PageWrapper) — keeps it viewport-centered on all pages */
+    <>
+    {/* Outer: full-screen overlay, scroll to top when opened so content is in view */}
     <div
+      ref={overlayRef}
       className="fixed inset-0 z-[200] overflow-y-auto overscroll-contain"
       style={{ animation: isOpen ? "fadeIn 0.25s ease forwards" : "fadeOut 0.25s ease forwards" }}
     >
@@ -79,11 +91,11 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
         onClick={onClose}
       />
 
-      {/* Centering wrapper — padding keeps panel off screen edges on all sizes */}
-      <div className="relative flex min-h-full items-center justify-center p-4 sm:p-6">
-        {/* Panel */}
+      {/* Centering wrapper: min-h-screen so panel is centered in viewport; no scrolling to find it */}
+      <div className="relative flex min-h-screen min-h-dvh items-center justify-center p-4 sm:p-6">
+        {/* Panel — max-h so tall content scrolls inside panel, not the overlay */}
         <div
-          className="relative w-full max-w-[520px] rounded-2xl shadow-2xl overflow-hidden"
+          className="relative w-full max-w-[520px] max-h-[calc(100vh-2rem)] rounded-2xl shadow-2xl overflow-hidden flex flex-col"
           style={{
             background: "rgba(255,255,255,0.98)",
             backdropFilter: "blur(40px)",
@@ -96,7 +108,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
         >
           {/* Teal accent bar */}
           <div
-            className="h-1 w-full"
+            className="h-1 w-full flex-shrink-0"
             style={{
               background: "linear-gradient(90deg, #229388 0%, #3ec8ba 50%, #229388 100%)",
               backgroundSize: "200% 100%",
@@ -104,7 +116,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
             }}
           />
 
-          <div className="p-5 sm:p-7">
+          <div className="p-5 sm:p-7 overflow-y-auto flex-1 min-h-0">
             {/* Close */}
             <button
               onClick={onClose}
@@ -284,5 +296,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
         @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
       `}</style>
     </div>
+    </>,
+    document.body
   );
 }
