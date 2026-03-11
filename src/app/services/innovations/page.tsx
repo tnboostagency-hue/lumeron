@@ -39,10 +39,10 @@ export default function InnovationsPage() {
   ];
 
   return (
-    <PageWrapper>
-      <>
-        <ContactModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+    <>
+      <ContactModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
       <Navbar />
+      <PageWrapper>
 
       {/* HERO */}
       <section className="relative min-h-[92vh] flex flex-col justify-end overflow-hidden bg-white pt-20">
@@ -391,7 +391,7 @@ export default function InnovationsPage() {
       </section>
 
       <Footer />
-      </>
-    </PageWrapper>
+      </PageWrapper>
+    </>
   );
 }

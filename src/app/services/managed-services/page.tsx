@@ -37,11 +37,10 @@ export default function ManagedServicesPage() {
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
-    <PageWrapper>
-      <>
-        <ContactModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+    <>
+      <ContactModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
       <Navbar />
-
+      <PageWrapper>
       {/* HERO */}
       <section className="relative min-h-[92vh] flex flex-col justify-end overflow-hidden bg-white pt-20">
         <div
@@ -351,7 +350,7 @@ export default function ManagedServicesPage() {
       </section>
 
       <Footer />
-      </>
-    </PageWrapper>
+      </PageWrapper>
+    </>
   );
 }

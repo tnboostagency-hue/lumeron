@@ -152,10 +152,10 @@ export default function CybersecurityPage() {
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
-    <PageWrapper>
-      <>
-        <ContactModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
-        <Navbar />
+    <>
+      <ContactModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <Navbar />
+      <PageWrapper>
 
         {/* HERO — unchanged */}
         <section className="relative min-h-[92vh] flex flex-col justify-end overflow-hidden bg-white pt-20">
@@ -484,7 +484,7 @@ export default function CybersecurityPage() {
         </section>
 
         <Footer />
-      </>
-    </PageWrapper>
+      </PageWrapper>
+    </>
   );
 }

@@ -87,10 +87,10 @@ export default function AIPage() {
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
-    <PageWrapper>
-      <>
-        <ContactModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
-        <Navbar />
+    <>
+      <ContactModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <Navbar />
+      <PageWrapper>
 
         {/* HERO */}
         <section className="relative min-h-[92vh] flex flex-col justify-end overflow-hidden bg-white pt-20">
@@ -428,7 +428,7 @@ export default function AIPage() {
         </section>
 
         <Footer />
-      </>
-    </PageWrapper>
+      </PageWrapper>
+    </>
   );
 }

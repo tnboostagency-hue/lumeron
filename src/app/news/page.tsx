@@ -42,11 +42,10 @@ export default function NewsPage() {
   const filtered = filter === "All" ? articles : articles.filter((a) => a.category === filter);
 
   return (
-    <PageWrapper>
-      <>
-        <ContactModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
-        <Navbar />
-
+    <>
+      <ContactModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <Navbar />
+      <PageWrapper>
         {/* HERO */}
         <section className="relative min-h-[65vh] flex flex-col justify-end overflow-hidden bg-white pt-20">
           <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(34,147,136,0.055) 1px,transparent 1px),linear-gradient(90deg,rgba(34,147,136,0.055) 1px,transparent 1px)", backgroundSize: "72px 72px", maskImage: "radial-gradient(ellipse 80% 70% at 50% 0%,black 20%,transparent 75%)" }} />
@@ -160,7 +159,7 @@ export default function NewsPage() {
         </section>
 
         <Footer />
-      </>
-    </PageWrapper>
+      </PageWrapper>
+    </>
   );
 }
