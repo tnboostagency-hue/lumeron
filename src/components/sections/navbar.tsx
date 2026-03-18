@@ -83,27 +83,28 @@ const Navbar = () => {
                 </svg>
               </motion.div>
 
-              {/* Divider between logos */}
+              {/* Single divider — secondary SVG had its own dark bar on the right (removed via cropped viewBox) */}
               <motion.div
                 initial={{ opacity: 0, y: -6 }}
                 animate={logoEntered ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.4, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-                className="w-px h-7 md:h-8 bg-[#e2e8f0]"
+                className="w-px h-9 md:h-11 bg-[#e2e8f0]/90 self-center shrink-0"
+                aria-hidden
               />
 
-              {/* Secondary logo */}
+              {/* Secondary mark — wider slot + cropped SVG so Arabic/AI mark matches main logo height */}
               <motion.div
                 initial={{ opacity: 0, y: -8, scale: 0.98 }}
                 animate={logoEntered ? { opacity: 1, y: 0, scale: 1 } : {}}
                 transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-                className="relative w-[92px] h-[24px] sm:w-[104px] sm:h-[26px] md:w-[120px] md:h-[32px] lg:w-[132px] lg:h-[34px]"
+                className="relative h-[36px] w-[min(52vw,200px)] sm:w-[220px] md:h-[40px] md:w-[240px] lg:w-[260px]"
               >
                 <Image
                   src="/logos/header-secondary.svg"
-                  alt={lang === "ar" ? "لوميرون شعار ثانوي" : "Lumeron secondary logo"}
+                  alt={lang === "ar" ? "شعار ذكاء اصطناعي — المملكة العربية السعودية" : "Saudi AI mark"}
                   fill
-                  sizes="132px"
-                  className="object-contain"
+                  sizes="260px"
+                  className="object-contain object-left"
                   priority={false}
                 />
               </motion.div>
