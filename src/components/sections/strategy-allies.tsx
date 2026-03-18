@@ -71,14 +71,18 @@ function LogoCard({ ally }: { ally: { name: string; logo: string } }) {
 }
 
 const allies = [
-  { name: 'Dell Technologies', logo: '/logos/strategic-allies/Dell_Technologies_logo.png' },
-  { name: 'Fortinet', logo: '/logos/strategic-allies/Fortinet_logo.png' },
-  { name: 'HPE', logo: '/logos/strategic-allies/HPE_logo.png' },
-  { name: 'LenelS2', logo: '/logos/strategic-allies/LenelS2_logo.png' },
-  { name: 'Microsoft', logo: '/logos/strategic-allies/Microsoft_logo.png' },
-  { name: 'SAP', logo: '/logos/strategic-allies/SAP_logo.png' },
-  { name: 'Siemens', logo: '/logos/strategic-allies/Siemens_logo.png' },
-  { name: 'ThingWorx', logo: '/logos/strategic-allies/ThingWorx_logo.png' },
+  { name: 'Cisco', logo: '/logos/partners/Cisco.jpeg' },
+  { name: 'CommScope', logo: '/logos/partners/CommScope.png' },
+  { name: 'CPI Chatsworth', logo: '/logos/partners/CPI_Chatsworth.png' },
+  { name: 'Dell Technologies', logo: '/logos/partners/Dell_Technologies.png' },
+  { name: 'Fortinet', logo: '/logos/partners/Fortinet.png' },
+  { name: 'Honeywell', logo: '/logos/partners/Honeywell.png' },
+  { name: 'HPE', logo: '/logos/partners/HPE.jpeg' },
+  { name: 'LenelS2', logo: '/logos/partners/LenelS2.jpeg' },
+  { name: 'Microsoft', logo: '/logos/partners/Microsoft.png' },
+  { name: 'SAP', logo: '/logos/partners/SAP.png' },
+  { name: 'Siemens', logo: '/logos/partners/Siemens.png' },
+  { name: 'VMware', logo: '/logos/partners/VMware.jpeg' },
 ];
 
 const COLS_PER_ROW = 4;
@@ -194,14 +198,6 @@ const StrategyAllies: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom label */}
-      <div className="relative z-10 container px-6 md:px-8 max-w-[1440px] mx-auto mt-10 text-center">
-        <p className="text-[12px] font-medium tracking-[0.08em] uppercase text-[#94a3b8]">
-          {lang === 'ar'
-            ? '· حلفاء موثوقون في رؤية المملكة 2030 ·'
-            : '· Trusted strategic allies across Saudi Vision 2030 ·'}
-        </p>
-      </div>
     </section>
   );
 };

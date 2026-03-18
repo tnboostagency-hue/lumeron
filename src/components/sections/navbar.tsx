@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { ChevronDown, Menu, X } from "lucide-react";
 import ContactModal from "@/components/sections/contact-modal";
 import { useLanguage } from "@/context/LanguageContext";
@@ -12,6 +13,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [logoEntered, setLogoEntered] = useState(false);
   const { lang, t, setLanguage } = useLanguage();
 
   const serviceLinks = [
@@ -26,6 +28,11 @@ const Navbar = () => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    // Trigger a simple entrance animation for the logos on first render.
+    setLogoEntered(true);
   }, []);
 
   return (
@@ -49,8 +56,14 @@ const Navbar = () => {
         <div className="container mx-auto px-6 md:px-8 flex items-center justify-between">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center group">
-              <div className="relative w-[140px] h-[36px] md:w-[160px] md:h-[40px] transition-all duration-300">
+            <Link href="/" className="flex items-center gap-3 group">
+              {/* Main logo */}
+              <motion.div
+                initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                animate={logoEntered ? { opacity: 1, y: 0, scale: 1 } : {}}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="relative w-[140px] h-[36px] md:w-[160px] md:h-[40px] transition-all duration-300"
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 737.38 158.61" className="w-full h-full object-contain">
                   <g id="Layer_2" data-name="Layer 2">
                     <g id="Layer_1-2" data-name="Layer 1">
@@ -68,7 +81,32 @@ const Navbar = () => {
                     </g>
                   </g>
                 </svg>
-              </div>
+              </motion.div>
+
+              {/* Divider between logos */}
+              <motion.div
+                initial={{ opacity: 0, y: -6 }}
+                animate={logoEntered ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.4, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+                className="w-px h-7 md:h-8 bg-[#e2e8f0]"
+              />
+
+              {/* Secondary logo */}
+              <motion.div
+                initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                animate={logoEntered ? { opacity: 1, y: 0, scale: 1 } : {}}
+                transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+                className="relative w-[92px] h-[24px] sm:w-[104px] sm:h-[26px] md:w-[120px] md:h-[32px] lg:w-[132px] lg:h-[34px]"
+              >
+                <Image
+                  src="/logos/header-secondary.svg"
+                  alt={lang === "ar" ? "لوميرون شعار ثانوي" : "Lumeron secondary logo"}
+                  fill
+                  sizes="132px"
+                  className="object-contain"
+                  priority={false}
+                />
+              </motion.div>
             </Link>
           </div>
 

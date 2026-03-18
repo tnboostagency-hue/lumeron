@@ -309,9 +309,8 @@ export default function IndustrialPage() {
                     </ul>
                     <div className="flex items-center gap-3">
                       <div className="flex-1 h-1 rounded-full bg-[#e2e8f0] overflow-hidden">
-                        <div className="h-full rounded-full transition-all duration-700" style={{ width: `${s.pct}%`, background: "linear-gradient(90deg,#229388,#3ec8ba)" }} />
+                        <div className="h-full rounded-full transition-all duration-700" style={{ width: `100%`, background: "linear-gradient(90deg,#229388,#3ec8ba)" }} />
                       </div>
-                      <span className="text-[11px] font-semibold text-[#229388] flex-shrink-0">{s.pct}%</span>
                     </div>
                   </div>
                 </div>
