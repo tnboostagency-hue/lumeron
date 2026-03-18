@@ -132,39 +132,29 @@ function Pill({ term, rowIndex, tagIndex }: { term: typeof terms[0]; rowIndex: n
       href={term.href}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className="sliding-tags-pill inline-flex items-center gap-[10px] rounded-[100px] px-[24px] py-[13px] whitespace-nowrap no-underline select-none tracking-[0.01em] font-medium text-[0.95rem] cursor-pointer max-md:gap-[8px] max-md:px-[18px] max-md:py-[10px] max-md:text-[0.85rem]"
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: "10px",
-        padding: "13px 24px",
-        borderRadius: "100px",
         fontFamily: "'DM Sans','Inter',sans-serif",
-        fontSize: "0.95rem",
-        fontWeight: 500,
-        whiteSpace: "nowrap",
-        textDecoration: "none",
-        userSelect: "none",
-        letterSpacing: "0.01em",
         background: hovered ? "#1e8178" : v.bg,
         color: hovered ? "#fff" : v.color,
         border: `2px solid ${hovered ? "transparent" : v.border}`,
         boxShadow: hovered ? "0 8px 28px rgba(30,129,120,0.25)" : "0 2px 10px rgba(30,129,120,0.07)",
         transform: hovered ? "translateY(-3px) scale(1.04)" : "translateY(0) scale(1)",
         transition: "all 0.22s cubic-bezier(0.16,1,0.3,1)",
-        cursor: "pointer",
       }}
     >
-      <span style={{
-        display: "flex", alignItems: "center", justifyContent: "center",
-        width: "30px", height: "30px", borderRadius: "50%", flexShrink: 0,
+      <span
+        className="sliding-tags-pill-icon flex h-[30px] w-[30px] flex-shrink-0 items-center justify-center rounded-full transition-all max-md:h-[26px] max-md:w-[26px]"
+        style={{
         background: hovered ? "rgba(255,255,255,0.15)" : v.bg === "#1e8178" ? "rgba(255,255,255,0.15)" : v.bg === "#d4ecea" ? "rgba(30,129,120,0.12)" : "rgba(30,129,120,0.08)",
         color: hovered ? "#fff" : v.color,
         transition: "all 0.22s ease",
-      }}>
+        }}
+      >
         {term.icon}
       </span>
 
-      <span style={{ whiteSpace: "nowrap" }}>{term.label}</span>
+      <span className="whitespace-nowrap">{term.label}</span>
     </Link>
   );
 }
@@ -181,24 +171,35 @@ export default function SlidingTagsSection() {
         @keyframes tagsSlideRTL { 0% { transform: translateX(-50%) } 100% { transform: translateX(0) } }
         .tags-wrapper:hover .tags-row-ltr,
         .tags-wrapper:hover .tags-row-rtl { animation-play-state: paused; }
+
+        /* Keep desktop visuals identical; only scale down typography/padding on mobile. */
+        .sliding-tags-section { background: #ffffff; overflow: hidden; font-family: 'DM Sans','Inter',sans-serif; padding: 80px 0 100px; }
+        .sliding-tags-title { font-family: 'Syne','Avenir Next Arabic',sans-serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 700; color: #0d2e2c; letter-spacing: -0.03em; margin: 0 0 12px; line-height: 1.1; }
+        .sliding-tags-subtitle { font-size: 1.05rem; color: #6b9e9a; margin: 0; font-weight: 400; }
+
+        @media (max-width: 767px) {
+          .sliding-tags-section { padding: 60px 0 72px; }
+          .sliding-tags-title { font-size: clamp(1.7rem, 7vw, 2.3rem); margin-bottom: 10px; }
+          .sliding-tags-subtitle { font-size: 0.98rem; }
+        }
       `}</style>
 
-      <section style={{ background: "#ffffff", padding: "80px 0 100px", overflow: "hidden", fontFamily: "'DM Sans','Inter',sans-serif" }}>
+      <section className="sliding-tags-section">
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "56px", padding: "0 24px" }}>
-          <h2 style={{ fontFamily: "'Syne','Avenir Next Arabic',sans-serif", fontSize: "clamp(2rem,5vw,3.2rem)", fontWeight: 700, color: "#0d2e2c", letterSpacing: "-0.03em", margin: "0 0 12px", lineHeight: 1.1 }}>
+        <div className="text-center mb-[56px] px-[24px] max-md:mb-[42px] max-md:px-[16px]">
+          <h2 className="sliding-tags-title">
             Built on <span style={{ color: "#1e8178" }}>Intelligence</span>
           </h2>
-          <p style={{ fontSize: "1.05rem", color: "#6b9e9a", margin: 0, fontWeight: 400 }}>
+          <p className="sliding-tags-subtitle">
             Core technologies powering the next generation of systems
           </p>
         </div>
 
         {/* Rows */}
-        <div className="tags-wrapper" style={{ position: "relative", display: "flex", flexDirection: "column", gap: "14px" }}>
+        <div className="tags-wrapper relative flex flex-col gap-[14px] max-md:gap-[12px]">
           {/* Fade masks */}
-          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "140px", background: "linear-gradient(to right,#fff 40%,transparent)", pointerEvents: "none", zIndex: 2 }} />
-          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "140px", background: "linear-gradient(to left,#fff 40%,transparent)", pointerEvents: "none", zIndex: 2 }} />
+          <div className="absolute left-0 top-0 bottom-0 z-[2] w-[140px] pointer-events-none bg-[linear-gradient(to_right,#fff_40%,transparent)] max-md:w-[70px]" />
+          <div className="absolute right-0 top-0 bottom-0 z-[2] w-[140px] pointer-events-none bg-[linear-gradient(to_left,#fff_40%,transparent)] max-md:w-[70px]" />
 
           {rows.map((row, rowIndex) => {
             const isRTL = rowIndex % 2 === 1;
@@ -206,8 +207,7 @@ export default function SlidingTagsSection() {
             return (
               <div
                 key={rowIndex}
-                className={isRTL ? "tags-row-rtl" : "tags-row-ltr"}
-                style={{ display: "flex", width: "max-content", gap: "13px", padding: "3px 0" }}
+                className={`${isRTL ? "tags-row-rtl" : "tags-row-ltr"} flex w-max gap-[13px] py-[3px] max-md:gap-[10px] max-md:py-[2px]`}
               >
                 {repeated.map((term, i) => (
                   <Pill key={`${term.label}-${i}`} term={term} rowIndex={rowIndex} tagIndex={i % row.length} />
