@@ -14,6 +14,7 @@ export default defineConfig({
   out: "./drizzle",
   dialect: "sqlite",
   dbCredentials: {
-    url: process.env.DATABASE_URL?.trim() || defaultSqliteUrl(),
+    /** Use for `file:` while the app uses a remote Turso URL (see `src/db/index.ts`). */
+    url: process.env.DRIZZLE_DATABASE_URL?.trim() || process.env.DATABASE_URL?.trim() || defaultSqliteUrl(),
   },
 });

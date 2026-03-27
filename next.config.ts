@@ -17,9 +17,6 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   // Turbopack loader only active in dev (next dev --turbopack)
   ...(process.env.NODE_ENV !== 'production' && {
     turbopack: {
