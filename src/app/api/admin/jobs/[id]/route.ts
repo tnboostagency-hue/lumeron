@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { jobs } from "@/db/schema";
 import { requireAdminSession } from "@/lib/admin-api";
 
 export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
 
 function nowIso() {
   return new Date().toISOString();
@@ -51,6 +50,7 @@ export async function DELETE(_req: NextRequest, ctx: { params: Promise<{ id: str
   if (denied) return denied;
   const { id } = await ctx.params;
   try {
+    const db = getDb();
     await db.delete(jobs).where(eq(jobs.id, id));
     return NextResponse.json({ ok: true });
   } catch (e) {

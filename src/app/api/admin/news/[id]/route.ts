@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { newsArticles } from "@/db/schema";
 import { requireAdminSession } from "@/lib/admin-api";
 
 export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
 
 function nowIso() {
   return new Date().toISOString();
@@ -16,6 +15,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
   if (denied) return denied;
   const { id } = await ctx.params;
   try {
+    const db = getDb();
     const body = await req.json();
     const patch: Partial<{
       title: string;
@@ -47,6 +47,7 @@ export async function DELETE(_req: NextRequest, ctx: { params: Promise<{ id: str
   if (denied) return denied;
   const { id } = await ctx.params;
   try {
+    const db = getDb();
     await db.delete(newsArticles).where(eq(newsArticles.id, id));
     return NextResponse.json({ ok: true });
   } catch (e) {

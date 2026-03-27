@@ -1,17 +1,17 @@
 import { NextResponse } from "next/server";
 import { desc } from "drizzle-orm";
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { jobApplications } from "@/db/schema";
 import { requireAdminSession } from "@/lib/admin-api";
 
 export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
 
 /** List applications (CV stored server-side; omitted from payload size) */
 export async function GET() {
   const denied = await requireAdminSession();
   if (denied) return denied;
   try {
+    const db = getDb();
     const rows = await db
       .select()
       .from(jobApplications)

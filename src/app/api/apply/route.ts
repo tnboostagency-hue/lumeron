@@ -1,11 +1,10 @@
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { jobApplications } from "@/db/schema";
 
 export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
@@ -87,6 +86,7 @@ export async function POST(req: NextRequest) {
     const id = randomUUID();
     const createdAt = new Date().toISOString();
     try {
+      const db = getDb();
       await db.insert(jobApplications).values({
         id,
         jobId,
@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
     } catch (dbErr) {
       console.error("jobApplications insert", dbErr);
       return NextResponse.json(
-        { error: "Could not save application. Ensure the database is initialized (npm run db:push)." },
+        { error: "Could not save application. Ensure D1 is migrated (wrangler d1 execute … --file=./schema.sql)." },
         { status: 503 }
       );
     }

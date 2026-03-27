@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { desc } from "drizzle-orm";
 import { randomUUID } from "crypto";
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { jobs } from "@/db/schema";
 import { requireAdminSession } from "@/lib/admin-api";
 
 export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
 
 function nowIso() {
   return new Date().toISOString();
@@ -49,6 +48,7 @@ export async function POST(req: NextRequest) {
       createdAt: t,
       updatedAt: t,
     };
+    const db = getDb();
     await db.insert(jobs).values(row);
     return NextResponse.json({ job: row });
   } catch (e) {

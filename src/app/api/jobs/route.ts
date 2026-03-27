@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import { desc, eq } from "drizzle-orm";
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { jobs } from "@/db/schema";
 
 export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
 
 /** Public: list published jobs */
 export async function GET() {
   try {
+    const db = getDb();
     const rows = await db
       .select()
       .from(jobs)
