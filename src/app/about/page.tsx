@@ -42,8 +42,8 @@ const TIMELINE_STEPS = [
     year: "2025",
     titleEn: "Lumeron",
     titleAr: "لوميرون",
-    descEn: "Lumeron established as MASCO's technology arm — data centers, automation, AI, cybersecurity.",
-    descAr: "إطلاق لوميرون كذراع التكنولوجيا — مراكز بيانات، أتمتة، ذكاء اصطناعي، أمن سيبراني.",
+    descEn: "Lumeron established under MASCO Digital — data centers, automation, AI, cybersecurity.",
+    descAr: "إطلاق لوميرون ضمن MASCO Digital — مراكز بيانات، أتمتة، ذكاء اصطناعي، أمن سيبراني.",
   },
 ];
 
@@ -52,7 +52,7 @@ const LUMERON_TIMELINE = [
   {
     year: "2025",
     items: [
-      "Lumeron established as a MASCO Group subsidiary — the Group's dedicated technology company.",
+      "Lumeron established under MASCO Digital — the Group's digital technology company.",
       "Launched core service lines: Data Center Solutions, Industrial Automation & Robotics, AI Solutions, and Cybersecurity.",
       "Headquartered in Saudi Arabia, positioned to serve regional and national digital transformation needs.",
     ],
@@ -201,7 +201,7 @@ export default function AboutPage() {
   const stats = [
     { val: "60+", label: lang === "ar" ? "سنوات من النمو" : "Years of Growth", sub: lang === "ar" ? "من الطرق إلى التقنية" : "From roads to technology" },
     { val: "1960", label: lang === "ar" ? "التأسيس" : "Founded", sub: lang === "ar" ? "محمد علي السويلم" : "Mohammad Ali Alswailem" },
-    { val: "2025", label: lang === "ar" ? "انطلاق لوميرون" : "Lumeron Launch", sub: lang === "ar" ? "ذراع التكنولوجيا" : "Technology arm" },
+    { val: "2025", label: lang === "ar" ? "انطلاق لوميرون" : "Lumeron Launch", sub: "MASCO Digital" },
     { val: "2.2B+", label: lang === "ar" ? "عقود أرامكو" : "SAR Contracts", sub: lang === "ar" ? "2024" : "2024" },
   ];
 
@@ -342,8 +342,8 @@ export default function AboutPage() {
                 </h2>
                 <p className="text-[16px] text-[#64748b] leading-[1.8] max-w-2xl mx-auto font-light">
                   {lang === "ar"
-                    ? "بناءً على إرث ستة عقود من مجموعة ماسكو، أُسست لوميرون في 2025 كذراع التكنولوجيا المخصص للمجموعة — لتقديم حلول مراكز بيانات عالمية، أتمتة صناعية، ذكاء اصطناعي، وأمن سيبراني للمملكة وما وراءها."
-                    : "Building on six decades of MASCO Group's legacy, Lumeron was established in 2025 as the Group's dedicated technology arm — bringing world-class data center solutions, industrial automation, AI, and cybersecurity to the Kingdom and beyond."}
+                    ? "بناءً على إرث ستة عقود من مجموعة ماسكو، أُسست لوميرون في 2025 ضمن MASCO Digital — لتقديم حلول مراكز بيانات عالمية، أتمتة صناعية، ذكاء اصطناعي، وأمن سيبراني للمملكة وما وراءها."
+                    : "Building on six decades of MASCO Group's legacy, Lumeron was established in 2025 under MASCO Digital — bringing world-class data center solutions, industrial automation, AI, and cybersecurity to the Kingdom and beyond."}
                 </p>
               </div>
 

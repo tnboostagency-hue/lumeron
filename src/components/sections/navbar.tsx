@@ -53,16 +53,16 @@ const Navbar = () => {
           backdropFilter: isScrolled ? "blur(60px) saturate(1.8) brightness(1.05)" : "blur(40px) saturate(1.6)",
         }}
       >
-        <div className="container mx-auto px-6 md:px-8 flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center gap-3 group">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 flex items-center justify-between gap-3">
+          {/* Logo — may shrink on narrow phones so the menu button stays visible */}
+          <div className="min-w-0 flex-1">
+            <Link href="/" className="flex items-center gap-2 sm:gap-3 group min-w-0 max-w-full">
               {/* Main logo */}
               <motion.div
                 initial={{ opacity: 0, y: -8, scale: 0.98 }}
                 animate={logoEntered ? { opacity: 1, y: 0, scale: 1 } : {}}
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className="relative w-[140px] h-[36px] md:w-[160px] md:h-[40px] transition-all duration-300"
+                className="relative h-[32px] w-[100px] shrink-0 sm:h-[36px] sm:w-[130px] md:w-[160px] md:h-[40px] transition-all duration-300"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 737.38 158.61" className="w-full h-full object-contain">
                   <g id="Layer_2" data-name="Layer 2">
@@ -97,7 +97,7 @@ const Navbar = () => {
                 initial={{ opacity: 0, y: -8, scale: 0.98 }}
                 animate={logoEntered ? { opacity: 1, y: 0, scale: 1 } : {}}
                 transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-                className="relative h-[36px] w-[min(52vw,200px)] sm:w-[220px] md:h-[40px] md:w-[240px] lg:w-[260px]"
+                className="relative h-[32px] min-w-0 flex-1 max-w-[min(42vw,148px)] sm:max-w-[200px] sm:h-[36px] md:h-[40px] md:max-w-[240px] lg:max-w-[260px] md:w-[240px] lg:w-[260px]"
               >
                 <Image
                   src="/logos/header-secondary.svg"
@@ -173,8 +173,8 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Right side */}
-          <div className="flex items-center space-x-4 md:space-x-6">
+          {/* Right side — never shrink so hamburger stays on-screen */}
+          <div className="flex shrink-0 items-center gap-3 md:gap-6">
             <div className="hidden md:flex items-center text-[14px] font-semibold text-foreground">
               <button
                 onClick={() => setLanguage("en")}
@@ -200,10 +200,13 @@ const Navbar = () => {
 
             {/* Mobile menu button */}
             <button
+              type="button"
+              aria-label={isMobileMenuOpen ? (lang === "ar" ? "إغلاق القائمة" : "Close menu") : (lang === "ar" ? "فتح القائمة" : "Open menu")}
+              aria-expanded={isMobileMenuOpen}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 transition-colors text-foreground"
+              className="lg:hidden relative z-[110] flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#0f172a]/12 bg-white/85 text-[#0f172a] shadow-sm backdrop-blur-sm transition-colors hover:bg-white hover:border-[#229388]/35"
             >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {isMobileMenuOpen ? <X size={22} strokeWidth={2.25} /> : <Menu size={22} strokeWidth={2.25} />}
             </button>
           </div>
         </div>
@@ -308,7 +311,7 @@ const Navbar = () => {
               </button>
             </div>
             <p className="text-sm text-muted-foreground">
-              {lang === 'ar' ? "ذراع ماسكو التكنولوجي الذي يسرع رؤية 2030." : "MASCO's tech arm accelerating Saudi Vision 2030."}
+              {lang === 'ar' ? "MASCO Digital تسارع رؤية المملكة 2030." : "MASCO Digital accelerating Saudi Vision 2030."}
             </p>
           </div>
         </div>

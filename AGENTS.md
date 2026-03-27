@@ -1,5 +1,5 @@
 ## Project Summary
-A high-end, light-mode corporate website for Lumeron, MASCO Group's technology arm. The site is a clone of the Humain.com structure, adapted with Lumeron's branding, company profile content, and strategic pillars aligned with Saudi Vision 2030.
+A high-end, light-mode corporate website for Lumeron, MASCO Digital. The site is a clone of the Humain.com structure, adapted with Lumeron's branding, company profile content, and strategic pillars aligned with Saudi Vision 2030.
 
 ## Tech Stack
 - Framework: Next.js (App Router)

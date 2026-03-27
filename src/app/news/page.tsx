@@ -16,6 +16,25 @@ interface Article {
   content: string;
 }
 
+function formatArticleDate(iso: string): string {
+  if (!iso) return "";
+  const d = new Date(/^\d{4}-\d{2}-\d{2}$/.test(iso) ? `${iso}T12:00:00` : iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+
+function mapApiArticle(row: Record<string, unknown>): Article {
+  const rawDate = String(row.date ?? "");
+  return {
+    id: String(row.id),
+    title: String(row.title),
+    category: String(row.category),
+    date: formatArticleDate(rawDate),
+    excerpt: String(row.excerpt ?? ""),
+    content: String(row.content ?? ""),
+  };
+}
+
 const CATEGORY_COLORS: Record<string, string> = {
   "AI & Technology": "#229388",
   "Cybersecurity": "#1a7a70",
@@ -28,14 +47,35 @@ const CATEGORY_COLORS: Record<string, string> = {
 export default function NewsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadNote, setLoadNote] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [filter, setFilter] = useState("All");
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("lumeron_news");
-      if (stored) setArticles(JSON.parse(stored));
-    } catch {}
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      setLoadNote(null);
+      try {
+        const r = await fetch("/api/news", { cache: "no-store" });
+        const d = await r.json();
+        if (cancelled) return;
+        const list = Array.isArray(d.articles) ? d.articles.map((row: Record<string, unknown>) => mapApiArticle(row)) : [];
+        setArticles(list);
+        if (d.error && list.length === 0) setLoadNote(String(d.error));
+      } catch {
+        if (!cancelled) {
+          setArticles([]);
+          setLoadNote("Could not load articles.");
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const categories = ["All", ...Array.from(new Set(articles.map((a) => a.category)))];
@@ -71,7 +111,9 @@ export default function NewsPage() {
         <section className="py-24 bg-[#f8fafc] border-t border-[#e2e8f0]">
           <div className="container mx-auto px-6 md:px-8">
 
-            {articles.length === 0 ? (
+            {loading ? (
+              <div className="text-center py-32 text-[15px] text-[#64748b]">Loading news…</div>
+            ) : articles.length === 0 ? (
               /* Empty state */
               <div className="text-center py-32">
                 <div className="w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center" style={{ background: "rgba(34,147,136,0.08)" }}>
@@ -80,8 +122,9 @@ export default function NewsPage() {
                   </svg>
                 </div>
                 <h3 className="font-bold text-[24px] text-[#111827] mb-3" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif' }}>No articles yet</h3>
-                <p className="text-[15px] text-[#64748b] max-w-[320px] mx-auto leading-[1.7]">
-                  Articles published via the admin portal will appear here automatically.
+                <p className="text-[15px] text-[#64748b] max-w-[380px] mx-auto leading-[1.7]">
+                  Articles published in the admin portal appear here as soon as they are saved.{" "}
+                  {loadNote && <span className="block mt-2 text-[13px] text-[#94a3b8]">{loadNote}</span>}
                 </p>
               </div>
             ) : (

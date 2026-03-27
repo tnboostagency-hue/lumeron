@@ -6,7 +6,7 @@ import Footer from "@/components/sections/footer";
 const sections = [
   {
     title: "1. Who We Are",
-    content: `Lumeron Technology Company ("Lumeron", "we", "us", or "our") is the technology arm of MASCO Energy Group, registered and operating in the Kingdom of Saudi Arabia. We are committed to protecting your personal information in accordance with the Personal Data Protection Law (PDPL) of Saudi Arabia and other applicable regulations.`,
+    content: `Lumeron Technology Company ("Lumeron", "we", "us", or "our") is MASCO Digital, registered and operating in the Kingdom of Saudi Arabia as part of MASCO Energy Group. We are committed to protecting your personal information in accordance with the Personal Data Protection Law (PDPL) of Saudi Arabia and other applicable regulations.`,
   },
   {
     title: "2. Information We Collect",

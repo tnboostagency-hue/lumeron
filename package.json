@@ -8,6 +8,8 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
+        "db:push": "drizzle-kit push",
+        "db:studio": "drizzle-kit studio",
         "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
         "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
     },

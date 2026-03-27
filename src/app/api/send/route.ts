@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
             </div>
           </div>
           <div style="padding: 20px 40px; background: #f9fafb; text-align: center;">
-            <p style="color: #9ca3af; font-size: 12px; margin: 0;">Lumeron — MASCO Group Technology Arm · Al Khobar, KSA</p>
+            <p style="color: #9ca3af; font-size: 12px; margin: 0;">Lumeron — MASCO Digital · Al Khobar, KSA</p>
           </div>
         </div>
       `,

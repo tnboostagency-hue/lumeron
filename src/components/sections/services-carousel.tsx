@@ -575,8 +575,10 @@ function ServiceCanvas({ serviceId, color }: { serviceId: string; color: string 
       case "ai": animFn = buildAIScene(threeCol, scene); break;
       case "robotics": animFn = buildRoboticsScene(threeCol, scene); break;
       case "data-centers": animFn = buildDataCentersScene(threeCol, scene); break;
+      case "industrial":
       case "industrial-excellence": animFn = buildIndustrialScene(threeCol, scene); break;
       case "cybersecurity": animFn = buildCybersecScene(threeCol, scene); break;
+      case "smart-infra":
       case "managed-services": animFn = buildManagedScene(threeCol, scene); break;
       default: animFn = buildAIScene(threeCol, scene);
     }
@@ -628,321 +630,295 @@ function ServiceCanvas({ serviceId, color }: { serviceId: string; color: string 
   );
 }
 
+function canvasServiceId(id: string): string {
+  if (id === "smart-infra") return "managed-services";
+  return id;
+}
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function ServicesCarousel() {
   const { lang } = useLanguage();
   const [activeIdx, setActiveIdx] = useState(0);
-  const isAr = lang === 'ar';
-
-  // Refs
-  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const leftPanelRef = useRef<HTMLDivElement>(null);
-  const scrollZoneRef = useRef<HTMLDivElement>(null);
-
-  // ── Active index via scroll position (works with Lenis) ──────────────────
-  useEffect(() => {
-    const handleScroll = () => {
-      const mid = window.innerHeight * 0.5;
-      let closest = 0;
-      let closestDist = Infinity;
-      rowRefs.current.forEach((el, i) => {
-        if (!el) return;
-        const rect = el.getBoundingClientRect();
-        const dist = Math.abs(rect.top + rect.height / 2 - mid);
-        if (dist < closestDist) {
-          closestDist = dist;
-          closest = i;
-        }
-      });
-      setActiveIdx(closest);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // ── Left panel: fade in/out on service change ────────────────────────────
-  const [panelVisible, setPanelVisible] = useState(true);
-  const prevActiveIdxRef = useRef(activeIdx);
-
-  useEffect(() => {
-    if (prevActiveIdxRef.current === activeIdx) return;
-    prevActiveIdxRef.current = activeIdx;
-    setPanelVisible(false);
-    const timer = setTimeout(() => setPanelVisible(true), 200);
-    return () => clearTimeout(timer);
-  }, [activeIdx]);
+  const scrollDriverRef = useRef<HTMLDivElement>(null);
+  const isAr = lang === "ar";
 
   const active = SERVICES[activeIdx];
+  const total = SERVICES.length;
+
+  const scrollToServiceIndex = useCallback((i: number) => {
+    const el = scrollDriverRef.current;
+    if (!el || typeof window === "undefined") {
+      setActiveIdx(i);
+      return;
+    }
+    if (!window.matchMedia("(min-width: 1024px)").matches) {
+      setActiveIdx(i);
+      return;
+    }
+    const vh = window.innerHeight;
+    const totalScroll = el.offsetHeight - vh;
+    if (totalScroll <= 0) {
+      setActiveIdx(i);
+      return;
+    }
+    const n = SERVICES.length;
+    const p = n <= 1 ? 0 : i / (n - 1);
+    const rect = el.getBoundingClientRect();
+    const targetY = window.scrollY + rect.top + p * totalScroll;
+    window.scrollTo({ top: Math.max(0, targetY), behavior: "smooth" });
+    setActiveIdx(i);
+  }, []);
+
+  useEffect(() => {
+    const el = scrollDriverRef.current;
+    if (!el) return;
+
+    const onScroll = () => {
+      if (!window.matchMedia("(min-width: 1024px)").matches) return;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const totalScroll = el.offsetHeight - vh;
+      if (totalScroll <= 0) return;
+      const scrolled = Math.min(Math.max(0, -rect.top), totalScroll);
+      const p = scrolled / totalScroll;
+      const n = SERVICES.length;
+      const idx = Math.min(n - 1, Math.max(0, Math.floor(p * n + 1e-6)));
+      setActiveIdx((prev) => (prev === idx ? prev : idx));
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    onScroll();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  const ServicePills = ({
+    compact,
+    onSelect,
+  }: {
+    compact?: boolean;
+    onSelect?: (i: number) => void;
+  }) => (
+    <div
+      className={`flex gap-2 ${compact ? "flex-nowrap overflow-x-auto snap-x snap-mandatory pb-1 -mx-1 px-1" : `flex-wrap mb-8 lg:mb-10`} ${isAr ? (compact ? "" : "flex-row-reverse") : ""}`}
+      role="tablist"
+      aria-label={isAr ? "اختر الخدمة" : "Select a service"}
+    >
+      {SERVICES.map((s, i) => {
+        const selected = i === activeIdx;
+        return (
+          <button
+            key={s.id}
+            type="button"
+            role="tab"
+            aria-selected={selected}
+            onClick={() => (onSelect ? onSelect(i) : scrollToServiceIndex(i))}
+            className={`rounded-full border text-left transition-all duration-200 shrink-0 snap-start ${isAr ? "text-right" : ""} ${
+              compact ? "max-w-[200px] px-2.5 py-1.5" : "px-3.5 py-2 max-w-[min(100%,220px)] sm:max-w-[260px]"
+            }`}
+            style={{
+              borderColor: selected ? s.color : "#e5e7eb",
+              background: selected ? `${s.color}12` : "#fff",
+              boxShadow: selected ? `0 0 0 1px ${s.color}33` : undefined,
+            }}
+          >
+            <span
+              className="block text-[9px] uppercase tracking-[0.12em] font-bold"
+              style={{ color: selected ? s.color : "#9ca3af" }}
+            >
+              {s.number}
+            </span>
+            <span
+              className={`block font-semibold leading-snug mt-0.5 line-clamp-2 ${
+                compact ? "text-[10px]" : "text-[11px] sm:text-[12px]"
+              } ${selected ? "text-foreground" : "text-gray-500"}`}
+            >
+              {isAr ? s.titleAr : s.titleEn}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  const DetailBlock = ({
+    compact,
+    canvasHeight,
+  }: {
+    compact?: boolean;
+    canvasHeight: string;
+  }) => (
+    <div className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start ${compact ? "gap-3 pb-2" : "pb-10"}`}>
+      <div className={`lg:col-span-5 ${compact ? "" : ""}`}>
+        <div
+          className="relative w-full rounded-2xl overflow-hidden border border-[#229388]/10"
+          style={{
+            height: canvasHeight,
+            minHeight: compact ? "120px" : "220px",
+            background: "linear-gradient(135deg,#f7fffe 0%,#edfbf9 100%)",
+          }}
+        >
+          <ServiceCanvas serviceId={canvasServiceId(active.id)} color={active.color} />
+          <div
+            className={`absolute bottom-2 font-bold leading-none select-none pointer-events-none ${isAr ? "left-3" : "right-3"}`}
+            style={{ fontSize: compact ? "clamp(28px, 8vw, 40px)" : "clamp(36px, 10vw, 56px)", color: active.color, opacity: 0.1 }}
+          >
+            {active.number}
+          </div>
+        </div>
+      </div>
+
+      <div className="lg:col-span-7">
+        <div key={active.id} className={isAr ? "text-right" : ""} style={{ animation: "fadeSlideIn 0.4s ease forwards" }}>
+          <div className={`flex items-center gap-2 mb-1.5 ${isAr ? "flex-row-reverse" : ""}`}>
+            <div className="w-1.5 h-1.5 flex-shrink-0 rounded-full" style={{ background: active.color }} />
+            <span className="text-[10px] uppercase tracking-[0.18em] font-semibold" style={{ color: active.color }}>
+              {active.number} / {String(total).padStart(2, "0")}
+            </span>
+          </div>
+          <h3
+            className={`font-semibold text-foreground leading-[1.15] mb-2 ${
+              compact ? "text-[16px] sm:text-[17px]" : "text-[22px] sm:text-[26px] lg:text-[28px]"
+            }`}
+          >
+            {isAr ? active.titleAr : active.titleEn}
+          </h3>
+          <p
+            className={`leading-relaxed text-gray-500 mb-4 max-w-[540px] ${
+              compact ? "text-[11px] sm:text-[12px] line-clamp-4" : "text-[14px] sm:text-[15px] mb-6"
+            }`}
+          >
+            {isAr ? active.descAr : active.descEn}
+          </p>
+          <Link
+            href={active.link}
+            className={`group inline-flex items-center gap-2 text-white rounded-full font-medium transition-all duration-300 ${isAr ? "flex-row-reverse" : ""} ${
+              compact ? "px-4 py-2 text-[11px]" : "px-5 py-2.5 text-[13px] gap-2.5"
+            }`}
+            style={{
+              background: active.color,
+              boxShadow: `0 0 0 0 ${active.color}66`,
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.boxShadow = `0 0 18px 3px ${active.color}44`;
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.boxShadow = `0 0 0 0 ${active.color}66`;
+            }}
+          >
+            <span>{isAr ? "اكتشف المزيد" : "Explore Service"}</span>
+            <svg
+              className={`transition-transform duration-300 group-hover:translate-x-0.5 ${isAr ? "rotate-180" : ""} ${compact ? "w-3 h-3" : "w-4 h-4"}`}
+              viewBox="0 0 21 16"
+              fill="none"
+            >
+              <path d="M12.8078 0L20.202 7.39706V8.58824L12.8078 16L11.3554 14.5441L16.8277 9.05882H0V6.92647H16.8277L11.3554 1.44118L12.8078 0Z" fill="white" />
+            </svg>
+          </Link>
+        </div>
+
+        {compact ? (
+          <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory mt-3 pb-1 -mx-1 px-1">
+            {active.steps.map((step, stIdx) => (
+              <div key={stIdx} className="w-[min(88vw,260px)] shrink-0 snap-start">
+                <CompactStepCard step={step} isAr={isAr} accent={active.color} compact />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-8">
+            {active.steps.map((step, stIdx) => (
+              <CompactStepCard key={stIdx} step={step} isAr={isAr} accent={active.color} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 
   return (
-    <section
-      id="services"
-      ref={sectionRef}
-      className="bg-white relative z-[2] pb-32 lg:pb-40"
-      dir={isAr ? 'rtl' : 'ltr'}
-    >
-      {/* ── Section Header (stack above sticky left panel) ──────── */}
-      <div className="container mx-auto px-5 sm:px-8 max-w-[1440px] pt-[80px] pb-[60px] lg:pt-[120px] lg:pb-[80px] relative z-20">
-        <div className={`flex items-center gap-3 mb-4 ${isAr ? 'flex-row-reverse' : ''}`}>
+    <section id="services" className="bg-white relative z-[2] pb-12 lg:pb-28" dir={isAr ? "rtl" : "ltr"}>
+      <div className="container mx-auto px-5 sm:px-8 max-w-[1440px] pt-10 pb-4 lg:pt-20 lg:pb-12 relative z-20">
+        <div className={`flex items-center gap-3 mb-2 lg:mb-3 ${isAr ? "flex-row-reverse" : ""}`}>
           <div className="w-2 h-2 bg-[#229388] flex-shrink-0" />
-          <span className="uppercase tracking-[0.18em] text-[11px] text-[#229388] font-semibold">
-            {isAr ? 'خدماتنا وقدراتنا' : 'Our Services & Capabilities'}
+          <span className="uppercase tracking-[0.18em] text-[10px] sm:text-[11px] text-[#229388] font-semibold">
+            {isAr ? "خدماتنا وقدراتنا" : "Our Services & Capabilities"}
           </span>
         </div>
-        <div className="w-full h-px bg-gradient-to-r from-[#229388] via-[#3ec8ba] to-transparent mb-5 opacity-60" />
-        <h2 className={`text-[32px] sm:text-[40px] md:text-[52px] lg:text-[60px] font-semibold leading-[1.05] tracking-[-0.02em] text-foreground max-w-[800px] ${isAr ? 'text-right' : ''}`}>
+        <div className="w-full h-px bg-gradient-to-r from-[#229388] via-[#3ec8ba] to-transparent mb-3 lg:mb-4 opacity-60" />
+        <h2
+          className={`text-[22px] sm:text-[28px] md:text-[36px] lg:text-[52px] font-semibold leading-[1.08] tracking-[-0.02em] text-foreground max-w-[800px] ${isAr ? "text-right" : ""}`}
+        >
           {isAr ? (
-            <>تقنيات <span className="text-[#229388]">تُشكّل</span> المستقبل</>
+            <>
+              تقنيات <span className="text-[#229388]">تُشكّل</span> المستقبل
+            </>
           ) : (
-            <>Technologies that <span className="text-[#229388]">shape</span> the future</>
+            <>
+              Technologies that <span className="text-[#229388]">shape</span> the future
+            </>
           )}
         </h2>
-        <p className={`mt-4 text-[16px] sm:text-[18px] text-gray-500 max-w-[680px] leading-[1.65] ${isAr ? 'text-right' : ''}`}>
+        <p className={`mt-2 lg:mt-3 text-[13px] sm:text-[15px] lg:text-[16px] text-gray-500 max-w-[640px] leading-[1.55] lg:leading-[1.6] ${isAr ? "text-right" : ""}`}>
           {isAr
-            ? 'تسريع الاقتصاد الرقمي من خلال بنية تحتية مرنة وخدمات مدارة وابتكارات متطورة.'
-            : 'Accelerating the digital economy through resilient infrastructure, managed services, and cutting-edge innovations.'}
+            ? "تسريع الاقتصاد الرقمي من خلال بنية تحتية مرنة وخدمات مدارة وابتكارات متطورة."
+            : "Accelerating the digital economy through resilient infrastructure, managed services, and cutting-edge innovations."}
         </p>
       </div>
 
-      {/* ── Timeline Split Layout — columns synced; left sticky + vertically centred ───────── */}
-      <div className="container mx-auto px-5 sm:px-8 max-w-[1440px]">
-        <div ref={scrollZoneRef} className="flex gap-12 xl:gap-20 flex-col lg:flex-row lg:items-stretch overflow-visible">
+      {/* Mobile & tablet: one compact scroll area */}
+      <div className="lg:hidden container mx-auto px-5 sm:px-8 max-w-[1440px]">
+        <div className="rounded-2xl border border-[#e2e8f0] bg-[#fafcfb] p-3 sm:p-4 shadow-sm">
+          <ServicePills compact onSelect={(i) => setActiveIdx(i)} />
+          <DetailBlock compact canvasHeight="clamp(120px, 32vw, 160px)" />
+          <Link
+            href="/services"
+            className={`mt-3 inline-flex items-center gap-2 border-2 text-foreground rounded-full px-4 py-2 text-[11px] font-medium transition-all duration-300 hover:text-white ${isAr ? "flex-row-reverse" : ""}`}
+            style={{ borderColor: "#229388" }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.background = "#229388";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.background = "transparent";
+            }}
+          >
+            <span>{isAr ? "عرض جميع الخدمات" : "View All Services"}</span>
+            <svg className={`w-3 h-3 ${isAr ? "rotate-180" : ""}`} viewBox="0 0 21 16" fill="none">
+              <path d="M12.8078 0L20.202 7.39706V8.58824L12.8078 16L11.3554 14.5441L16.8277 9.05882H0V6.92647H16.8277L11.3554 1.44118L12.8078 0Z" fill="currentColor" />
+            </svg>
+          </Link>
+        </div>
+      </div>
 
-          {/* ══════════════════════════════════════════════════════
-              LEFT PANEL — wrapper for layout; inner div is sticky + centred
-          ══════════════════════════════════════════════════════ */}
-          <div className="hidden lg:block lg:w-[42%] xl:w-[44%] lg:flex-shrink-0">
-            <div
-              ref={leftPanelRef}
-              className="sticky z-10"
-              style={{
-                top: 0,
-                opacity: panelVisible ? 1 : 0,
-                transition: 'opacity 0.3s ease',
-                visibility: 'visible',
-              }}
-            >
-            {/* 3-D Canvas */}
-            <div
-              className="relative w-full mb-8 rounded-2xl overflow-hidden"
-              style={{ height: '340px', background: 'linear-gradient(135deg,#f7fffe 0%,#edfbf9 100%)' }}
-            >
-              <ServiceCanvas serviceId={active.id} color={active.color} />
-
-              {/* Number watermark */}
-              <div
-                className={`absolute bottom-4 font-bold leading-none select-none pointer-events-none ${isAr ? 'left-6' : 'right-6'}`}
-                style={{ fontSize: '72px', color: active.color, opacity: 0.12 }}
-              >
-                {active.number}
-              </div>
-
-              {/* Service nav dots — inside canvas bottom bar */}
-              <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2 pointer-events-auto">
-                {SERVICES.map((s, i) => (
-                  <button
-                    key={s.id}
-                    onClick={() => {
-                      setActiveIdx(i);
-                      rowRefs.current[i]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }}
-                    className="transition-all duration-300"
-                    aria-label={s.titleEn}
-                  >
-                    <div
-                      className="rounded-full transition-all duration-300"
-                      style={{
-                        width: activeIdx === i ? '20px' : '6px',
-                        height: '6px',
-                        background: activeIdx === i ? active.color : '#d1d5db',
-                      }}
-                    />
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Service info — transitions smoothly as activeIdx changes, synced with right column */}
-            <div
-              key={active.id}
-              className={`animate-fadeIn ${isAr ? 'text-right' : ''}`}
-              style={{ animation: 'fadeSlideIn 0.45s ease forwards' }}
-            >
-              {/* Eyebrow */}
-              <div className={`flex items-center gap-2.5 mb-3 ${isAr ? 'flex-row-reverse' : ''}`}>
-                <div className="w-2 h-2 flex-shrink-0" style={{ background: active.color }} />
-                <span
-                  className="text-[11px] uppercase tracking-[0.18em] font-semibold"
-                  style={{ color: active.color }}
-                >
-                  {active.number} / 06
-                </span>
-              </div>
-
-              {/* Title */}
-              <h3 className="text-[28px] lg:text-[34px] xl:text-[38px] font-semibold text-foreground leading-[1.1] mb-4">
-                {isAr ? active.titleAr : active.titleEn}
-              </h3>
-
-              {/* Desc */}
-              <p className="text-[15px] leading-[1.7] text-gray-500 mb-8 max-w-[440px]">
-                {isAr ? active.descAr : active.descEn}
-              </p>
-
-              {/* CTA */}
-              <Link
-                href={active.link}
-                className="group inline-flex items-center gap-3 text-white rounded-full px-7 py-3 text-[14px] font-medium transition-all duration-300"
-                style={{
-                  background: active.color,
-                  boxShadow: `0 0 0 0 ${active.color}66`,
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.boxShadow = `0 0 22px 4px ${active.color}44`;
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.boxShadow = `0 0 0 0 ${active.color}66`;
-                }}
-              >
-                <span>{isAr ? 'اكتشف المزيد' : 'Explore Service'}</span>
-                <svg
-                  className={`w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 ${isAr ? 'rotate-180' : ''}`}
-                  viewBox="0 0 21 16" fill="none"
-                >
-                  <path d="M12.8078 0L20.202 7.39706V8.58824L12.8078 16L11.3554 14.5441L16.8277 9.05882H0V6.92647H16.8277L11.3554 1.44118L12.8078 0Z" fill="white" />
-                </svg>
-              </Link>
-            </div>
-            </div>
-          </div>
-
-          {/* ══════════════════════════════════════════════════════
-              CENTER SPINE (desktop only)
-          ══════════════════════════════════════════════════════ */}
-          <div className="hidden lg:flex flex-col items-center flex-shrink-0 w-px self-stretch relative" style={{ minHeight: '100%' }}>
-            <div className="absolute inset-0 w-full" style={{ background: '#e5e7eb' }} />
-            {/* Filled portion */}
-            <div
-              className="absolute top-0 left-0 w-full transition-all duration-500"
-              style={{
-                height: `${(activeIdx / (SERVICES.length - 1)) * 100}%`,
-                background: `linear-gradient(to bottom, #229388, #3ec8ba)`,
-              }}
-            />
-            {/* Dot markers evenly spaced */}
-            <div className="absolute inset-0 flex flex-col justify-between py-12">
-              {SERVICES.map((s, i) => (
-                <button
-                  key={s.id}
-                  onClick={() => {
-                    setActiveIdx(i);
-                    rowRefs.current[i]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  }}
-                  className="relative flex items-center justify-center w-5 h-5 -ml-2"
-                  aria-label={s.titleEn}
-                >
-                  <div
-                    className="rounded-full border-2 transition-all duration-300"
-                    style={{
-                      width: activeIdx === i ? '14px' : '8px',
-                      height: activeIdx === i ? '14px' : '8px',
-                      background: activeIdx === i ? active.color : '#fff',
-                      borderColor: activeIdx === i ? active.color : '#d1d5db',
-                    }}
-                  />
-                  {/* Label on hover */}
-                  <span className={`absolute ${isAr ? 'right-6' : 'left-6'} text-[11px] font-semibold whitespace-nowrap transition-all duration-200 ${activeIdx === i ? 'opacity-100' : 'opacity-0'}`}
-                    style={{ color: active.color }}>
-                    {s.number}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* ══════════════════════════════════════════════════════
-              RIGHT PANEL — scrollable service blocks (synced with left via activeIdx)
-          ══════════════════════════════════════════════════════ */}
-          <div className="w-full lg:w-[52%] xl:w-[50%] pb-24 overflow-visible">
-
-            {/* Mobile: show 3D canvas + info inline above each block */}
-            {SERVICES.map((service, sIdx) => (
-              <div
-                key={service.id}
-                ref={el => { rowRefs.current[sIdx] = el; }}
-                className="mb-24 lg:mb-32"
-              >
-                {/* ── Mobile canvas (hidden on desktop) ── */}
-                <div className="lg:hidden mb-6">
-                  <div
-                    className="w-full rounded-2xl overflow-hidden mb-5"
-                    style={{ height: '240px', background: 'linear-gradient(135deg,#f7fffe 0%,#edfbf9 100%)' }}
-                  >
-                    <ServiceCanvas serviceId={service.id} color={service.color} />
-                  </div>
-                  <p className="text-[14px] leading-[1.7] text-gray-500">
-                    {isAr ? service.descAr : service.descEn}
-                  </p>
-                </div>
-
-                {/* ── Service header ── */}
-                <div className={`flex items-center gap-4 mb-8 ${isAr ? 'flex-row-reverse' : ''}`}>
-                  <span
-                    className="text-[11px] uppercase tracking-[0.18em] font-semibold transition-colors duration-300"
-                    style={{ color: sIdx === activeIdx ? service.color : '#d1d5db' }}
-                  >
-                    {service.number}
-                  </span>
-                  <div
-                    className="flex-1 h-px transition-all duration-500"
-                    style={{
-                      background: sIdx === activeIdx
-                        ? `linear-gradient(to right, ${service.color}, #3ec8ba)`
-                        : '#f3f4f6',
-                    }}
-                  />
-                  <h4
-                    className="text-[18px] lg:text-[22px] xl:text-[24px] font-semibold transition-colors duration-300"
-                    style={{ color: sIdx === activeIdx ? 'var(--foreground)' : '#d1d5db' }}
-                  >
-                    {isAr ? service.titleAr : service.titleEn}
-                  </h4>
-                </div>
-
-                {/* ── Step cards ── */}
-                <div className="flex flex-col gap-7 pb-4 overflow-visible">
-                  {service.steps.map((step, stIdx) => (
-                    <StepCard
-                      key={stIdx}
-                      step={step}
-                      isAr={isAr}
-                      isActive={sIdx === activeIdx}
-                      accent={service.color}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-
-            {/* View all CTA */}
+      {/* Desktop: scroll advances active service (sticky viewport) */}
+      <div ref={scrollDriverRef} className="hidden lg:block relative" style={{ height: `${SERVICES.length * 100}vh` }}>
+        <div className="sticky top-0 min-h-[100dvh] flex flex-col justify-center py-6 box-border">
+          <div className="container mx-auto px-5 sm:px-8 max-w-[1440px] w-full">
+            <p className={`text-[11px] text-[#64748b] mb-4 max-w-xl ${isAr ? "text-right ml-auto" : ""}`}>
+              {isAr ? "مرر لأسفل للتنقل بين الخدمات." : "Scroll down to move through each service."}
+            </p>
+            <ServicePills />
+            <DetailBlock canvasHeight="min(42vw, 280px)" />
             <Link
               href="/services"
-              className={`group inline-flex items-center gap-3 border-2 text-foreground rounded-full px-8 py-3.5 text-[14px] font-medium transition-all duration-300 hover:text-white ${isAr ? 'flex-row-reverse' : ''}`}
-              style={{ borderColor: '#229388' }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLElement).style.background = '#229388';
+              className={`group mt-6 inline-flex items-center gap-3 border-2 text-foreground rounded-full px-6 py-3 text-[13px] font-medium transition-all duration-300 hover:text-white ${isAr ? "flex-row-reverse" : ""}`}
+              style={{ borderColor: "#229388" }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "#229388";
               }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLElement).style.background = 'transparent';
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "transparent";
               }}
             >
-              <span>{isAr ? 'عرض جميع الخدمات' : 'View All Services'}</span>
+              <span>{isAr ? "عرض جميع الخدمات" : "View All Services"}</span>
               <svg
-                className={`w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 ${isAr ? 'rotate-180' : ''}`}
-                viewBox="0 0 21 16" fill="none"
+                className={`w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 ${isAr ? "rotate-180" : ""}`}
+                viewBox="0 0 21 16"
+                fill="none"
               >
                 <path d="M12.8078 0L20.202 7.39706V8.58824L12.8078 16L11.3554 14.5441L16.8277 9.05882H0V6.92647H16.8277L11.3554 1.44118L12.8078 0Z" fill="currentColor" />
               </svg>
@@ -951,10 +927,9 @@ export default function ServicesCarousel() {
         </div>
       </div>
 
-      {/* Keyframe injection */}
       <style>{`
         @keyframes fadeSlideIn {
-          from { opacity: 0; transform: translateY(12px); }
+          from { opacity: 0; transform: translateY(8px); }
           to   { opacity: 1; transform: translateY(0); }
         }
       `}</style>
@@ -962,68 +937,71 @@ export default function ServicesCarousel() {
   );
 }
 
-// ─── Step Card ────────────────────────────────────────────────────────────────
+// ─── Compact capability card (grid; no scroll-linked motion) ─────────────────
 
-function StepCard({
+function CompactStepCard({
   step,
   isAr,
-  isActive,
   accent,
+  compact,
 }: {
   step: ServiceItem['steps'][0];
   isAr: boolean;
-  isActive: boolean;
   accent: string;
+  compact?: boolean;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) setVisible(true); },
-      { threshold: 0.25 }
+  if (compact) {
+    return (
+      <div
+        className={`flex min-h-0 flex-col gap-1.5 rounded-lg border border-black/[0.06] bg-white/80 p-2.5 shadow-sm ${isAr ? 'text-right' : ''}`}
+      >
+        <div className={`flex items-center gap-1.5 ${isAr ? 'flex-row-reverse' : ''}`}>
+          <div
+            className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full"
+            style={{
+              background: `${accent}14`,
+              border: `1.5px solid ${accent}`,
+            }}
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3" style={{ color: accent }}>
+              <path d={step.iconPath} />
+            </svg>
+          </div>
+        </div>
+        <h5 className="text-[11px] font-semibold leading-tight text-foreground line-clamp-2">
+          {isAr ? step.headingAr : step.headingEn}
+        </h5>
+        <p className="text-[10px] leading-snug text-gray-500 line-clamp-3">
+          {isAr ? step.bodyAr : step.bodyEn}
+        </p>
+      </div>
     );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
+  }
   return (
     <div
-      ref={ref}
-      className={`flex gap-5 transition-all duration-500 ${isAr ? 'flex-row-reverse text-right' : ''} ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
+      className={`flex flex-col gap-3 rounded-xl border border-black/[0.06] bg-white/60 p-4 shadow-[0_2px_12px_rgba(30,129,120,0.06)] ${isAr ? 'text-right' : ''}`}
     >
-      {/* Icon circle */}
-      <div className="flex-shrink-0 mt-0.5">
+      <div
+        className={`flex items-center gap-2.5 ${isAr ? 'flex-row-reverse' : ''}`}
+      >
         <div
-          className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-400"
+          className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full"
           style={{
-            background: isActive ? `${accent}14` : '#f9fafb',
-            border: `2px solid ${isActive ? accent : '#e5e7eb'}`,
+            background: `${accent}14`,
+            border: `2px solid ${accent}`,
           }}
         >
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-[18px] h-[18px]" style={{ color: isActive ? accent : '#c4c4c4' }}>
+          <svg viewBox="0 0 24 24" fill="currentColor" className="h-[16px] w-[16px]" style={{ color: accent }}>
             <path d={step.iconPath} />
           </svg>
         </div>
       </div>
-
-      {/* Text */}
-      <div className="flex-1 pt-1">
-        <h5
-          className="text-[15px] font-semibold mb-1.5 transition-colors duration-300"
-          style={{ color: isActive ? 'var(--foreground)' : '#c4c4c4' }}
-        >
-          {isAr ? step.headingAr : step.headingEn}
-        </h5>
-        <p
-          className="text-[13.5px] leading-[1.72] transition-colors duration-300 overflow-visible"
-          style={{ color: isActive ? '#6b7280' : '#d4d4d4' }}
-        >
-          {isAr ? step.bodyAr : step.bodyEn}
-        </p>
-      </div>
+      <h5 className="text-[13px] font-semibold leading-snug text-foreground">
+        {isAr ? step.headingAr : step.headingEn}
+      </h5>
+      <p className="text-[12px] leading-[1.65] text-gray-500">
+        {isAr ? step.bodyAr : step.bodyEn}
+      </p>
     </div>
   );
 }

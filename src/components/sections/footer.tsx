@@ -108,7 +108,7 @@ const Footer = () => {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-[13px] text-white/40">
             <MapPin size={13} className="text-[#3ec8ba] flex-shrink-0" />
-            <span>{t.footer.location} — MASCO Group</span>
+            <span>{t.footer.location}</span>
           </div>
           <p className="text-[13px] text-white/40">
             © {currentYear} {t.hero.title} • MASCO ENERGY. {lang === 'ar' ? "جميع الحقوق محفوظة." : "All rights reserved."}

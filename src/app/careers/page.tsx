@@ -16,6 +16,17 @@ interface Job {
   description: string;
 }
 
+function mapApiJob(row: Record<string, unknown>): Job {
+  return {
+    id: String(row.id),
+    title: String(row.title),
+    department: String(row.department),
+    location: String(row.location),
+    type: String(row.type),
+    description: String(row.description),
+  };
+}
+
 const DEFAULT_JOBS: Job[] = [
   {
     id: "default-1",
@@ -45,48 +56,83 @@ const DEFAULT_JOBS: Job[] = [
 
 export default function CareersPage() {
   const [modalOpen, setModalOpen] = useState(false);
-  const [jobs, setJobs] = useState<Job[]>(DEFAULT_JOBS);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobsLoading, setJobsLoading] = useState(true);
   const [openJobId, setOpenJobId] = useState<string | null>(null);
   const [applied, setApplied] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", linkedin: "", position: "", cover: "", cv: "" });
+  const [applyError, setApplyError] = useState<string | null>(null);
+  const [form, setForm] = useState({ name: "", email: "", phone: "", linkedin: "", position: "", cover: "" });
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("lumeron_jobs");
-      if (stored) {
-        const parsed: Job[] = JSON.parse(stored);
-        if (parsed.length > 0) setJobs([...DEFAULT_JOBS, ...parsed]);
+    let cancelled = false;
+    (async () => {
+      setJobsLoading(true);
+      try {
+        const r = await fetch("/api/jobs", { cache: "no-store" });
+        const d = await r.json();
+        if (cancelled) return;
+        const list = Array.isArray(d.jobs) ? d.jobs.map((row: Record<string, unknown>) => mapApiJob(row)) : [];
+        if (list.length > 0) {
+          setJobs(list);
+          return;
+        }
+        if (d.error) {
+          setJobs(DEFAULT_JOBS);
+        } else {
+          setJobs([]);
+        }
+      } catch {
+        if (!cancelled) setJobs(DEFAULT_JOBS);
+      } finally {
+        if (!cancelled) setJobsLoading(false);
       }
-    } catch {}
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const handleApply = (jobId: string, jobTitle: string) => {
     setOpenJobId(openJobId === jobId ? null : jobId);
     setForm((f) => ({ ...f, position: jobTitle }));
     setApplied(null);
+    setApplyError(null);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      await fetch("/api/apply", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-          linkedin: form.linkedin,
-          position: form.position,
-          cover: form.cover,
-        }),
-      });
-    } catch {
-      // fall through to success state
+    setApplyError(null);
+    const formEl = e.currentTarget;
+    const fileInput = formEl.querySelector<HTMLInputElement>('input[name="cv"]');
+    const file = fileInput?.files?.[0];
+    if (!file) {
+      setApplyError("Attach your CV (PDF, DOC, or DOCX).");
+      return;
     }
-    setApplied(openJobId);
-    setOpenJobId(null);
-    setForm({ name: "", email: "", phone: "", linkedin: "", position: "", cover: "", cv: "" });
+    const fd = new FormData();
+    fd.append("name", form.name.trim());
+    fd.append("email", form.email.trim());
+    fd.append("phone", form.phone.trim());
+    fd.append("linkedin", form.linkedin.trim());
+    fd.append("position", form.position.trim());
+    fd.append("cover", form.cover);
+    if (openJobId) fd.append("jobId", openJobId);
+    fd.append("cv", file);
+
+    try {
+      const res = await fetch("/api/apply", { method: "POST", body: fd });
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) {
+        setApplyError(data.error ?? "Could not submit. Try again or contact us.");
+        return;
+      }
+      setApplied(openJobId);
+      setOpenJobId(null);
+      setForm({ name: "", email: "", phone: "", linkedin: "", position: "", cover: "" });
+      fileInput.value = "";
+    } catch {
+      setApplyError("Network error. Check your connection and try again.");
+    }
   };
 
   return (
@@ -147,7 +193,22 @@ export default function CareersPage() {
             </div>
 
             <div className="flex flex-col gap-5 max-w-4xl">
-              {jobs.map((job) => (
+              {jobsLoading && (
+                <div className="rounded-2xl border border-[#e2e8f0] bg-white px-7 py-12 text-center text-[14px] text-[#64748b]">
+                  Loading open positions…
+                </div>
+              )}
+              {!jobsLoading && jobs.length === 0 && (
+                <div className="rounded-2xl border border-[#e2e8f0] bg-white px-7 py-14 text-center max-w-xl">
+                  <p className="font-semibold text-[#111827] text-[17px] mb-2" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif' }}>
+                    No open positions at the moment
+                  </p>
+                  <p className="text-[14px] text-[#64748b] leading-relaxed">
+                    Roles you publish in the admin portal (as visible) show up here automatically. Check back soon or use Get in Touch below.
+                  </p>
+                </div>
+              )}
+              {!jobsLoading && jobs.map((job) => (
                 <div key={job.id} className="bg-white rounded-2xl border border-[#e2e8f0] overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
                   {/* Job header */}
                   <div className="p-7">
@@ -176,6 +237,11 @@ export default function CareersPage() {
                   {openJobId === job.id && (
                     <form onSubmit={handleSubmit} className="border-t border-[#e2e8f0] p-7 bg-[#fafcff]">
                       <h4 className="font-semibold text-[16px] text-[#111827] mb-6" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif' }}>Apply for: {job.title}</h4>
+                      {applyError && (
+                        <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-800" role="alert">
+                          {applyError}
+                        </p>
+                      )}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                         {[
                           { id: "name", label: "Full Name *", type: "text", key: "name" as const },
@@ -186,6 +252,8 @@ export default function CareersPage() {
                           <div key={f.id}>
                             <label className="block text-[12px] font-semibold text-[#374151] mb-1.5 uppercase tracking-[0.06em]">{f.label}</label>
                             <input
+                              id={f.id}
+                              name={f.key}
                               type={f.type}
                               required={f.label.includes("*")}
                               value={form[f.key]}
@@ -198,6 +266,7 @@ export default function CareersPage() {
                       <div className="mb-4">
                         <label className="block text-[12px] font-semibold text-[#374151] mb-1.5 uppercase tracking-[0.06em]">Cover Letter</label>
                         <textarea
+                          name="cover"
                           rows={4}
                           value={form.cover}
                           onChange={(e) => setForm((v) => ({ ...v, cover: e.target.value }))}
@@ -208,12 +277,14 @@ export default function CareersPage() {
                       <div className="mb-6">
                         <label className="block text-[12px] font-semibold text-[#374151] mb-1.5 uppercase tracking-[0.06em]">Upload CV / Resume *</label>
                         <input
+                          key={`cv-${job.id}-${openJobId}`}
+                          name="cv"
                           type="file"
-                          accept=".pdf,.doc,.docx"
+                          accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                           required
                           className="w-full text-[13px] text-[#64748b] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[12px] file:font-semibold file:bg-[#229388]/10 file:text-[#229388] hover:file:bg-[#229388]/20 transition-all cursor-pointer"
                         />
-                        <p className="text-[11px] text-[#94a3b8] mt-1.5">PDF, DOC or DOCX — max 10MB</p>
+                        <p className="text-[11px] text-[#94a3b8] mt-1.5">PDF, DOC or DOCX — max 8MB</p>
                       </div>
                       <button type="submit" className="flex items-center gap-2 btn-primary text-[14px] px-8 py-3.5">
                         <Send size={15} /> Submit Application
