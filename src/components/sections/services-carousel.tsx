@@ -644,6 +644,20 @@ export default function ServicesCarousel() {
   // ── Active index via scroll position (works with Lenis) ──────────────────
   useEffect(() => {
     const handleScroll = () => {
+      const section = sectionRef.current;
+      if (section) {
+        const sectionRect = section.getBoundingClientRect();
+        // Stabilize edge states so last item doesn't snap when next section appears.
+        if (sectionRect.bottom <= window.innerHeight * 0.9) {
+          setActiveIdx(SERVICES.length - 1);
+          return;
+        }
+        if (sectionRect.top >= window.innerHeight * 0.45) {
+          setActiveIdx(0);
+          return;
+        }
+      }
+
       const mid = window.innerHeight * 0.5;
       let closest = 0;
       let closestDist = Infinity;
@@ -684,6 +698,18 @@ export default function ServicesCarousel() {
       className="bg-white relative z-[2] pb-32 lg:pb-40"
       dir={isAr ? 'rtl' : 'ltr'}
     >
+      {/* Soft white fades so sticky transitions do not feel clipped at bounds */}
+      <div
+        className="pointer-events-none absolute left-0 right-0 top-0 h-24 lg:h-32 z-[18]"
+        style={{ background: "linear-gradient(to bottom, rgba(255,255,255,1) 18%, rgba(255,255,255,0) 100%)" }}
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute left-0 right-0 bottom-0 h-24 lg:h-32 z-[18]"
+        style={{ background: "linear-gradient(to top, rgba(255,255,255,1) 18%, rgba(255,255,255,0) 100%)" }}
+        aria-hidden
+      />
+
       {/* ── Section Header (stack above sticky left panel) ──────── */}
       <div className="container mx-auto px-5 sm:px-8 max-w-[1440px] pt-[80px] pb-[60px] lg:pt-[120px] lg:pb-[80px] relative z-20">
         <div className={`flex items-center gap-3 mb-4 ${isAr ? 'flex-row-reverse' : ''}`}>
@@ -714,14 +740,16 @@ export default function ServicesCarousel() {
           {/* ══════════════════════════════════════════════════════
               LEFT PANEL — wrapper for layout; inner div is sticky + centred
           ══════════════════════════════════════════════════════ */}
-          <div className="hidden lg:block lg:w-[42%] xl:w-[44%] lg:flex-shrink-0">
+          <div className="hidden lg:block lg:w-[42%] xl:w-[44%] lg:flex-shrink-0 lg:pt-[280px] lg:pb-[60px]">
             <div
               ref={leftPanelRef}
-              className="sticky z-10 mx-auto w-full"
+              className="z-10 w-full"
               style={{
-                top: '124px',
+                position: "sticky",
+                top: "50%",
+                transform: panelVisible ? "translateY(-50%)" : "translateY(calc(-50% + 10px))",
                 opacity: panelVisible ? 1 : 0,
-                transition: 'opacity 0.3s ease',
+                transition: "opacity 0.35s ease, transform 0.35s ease",
                 visibility: 'visible',
               }}
             >
