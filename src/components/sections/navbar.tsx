@@ -92,6 +92,45 @@ const Navbar = () => {
                 </svg>
               </motion.div>
 
+              {/* Secondary mark on mobile/tablet: stays next to main logo */}
+              <motion.div
+                initial={{ opacity: 0, y: -6 }}
+                animate={logoEntered ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.45, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+                className="w-px h-8 bg-[#e2e8f0]/90 self-center shrink-0 lg:hidden"
+                aria-hidden
+              />
+              <motion.div
+                initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                animate={logoEntered ? { opacity: 1, y: 0, scale: 1 } : {}}
+                transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+                className="relative h-[28px] w-[120px] sm:h-[32px] sm:w-[150px] md:h-[34px] md:w-[170px] shrink-0 lg:hidden cursor-pointer"
+                role="link"
+                tabIndex={0}
+                aria-label={lang === "ar" ? "عام الذكاء الاصطناعي - يفتح في تبويب جديد" : "AI year page (opens in new tab)"}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.open("https://sdaia.gov.sa/ar/MediaCenter/Pages/ai-year.aspx", "_blank", "noopener,noreferrer");
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.open("https://sdaia.gov.sa/ar/MediaCenter/Pages/ai-year.aspx", "_blank", "noopener,noreferrer");
+                  }
+                }}
+              >
+                <Image
+                  src="/logos/header-secondary.svg"
+                  alt={lang === "ar" ? "شعار ذكاء اصطناعي — المملكة العربية السعودية" : "Saudi AI mark"}
+                  fill
+                  sizes="170px"
+                  className="object-contain object-left"
+                  priority={false}
+                />
+              </motion.div>
+
             </Link>
           </div>
 
@@ -158,7 +197,7 @@ const Navbar = () => {
           </div>
 
           {/* Right side — never shrink so hamburger stays on-screen */}
-          <div className="flex shrink-0 items-center gap-3 md:gap-6">
+          <div className="flex shrink-0 items-center gap-3 md:gap-4">
             <div className="hidden md:flex items-center text-[14px] font-semibold text-foreground">
               <button
                 onClick={() => setLanguage("en")}
@@ -175,29 +214,31 @@ const Navbar = () => {
               </button>
             </div>
 
-            <a
-              href="https://sdaia.gov.sa/ar/MediaCenter/Pages/ai-year.aspx"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden lg:flex relative h-[34px] w-[220px] xl:w-[240px] shrink-0"
-              aria-label={lang === "ar" ? "عام الذكاء الاصطناعي - يفتح في تبويب جديد" : "AI year page (opens in new tab)"}
-            >
-              <Image
-                src="/logos/header-secondary.svg"
-                alt={lang === "ar" ? "شعار ذكاء اصطناعي — المملكة العربية السعودية" : "Saudi AI mark"}
-                fill
-                sizes="240px"
-                className="object-contain object-left"
-                priority={false}
-              />
-            </a>
+            <div className="hidden lg:flex items-center gap-2">
+              <a
+                href="https://sdaia.gov.sa/ar/MediaCenter/Pages/ai-year.aspx"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative h-[32px] w-[184px] xl:w-[196px] shrink-0 -mr-1"
+                aria-label={lang === "ar" ? "عام الذكاء الاصطناعي - يفتح في تبويب جديد" : "AI year page (opens in new tab)"}
+              >
+                <Image
+                  src="/logos/header-secondary.svg"
+                  alt={lang === "ar" ? "شعار ذكاء اصطناعي — المملكة العربية السعودية" : "Saudi AI mark"}
+                  fill
+                  sizes="196px"
+                  className="object-contain object-right"
+                  priority={false}
+                />
+              </a>
 
-            <button
-              onClick={() => setModalOpen(true)}
-              className="btn-primary px-4 py-2 md:px-6 md:py-3 text-sm md:text-base hidden lg:inline-flex"
-            >
-              {t.nav.connect.replace(" ", "\u00A0")}
-            </button>
+              <button
+                onClick={() => setModalOpen(true)}
+                className="btn-primary px-4 py-2 md:px-6 md:py-3 text-sm md:text-base"
+              >
+                {t.nav.connect.replace(" ", "\u00A0")}
+              </button>
+            </div>
 
             {/* Mobile menu button */}
             <button
