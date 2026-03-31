@@ -96,17 +96,6 @@ const MissionStatement: React.FC = () => {
           )}
         </motion.h2>
 
-        {/* Description */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-[15px] md:text-[18px] leading-[1.7] text-white/70 text-center max-w-[800px] mx-auto mb-12"
-        >
-          {t.mission.description}
-        </motion.p>
-
         {/* Pillars Grid */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

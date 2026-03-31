@@ -24,6 +24,15 @@ const Navbar = () => {
     { name: t.services.smartInfra, href: "/services/smart-infrastructure" },
   ];
 
+  // Desktop dropdown uses compact labels only.
+  const desktopServiceLinks = [
+    { name: "Data Centers", href: "/services/data-centers" },
+    { name: "Industry 4.0", href: "/services/industrial" },
+    { name: "Cybersecurity", href: "/services/cybersecurity" },
+    { name: "Artificial Intelligence", href: "/services/ai" },
+    { name: "Smart Infrastructure", href: "/services/smart-infrastructure" },
+  ];
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
@@ -83,31 +92,6 @@ const Navbar = () => {
                 </svg>
               </motion.div>
 
-              {/* Single divider — secondary SVG had its own dark bar on the right (removed via cropped viewBox) */}
-              <motion.div
-                initial={{ opacity: 0, y: -6 }}
-                animate={logoEntered ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.4, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-                className="w-px h-9 md:h-11 bg-[#e2e8f0]/90 self-center shrink-0"
-                aria-hidden
-              />
-
-              {/* Secondary mark — wider slot + cropped SVG so Arabic/AI mark matches main logo height */}
-              <motion.div
-                initial={{ opacity: 0, y: -8, scale: 0.98 }}
-                animate={logoEntered ? { opacity: 1, y: 0, scale: 1 } : {}}
-                transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-                className="relative h-[32px] min-w-0 flex-1 max-w-[min(42vw,148px)] sm:max-w-[200px] sm:h-[36px] md:h-[40px] md:max-w-[240px] lg:max-w-[260px] md:w-[240px] lg:w-[260px]"
-              >
-                <Image
-                  src="/logos/header-secondary.svg"
-                  alt={lang === "ar" ? "شعار ذكاء اصطناعي — المملكة العربية السعودية" : "Saudi AI mark"}
-                  fill
-                  sizes="260px"
-                  className="object-contain object-left"
-                  priority={false}
-                />
-              </motion.div>
             </Link>
           </div>
 
@@ -133,7 +117,7 @@ const Navbar = () => {
                   style={{ background: "rgba(255,255,255,0.92)", backdropFilter: "blur(40px) saturate(1.8)", WebkitBackdropFilter: "blur(40px) saturate(1.8)" }}
                 >
                   <div className="h-0.5 w-full" style={{ background: "linear-gradient(90deg, #229388, #3ec8ba)" }} />
-                  {serviceLinks.map((s, i) => (
+                  {desktopServiceLinks.map((s, i) => (
                     <Link
                       key={s.href}
                       href={s.href}
@@ -190,6 +174,23 @@ const Navbar = () => {
                 عربي
               </button>
             </div>
+
+            <a
+              href="https://sdaia.gov.sa/ar/MediaCenter/Pages/ai-year.aspx"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden lg:flex relative h-[34px] w-[220px] xl:w-[240px] shrink-0"
+              aria-label={lang === "ar" ? "عام الذكاء الاصطناعي - يفتح في تبويب جديد" : "AI year page (opens in new tab)"}
+            >
+              <Image
+                src="/logos/header-secondary.svg"
+                alt={lang === "ar" ? "شعار ذكاء اصطناعي — المملكة العربية السعودية" : "Saudi AI mark"}
+                fill
+                sizes="240px"
+                className="object-contain object-left"
+                priority={false}
+              />
+            </a>
 
             <button
               onClick={() => setModalOpen(true)}

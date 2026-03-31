@@ -139,14 +139,6 @@ const StrategyAllies: React.FC = () => {
               : <>Strategic Alliances That<br />Shape the Future</>}
           </h2>
 
-          <p
-            className="text-[1rem] leading-[1.7] max-w-[680px] mx-auto"
-            style={{ color: '#64748b' }}
-          >
-            {lang === 'ar'
-              ? 'نبني شراكات استراتيجية مع أبرز المؤسسات والمنظمات على المستوى المحلي والدولي، لتعزيز الابتكار وتحقيق أهداف رؤية المملكة 2030.'
-              : 'We forge deep strategic alliances with leading local and global institutions, accelerating innovation and delivering on the ambitions of Saudi Vision 2030 together.'}
-          </p>
         </motion.div>
       </div>
 

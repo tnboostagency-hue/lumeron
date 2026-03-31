@@ -24,8 +24,8 @@ export default function Home() {
       <ContactModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
       <Hero />
       <ServicesCarousel />
+      <SlidingTagsSection />
       <MissionStatement />
-        <SlidingTagsSection />
       <OurClients />
       <CTABottom onConnectClick={() => setModalOpen(true)} />
       <StrategyAllies />

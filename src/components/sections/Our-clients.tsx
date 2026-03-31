@@ -164,14 +164,6 @@ const OurClients: React.FC = () => {
               : <>Trusted by Saudi Arabia's<br />most ambitious organisations</>}
           </h2>
 
-          <p
-            className="text-[1rem] leading-[1.7] max-w-[680px] mx-auto"
-            style={{ color: '#64748b' }}
-          >
-            {lang === 'ar'
-              ? 'نفخر بخدمة نخبة من المؤسسات والشركات الرائدة في المملكة العربية السعودية وخارجها، ونلتزم بتقديم حلول متكاملة تلبي تطلعاتهم وتتجاوز توقعاتهم.'
-              : 'We are proud to serve a distinguished portfolio of leading organisations across Saudi Arabia and beyond, delivering tailored solutions that meet their ambitions and exceed expectations.'}
-          </p>
         </motion.div>
       </div>
 

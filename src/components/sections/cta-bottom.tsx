@@ -90,10 +90,6 @@ const CTABottom: React.FC<CTABottomProps> = ({ onConnectClick }) => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="text-center max-w-[700px] mx-auto"
         >
-            <p className="text-[15px] md:text-[19px] mb-8 text-muted-foreground leading-[1.7]">
-            {t.cta.p1}
-          </p>
-
             <a 
               href="#contact" 
               onClick={onConnectClick ? (e) => { e.preventDefault(); onConnectClick(); } : undefined}

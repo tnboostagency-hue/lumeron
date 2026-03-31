@@ -92,9 +92,6 @@ export default function ContactSection() {
             <h2 className="text-[26px] sm:text-[36px] md:text-[48px] font-semibold leading-[1.1] tracking-[-0.02em] text-foreground mb-4">
               {lang === 'ar' ? "لنقم بالبناء معاً" : "Let's Build Together"}
             </h2>
-            <p className="text-muted-foreground text-[17px] leading-[1.7]">
-              {lang === 'ar' ? "جاهز لتسريع تحولك الرقمي؟ تواصل مع فريقنا لاستكشاف كيف يمكن لـ لوميرون المساعدة في تحقيق أهداف رؤية 2030 الخاصة بك." : "Ready to accelerate your digital transformation? Connect with our team to explore how Lumeron can help achieve your Vision 2030 objectives."}
-            </p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
