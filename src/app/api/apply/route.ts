@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
     }
     const { name, email, phone, linkedin, position, jobId, cover, cvFileName, cvMimeType, cvBase64 } = payload;
 
-    if (!name || !email || !position) {
+    if (!name || !phone) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
     } catch (dbErr) {
       console.error("jobApplications insert", dbErr);
       return NextResponse.json(
-        { error: "Could not save application. Ensure D1 is migrated (wrangler d1 execute … --file=./schema.sql)." },
+        { error: "Could not save application right now. Please try again shortly." },
         { status: 503 }
       );
     }
@@ -118,7 +118,7 @@ export async function POST(req: NextRequest) {
           </div>
           <div style="padding: 32px 40px; background: white;">
             <div style="display: inline-block; background: #f0fdf8; border: 1px solid #229388; color: #229388; font-size: 13px; font-weight: 700; padding: 6px 14px; border-radius: 20px; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 0.5px;">
-              ${position}
+              ${position || "General Application"}
             </div>
             <table style="width: 100%; border-collapse: collapse;">
               <tr>
@@ -156,11 +156,12 @@ export async function POST(req: NextRequest) {
           </div>
         </div>
       `;
+      const jobTitle = position || "General Application";
       const { error } = await resend.emails.send({
         from: "Lumeron Careers <onboarding@resend.dev>",
-        to: ["lumeron.sa@gmail.com"],
-        replyTo: email,
-        subject: `Job Application: ${position} — ${name}`,
+        to: ["HR@lumeron.sa"],
+        ...(email ? { replyTo: email } : {}),
+        subject: `Job Application: ${jobTitle} — ${name}`,
         html,
         ...(cvBase64 && cvFileName
           ? { attachments: [{ filename: cvFileName, content: Buffer.from(cvBase64, "base64") }] }

@@ -573,11 +573,10 @@ function ServiceCanvas({ serviceId, color }: { serviceId: string; color: string 
     let animFn: (t: number) => void;
     switch (id) {
       case "ai": animFn = buildAIScene(threeCol, scene); break;
-      case "robotics": animFn = buildRoboticsScene(threeCol, scene); break;
       case "data-centers": animFn = buildDataCentersScene(threeCol, scene); break;
-      case "industrial-excellence": animFn = buildIndustrialScene(threeCol, scene); break;
+      case "industrial": animFn = buildIndustrialScene(threeCol, scene); break;
       case "cybersecurity": animFn = buildCybersecScene(threeCol, scene); break;
-      case "managed-services": animFn = buildManagedScene(threeCol, scene); break;
+      case "smart-infra": animFn = buildManagedScene(threeCol, scene); break;
       default: animFn = buildAIScene(threeCol, scene);
     }
 
@@ -603,7 +602,6 @@ function ServiceCanvas({ serviceId, color }: { serviceId: string; color: string 
         sceneRef.current = null;
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Crossfade on service change
@@ -648,11 +646,11 @@ export default function ServicesCarousel() {
       if (section) {
         const sectionRect = section.getBoundingClientRect();
         // Stabilize edge states so last item doesn't snap when next section appears.
-        if (sectionRect.bottom <= window.innerHeight * 0.9) {
+        if (sectionRect.bottom <= window.innerHeight * 0.55) {
           setActiveIdx(SERVICES.length - 1);
           return;
         }
-        if (sectionRect.top >= window.innerHeight * 0.45) {
+        if (sectionRect.top >= window.innerHeight * 0.55) {
           setActiveIdx(0);
           return;
         }
@@ -955,26 +953,6 @@ export default function ServicesCarousel() {
               </div>
             ))}
 
-            {/* View all CTA */}
-            <Link
-              href="/services"
-              className={`group inline-flex items-center gap-3 border-2 text-foreground rounded-full px-8 py-3.5 text-[14px] font-medium transition-all duration-300 hover:text-white ${isAr ? 'flex-row-reverse' : ''}`}
-              style={{ borderColor: '#229388' }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLElement).style.background = '#229388';
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLElement).style.background = 'transparent';
-              }}
-            >
-              <span>{isAr ? 'عرض جميع الخدمات' : 'View All Services'}</span>
-              <svg
-                className={`w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 ${isAr ? 'rotate-180' : ''}`}
-                viewBox="0 0 21 16" fill="none"
-              >
-                <path d="M12.8078 0L20.202 7.39706V8.58824L12.8078 16L11.3554 14.5441L16.8277 9.05882H0V6.92647H16.8277L11.3554 1.44118L12.8078 0Z" fill="currentColor" />
-              </svg>
-            </Link>
           </div>
         </div>
       </div>

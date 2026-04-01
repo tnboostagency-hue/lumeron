@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useLanguage } from "@/context/LanguageContext";
 
 const terms = [
   {
@@ -102,6 +103,25 @@ const terms = [
   },
 ];
 
+const arabicLabels: Record<string, string> = {
+  Colocation: "الاستضافة المشتركة",
+  Hyperscale: "البنية فائقة التوسع",
+  Virtualization: "الافتراضية",
+  "Zero-Trust Architecture": "معمارية انعدام الثقة",
+  SIEM: "إدارة معلومات وأحداث الأمن",
+  "Endpoint Detection & Response": "كشف واستجابة نقاط النهاية",
+  "Digital Twin": "التوأم الرقمي",
+  "SCADA Systems": "أنظمة سكادا",
+  "Predictive Maintenance": "الصيانة التنبؤية",
+  "Neural Networks": "الشبكات العصبية",
+  "Machine Learning Pipelines": "خطوط تعلم الآلة",
+  "Natural Language Processing": "معالجة اللغة الطبيعية",
+  "Edge Computing": "الحوسبة الطرفية",
+  "IoT Ecosystem": "منظومة إنترنت الأشياء",
+  "Low-Latency Networks": "شبكات منخفضة الكمون",
+  "5G Network Slicing": "تجزئة شبكة الجيل الخامس",
+};
+
 // 4 rows of 4
 const rows = [
   terms.slice(0, 4),
@@ -160,6 +180,19 @@ function Pill({ term, rowIndex, tagIndex }: { term: typeof terms[0]; rowIndex: n
 }
 
 export default function SlidingTagsSection() {
+  const { lang } = useLanguage();
+  const isAr = lang === "ar";
+  const localizedTerms = terms.map((t) => ({
+    ...t,
+    label: isAr ? arabicLabels[t.label] ?? t.label : t.label,
+  }));
+  const localizedRows = [
+    localizedTerms.slice(0, 4),
+    localizedTerms.slice(4, 8),
+    localizedTerms.slice(8, 12),
+    localizedTerms.slice(12, 16),
+  ];
+
   return (
     <>
       <style>{`
@@ -186,22 +219,32 @@ export default function SlidingTagsSection() {
 
       <section className="sliding-tags-section">
         {/* Header */}
-        <div className="text-center mb-[56px] px-[24px] max-md:mb-[42px] max-md:px-[16px]">
+        <div dir={isAr ? "rtl" : "ltr"} className="text-center mb-[56px] px-[24px] max-md:mb-[42px] max-md:px-[16px]">
           <h2 className="sliding-tags-title">
-            Built on <span style={{ color: "#1e8178" }}>Intelligence</span>
+            {isAr ? (
+              <>
+                مبني على <span style={{ color: "#1e8178" }}>الذكاء</span>
+              </>
+            ) : (
+              <>
+                Built on <span style={{ color: "#1e8178" }}>Intelligence</span>
+              </>
+            )}
           </h2>
           <p className="sliding-tags-subtitle">
-            Core technologies powering the next generation of systems
+            {isAr
+              ? "تقنيات أساسية تمكّن الجيل القادم من الأنظمة"
+              : "Core technologies powering the next generation of systems"}
           </p>
         </div>
 
         {/* Rows */}
-        <div className="tags-wrapper relative flex flex-col gap-[14px] max-md:gap-[12px]">
+        <div dir="ltr" className="tags-wrapper relative flex flex-col gap-[14px] max-md:gap-[12px]">
           {/* Fade masks */}
           <div className="absolute left-0 top-0 bottom-0 z-[2] w-[140px] pointer-events-none bg-[linear-gradient(to_right,#fff_40%,transparent)] max-md:w-[70px]" />
           <div className="absolute right-0 top-0 bottom-0 z-[2] w-[140px] pointer-events-none bg-[linear-gradient(to_left,#fff_40%,transparent)] max-md:w-[70px]" />
 
-          {rows.map((row, rowIndex) => {
+          {localizedRows.map((row, rowIndex) => {
             const isRTL = rowIndex % 2 === 1;
             const repeated = [...row, ...row, ...row, ...row, ...row, ...row];
             return (

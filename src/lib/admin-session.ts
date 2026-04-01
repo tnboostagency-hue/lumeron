@@ -37,7 +37,7 @@ export function verifyAdminSessionToken(token: string | undefined): boolean {
 }
 
 /** Used when `ADMIN_PIN` is not set. In production, set `ADMIN_PIN` in the Worker / Pages environment. */
-const DEFAULT_ADMIN_PIN = "53577426";
+const DEFAULT_ADMIN_PIN = "117799335";
 
 export function getAdminPin(): string {
   return process.env.ADMIN_PIN ?? DEFAULT_ADMIN_PIN;

@@ -105,10 +105,6 @@ export default function CareersPage() {
     const formEl = e.currentTarget;
     const fileInput = formEl.querySelector<HTMLInputElement>('input[name="cv"]');
     const file = fileInput?.files?.[0];
-    if (!file) {
-      setApplyError("Attach your CV (PDF, DOC, or DOCX).");
-      return;
-    }
     const fd = new FormData();
     fd.append("name", form.name.trim());
     fd.append("email", form.email.trim());
@@ -117,7 +113,7 @@ export default function CareersPage() {
     fd.append("position", form.position.trim());
     fd.append("cover", form.cover);
     if (openJobId) fd.append("jobId", openJobId);
-    fd.append("cv", file);
+    if (file) fd.append("cv", file);
 
     try {
       const res = await fetch("/api/apply", { method: "POST", body: fd });
@@ -245,8 +241,8 @@ export default function CareersPage() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                         {[
                           { id: "name", label: "Full Name *", type: "text", key: "name" as const },
-                          { id: "email", label: "Email Address *", type: "email", key: "email" as const },
-                          { id: "phone", label: "Phone Number", type: "tel", key: "phone" as const },
+                          { id: "email", label: "Email Address", type: "email", key: "email" as const },
+                          { id: "phone", label: "Phone Number *", type: "tel", key: "phone" as const },
                           { id: "linkedin", label: "LinkedIn Profile URL", type: "url", key: "linkedin" as const },
                         ].map((f) => (
                           <div key={f.id}>
@@ -255,7 +251,7 @@ export default function CareersPage() {
                               id={f.id}
                               name={f.key}
                               type={f.type}
-                              required={f.label.includes("*")}
+                          required={f.key === "name" || f.key === "phone"}
                               value={form[f.key]}
                               onChange={(e) => setForm((v) => ({ ...v, [f.key]: e.target.value }))}
                               className="w-full px-4 py-3 rounded-lg border border-[#e2e8f0] text-[14px] text-[#111827] focus:outline-none focus:border-[#229388] focus:ring-2 focus:ring-[#229388]/10 transition-all bg-white"
@@ -275,13 +271,12 @@ export default function CareersPage() {
                         />
                       </div>
                       <div className="mb-6">
-                        <label className="block text-[12px] font-semibold text-[#374151] mb-1.5 uppercase tracking-[0.06em]">Upload CV / Resume *</label>
+                        <label className="block text-[12px] font-semibold text-[#374151] mb-1.5 uppercase tracking-[0.06em]">Upload CV / Resume</label>
                         <input
                           key={`cv-${job.id}-${openJobId}`}
                           name="cv"
                           type="file"
                           accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                          required
                           className="w-full text-[13px] text-[#64748b] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[12px] file:font-semibold file:bg-[#229388]/10 file:text-[#229388] hover:file:bg-[#229388]/20 transition-all cursor-pointer"
                         />
                         <p className="text-[11px] text-[#94a3b8] mt-1.5">PDF, DOC or DOCX — max 8MB</p>

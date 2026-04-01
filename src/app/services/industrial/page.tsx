@@ -175,14 +175,8 @@ export default function IndustrialPage() {
               <div className="rounded-2xl overflow-hidden border border-[#e2e8f0] shadow-lg flex items-center justify-center" style={{ background: "linear-gradient(135deg,#f0fdfc 0%,#f8fafc 100%)", aspectRatio: "4/3" }}>
                 <svg viewBox="0 0 400 320" fill="none" className="w-4/5 h-4/5">
                   <style>{`
-                    @keyframes spin-slow { from { transform-origin: 80px 160px; transform: rotate(0deg); } to { transform-origin: 80px 160px; transform: rotate(360deg); } }
-                    @keyframes spin-rev { from { transform-origin: 160px 160px; transform: rotate(0deg); } to { transform-origin: 160px 160px; transform: rotate(-360deg); } }
-                    @keyframes spin-sm { from { transform-origin: 222px 120px; transform: rotate(0deg); } to { transform-origin: 222px 120px; transform: rotate(360deg); } }
                     @keyframes flow { 0%{stroke-dashoffset:80} 100%{stroke-dashoffset:0} }
                     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-                    .gear-a { animation: spin-slow 8s linear infinite; }
-                    .gear-b { animation: spin-rev 5.3s linear infinite; }
-                    .gear-c { animation: spin-sm 4s linear infinite; }
                     .data-flow { animation: flow 2s linear infinite; }
                     .status-dot { animation: blink 1.4s ease-in-out infinite; }
                   `}</style>
@@ -197,7 +191,8 @@ export default function IndustrialPage() {
                   <line x1="300" y1="0" x2="300" y2="320" stroke="rgba(34,147,136,0.06)" strokeWidth="0.5"/>
 
                   {/* Large gear A */}
-                  <g className="gear-a">
+                  <g>
+                    <animateTransform attributeName="transform" type="rotate" from="0 80 160" to="360 80 160" dur="8s" repeatCount="indefinite" />
                     {[0,30,60,90,120,150,180,210,240,270,300,330].map((a) => {
                       const r = a * Math.PI / 180;
                       const x1 = 80 + 48 * Math.cos(r); const y1 = 160 + 48 * Math.sin(r);
@@ -210,7 +205,8 @@ export default function IndustrialPage() {
                   </g>
 
                   {/* Medium gear B */}
-                  <g className="gear-b">
+                  <g>
+                    <animateTransform attributeName="transform" type="rotate" from="0 160 160" to="-360 160 160" dur="5.3s" repeatCount="indefinite" />
                     {[0,45,90,135,180,225,270,315].map((a) => {
                       const r = a * Math.PI / 180;
                       const x1 = 160 + 32 * Math.cos(r); const y1 = 160 + 32 * Math.sin(r);
@@ -223,7 +219,8 @@ export default function IndustrialPage() {
                   </g>
 
                   {/* Small gear C */}
-                  <g className="gear-c">
+                  <g>
+                    <animateTransform attributeName="transform" type="rotate" from="0 222 120" to="360 222 120" dur="4s" repeatCount="indefinite" />
                     {[0,60,120,180,240,300].map((a) => {
                       const r = a * Math.PI / 180;
                       const x1 = 222 + 22 * Math.cos(r); const y1 = 120 + 22 * Math.sin(r);

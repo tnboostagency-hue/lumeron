@@ -188,7 +188,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                         required
                         type="text"
                         className="form-input !h-[44px] !text-[14px]"
-                        placeholder={lang === 'ar' ? "أحمد الراشد" : "Ahmed Al-Rashid"}
+                        placeholder={lang === 'ar' ? "اسمك" : "Your name"}
                         value={form.name}
                         onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
                       />
@@ -201,7 +201,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                         required
                         type="email"
                         className="form-input !h-[44px] !text-[14px]"
-                        placeholder="ahmed@company.sa"
+                        placeholder="your@email.com"
                         value={form.email}
                         onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
                       />
@@ -232,13 +232,11 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                       style={{ color: form.service ? "var(--foreground)" : "var(--muted-foreground)" }}
                     >
                       <option value="">{lang === 'ar' ? "اختر الخدمة..." : "Select a service..."}</option>
-                      <option value="Data Centers">{t.services.dataCenters}</option>
-                      <option value="Cybersecurity">{t.services.cybersecurity}</option>
-                      <option value="Innovations & Future Technologies">{t.services.innovations}</option>
-                      <option value="Smart Infrastructure & Connectivity">{t.services.smartInfra}</option>
-                      <option value="Industrial Digitalization">{t.services.industrial}</option>
-                      <option value="AI & Advanced Analytics">{t.services.ai}</option>
-                      <option value="General Inquiry">{lang === 'ar' ? "استفسار عام" : "General Inquiry"}</option>
+                      <option value="Data Centers">{lang === 'ar' ? "مراكز البيانات" : "Data Centers"}</option>
+                      <option value="Industry 4.0">{lang === 'ar' ? "الصناعة 4.0" : "Industry 4.0"}</option>
+                      <option value="Cybersecurity">{lang === 'ar' ? "الأمن السيبراني" : "Cybersecurity"}</option>
+                      <option value="Artificial Intelligence">{lang === 'ar' ? "الذكاء الاصطناعي" : "Artificial Intelligence"}</option>
+                      <option value="Smart Infrastructure">{lang === 'ar' ? "البنية التحتية الذكية" : "Smart Infrastructure"}</option>
                     </select>
                   </div>
 

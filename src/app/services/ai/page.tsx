@@ -72,17 +72,6 @@ const services = [
   },
 ];
 
-const specs = [
-  { name: "ML Frameworks", val: "PyTorch · TensorFlow" },
-  { name: "LLM Platforms", val: "Hugging Face · OpenAI" },
-  { name: "Cloud Providers", val: "AWS · Azure · GCP" },
-  { name: "BI Tools", val: "Power BI · Tableau" },
-  { name: "Data Platforms", val: "Databricks · Snowflake" },
-  { name: "Orchestration", val: "Airflow · Prefect" },
-  { name: "AI Compliance", val: "NCA AI Framework" },
-  { name: "Arabic NLP", val: "Camel · AraBERT" },
-];
-
 export default function AIPage() {
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -387,31 +376,6 @@ export default function AIPage() {
                 <rect x="20" y="320" width="320" height="20" rx="0" fill="rgba(34,147,136,0.08)"/>
                 <text x="180" y="334" textAnchor="middle" fontSize="8" fill="#229388" fontWeight="700" letterSpacing="0.6">MLOPS · CONTINUOUS TRAINING · DRIFT MONITORING</text>
               </svg>
-            </div>
-          </div>
-        </section>
-
-        {/* SPECS */}
-        <section className="py-28 bg-[#f8fafc] border-t border-[#e2e8f0]">
-          <div className="container mx-auto px-6 md:px-8">
-            <div className="text-center mb-16">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="w-5 h-px bg-[#229388]" />
-                <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#229388]">Technical Parameters</span>
-                <div className="w-5 h-px bg-[#229388]" />
-              </div>
-              <h2 className="font-bold mb-4" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(28px,3.5vw,44px)", color: "#111827", letterSpacing: "-0.025em" }}>
-                Platforms & frameworks we master
-              </h2>
-              <p className="text-[15px] text-[#64748b] max-w-[440px] mx-auto leading-[1.7]">Technology-agnostic — we work with the best tools for each use case, not just the ones we resell.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto" style={{ border: "1px solid rgba(34,147,136,0.18)", gap: "1px", background: "rgba(34,147,136,0.12)", boxShadow: "0 4px 24px rgba(34,147,136,0.06)" }}>
-              {specs.map((r) => (
-                <div key={r.name} className="bg-white px-10 py-7 flex justify-between items-center hover:bg-[#f0fdfc] transition-colors duration-200">
-                  <span className="text-[12px] font-bold tracking-[0.07em] uppercase text-[#94a3b8]">{r.name}</span>
-                  <span className="font-semibold text-[20px] text-[#111827]" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', letterSpacing: "-0.01em" }}>{r.val}</span>
-                </div>
-              ))}
             </div>
           </div>
         </section>

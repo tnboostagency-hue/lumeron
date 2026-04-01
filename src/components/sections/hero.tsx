@@ -1,15 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Play, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { motion, type Variants } from 'framer-motion';
 import FloatingElement from '@/components/animations/floating-element';
 import { useLanguage } from '@/context/LanguageContext';
-import VideoModal from '@/components/sections/video-modal';
 
 export default function Hero() {
   const { lang, t } = useLanguage();
-  const [videoOpen, setVideoOpen] = useState(false);
   const words = lang === 'ar'
     ? ["المستقبل", "التحول", "الاقتصاد", "الابتكار", "البنية التحتية"]
     : ["FUTURE", "TRANSFORMATION", "ECONOMY", "INNOVATION", "INFRASTRUCTURE"];
@@ -89,7 +87,6 @@ export default function Hero() {
 
     return (
     <>
-      <VideoModal isOpen={videoOpen} onClose={() => setVideoOpen(false)} />
       <section className="relative w-full overflow-hidden flex flex-col justify-center pt-[80px] md:min-h-screen" style={{ minHeight: typeof window !== 'undefined' && window.innerWidth >= 768 ? 'calc(var(--vh, 1vh) * 100)' : undefined }}>
           {/* Video Background */}
           <div className="absolute inset-0 z-0">
@@ -173,7 +170,7 @@ export default function Hero() {
             </motion.h2>
 
             <motion.p variants={itemVariants} className="text-muted-foreground text-[14px] sm:text-[15px] md:text-[17px] max-w-[520px] leading-[1.65] mb-7">
-              {t.hero.description}
+              {lang === 'ar' ? 'MASCO Digital | حيث تلتقي الصناعة بالتحول الرقمي' : 'MASCO Digital | Where Industry Meets Digitalization'}
             </motion.p>
 
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center sm:w-fit">
@@ -184,13 +181,6 @@ export default function Hero() {
                 {t.hero.explore}
                 <ArrowRight className={`w-4 h-4 flex-shrink-0 ${lang === 'ar' ? 'rotate-180' : ''}`} />
               </a>
-              
-              <button onClick={() => setVideoOpen(true)} className="btn-outline group flex items-center justify-center gap-3 px-6 h-[46px] text-[14px]">
-                <div className="flex items-center justify-center w-6 h-6 bg-primary/10 rounded-full transition-colors group-hover:bg-white/20 flex-shrink-0">
-                  <Play className={`w-3 h-3 fill-current ${lang === 'ar' ? 'rotate-180' : ''}`} />
-                </div>
-                <span>{t.hero.watch}</span>
-              </button>
             </motion.div>
           </div>
         </motion.div>

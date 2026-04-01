@@ -102,6 +102,7 @@ const MarqueeRow: React.FC<MarqueeRowProps> = ({ items, direction, speed }) => {
 
 const OurClients: React.FC = () => {
   const { lang } = useLanguage();
+  const isAr = lang === "ar";
 
   return (
     <section
@@ -135,7 +136,10 @@ const OurClients: React.FC = () => {
         style={{ background: 'linear-gradient(to left, #ffffff, transparent)' }} />
 
       {/* Header */}
-      <div className="relative z-10 container px-6 md:px-8 max-w-[900px] mx-auto mb-14 text-center">
+      <div
+        dir={isAr ? "rtl" : "ltr"}
+        className={`relative z-10 container px-6 md:px-8 max-w-[900px] mx-auto mb-14 text-center ${isAr ? "font-sans" : ""}`}
+      >
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -168,7 +172,7 @@ const OurClients: React.FC = () => {
       </div>
 
       {/* 4 Marquee rows — alternating directions */}
-      <div className="relative z-0 flex flex-col gap-4">
+      <div dir="ltr" className="relative z-0 flex flex-col gap-4">
         {rows.map((row, i) => (
           <MarqueeRow
             key={i}

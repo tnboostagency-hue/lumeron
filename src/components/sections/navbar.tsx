@@ -198,6 +198,22 @@ const Navbar = () => {
 
           {/* Right side — never shrink so hamburger stays on-screen */}
           <div className="flex shrink-0 items-center gap-3 md:gap-4">
+            <div className="md:hidden flex items-center rounded-full border border-[#0f172a]/12 bg-white/85 px-2 py-1 text-[12px] font-semibold text-foreground">
+              <button
+                onClick={() => setLanguage("en")}
+                className={`px-1.5 ${lang === "en" ? "text-[#229388]" : "opacity-50"}`}
+              >
+                EN
+              </button>
+              <span className="text-muted-foreground/70">|</span>
+              <button
+                onClick={() => setLanguage("ar")}
+                className={`font-sans px-1.5 ${lang === "ar" ? "text-[#229388]" : "opacity-50"}`}
+              >
+                عربي
+              </button>
+            </div>
+
             <div className="hidden md:flex items-center text-[14px] font-semibold text-foreground">
               <button
                 onClick={() => setLanguage("en")}
@@ -337,7 +353,7 @@ const Navbar = () => {
             >
               {t.nav.connect}
             </button>
-            <div className="flex items-center space-x-4 text-lg font-semibold text-foreground">
+            <div className="flex flex-wrap items-center gap-3 text-lg font-semibold text-foreground">
               <button
                 onClick={() => setLanguage("en")}
                 className={lang === "en" ? "text-[#229388]" : "opacity-50"}
