@@ -8,8 +8,8 @@ import {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const pin = typeof body?.pin === "string" ? body.pin : "";
-    if (pin !== getAdminPin()) {
+    const pin = typeof body?.pin === "string" ? body.pin.trim() : "";
+    if (!pin || pin !== getAdminPin()) {
       return NextResponse.json({ error: "Invalid PIN" }, { status: 401 });
     }
     const token = createAdminSessionToken();

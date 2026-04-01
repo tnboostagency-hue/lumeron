@@ -5,7 +5,7 @@ const COOKIE = "lumeron_admin_session";
 export { COOKIE as ADMIN_SESSION_COOKIE_NAME };
 
 function getSecret(): string {
-  const s = process.env.ADMIN_SESSION_SECRET;
+  const s = process.env.ADMIN_SESSION_SECRET?.trim();
   if (s) return s;
   if (process.env.NODE_ENV === "development") return "dev-lumeron-admin-session-change-in-prod";
   throw new Error("ADMIN_SESSION_SECRET is required in production");
@@ -40,5 +40,6 @@ export function verifyAdminSessionToken(token: string | undefined): boolean {
 const DEFAULT_ADMIN_PIN = "117799335";
 
 export function getAdminPin(): string {
-  return process.env.ADMIN_PIN ?? DEFAULT_ADMIN_PIN;
+  const fromEnv = process.env.ADMIN_PIN?.trim();
+  return fromEnv && fromEnv.length > 0 ? fromEnv : DEFAULT_ADMIN_PIN;
 }
