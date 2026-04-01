@@ -2,6 +2,9 @@
 
 # dependencies
 /node_modules
+# Cloudflare Pages ships Bun 1.2.x; newer Bun lockfiles break --frozen-lockfile. Use npm + package-lock.json in CI.
+/bun.lockb
+/bun.lock
 /.pnp
 .pnp.*
 .yarn/*
