@@ -24,6 +24,8 @@ export const newsArticles = sqliteTable("news_articles", {
   date: text("date").notNull(),
   excerpt: text("excerpt").notNull(),
   content: text("content").notNull().default(""),
+  /** Data URL (image/jpeg|png|webp) or null — shown on /news and in admin */
+  coverImage: text("cover_image"),
   published: integer("published", { mode: "boolean" }).notNull().default(true),
   createdAt: text("created_at").notNull(),
   updatedAt: text("updated_at").notNull(),

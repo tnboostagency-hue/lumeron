@@ -15,6 +15,7 @@ export async function GET() {
   const denied = await requireAdminSession();
   if (denied) return denied;
   try {
+    const db = getDb();
     const rows = await db.select().from(jobs).orderBy(desc(jobs.createdAt));
     return NextResponse.json({ jobs: rows });
   } catch (e) {

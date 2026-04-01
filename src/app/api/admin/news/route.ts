@@ -4,6 +4,7 @@ import { randomUUID } from "crypto";
 import { getDb } from "@/db";
 import { newsArticles } from "@/db/schema";
 import { requireAdminSession } from "@/lib/admin-api";
+import { parseNewsCoverInput } from "@/lib/news-cover";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +16,7 @@ export async function GET() {
   const denied = await requireAdminSession();
   if (denied) return denied;
   try {
+    const db = getDb();
     const rows = await db.select().from(newsArticles).orderBy(desc(newsArticles.createdAt));
     return NextResponse.json({ articles: rows });
   } catch (e) {
@@ -35,6 +37,10 @@ export async function POST(req: NextRequest) {
     if (!title || !excerpt) {
       return NextResponse.json({ error: "title and excerpt required" }, { status: 400 });
     }
+    const coverParsed = parseNewsCoverInput(body?.coverImage);
+    if (!coverParsed.ok) {
+      return NextResponse.json({ error: coverParsed.error }, { status: 400 });
+    }
     const id = randomUUID();
     const t = nowIso();
     const row = {
@@ -44,6 +50,7 @@ export async function POST(req: NextRequest) {
       date,
       excerpt,
       content: String(body?.content ?? "").trim(),
+      coverImage: coverParsed.value,
       published: body?.published !== false,
       createdAt: t,
       updatedAt: t,

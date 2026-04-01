@@ -1,7 +1,23 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Trash2, Plus, LogOut, Briefcase, Newspaper, Eye, EyeOff, Users, Pencil, X } from "lucide-react";
+import {
+  Trash2,
+  Plus,
+  LogOut,
+  Briefcase,
+  Newspaper,
+  Eye,
+  EyeOff,
+  Users,
+  Pencil,
+  X,
+  ImagePlus,
+  Download,
+} from "lucide-react";
+import { MAX_NEWS_COVER_DATA_URL_LENGTH } from "@/lib/news-cover";
+
+const MAX_COVER_FILE_BYTES = 2 * 1024 * 1024;
 
 interface Job {
   id: string;
@@ -21,6 +37,8 @@ interface Article {
   date: string;
   excerpt: string;
   content: string;
+  /** data:image/...;base64,... or null */
+  coverImage: string | null;
   published: boolean;
 }
 
@@ -54,6 +72,7 @@ const EMPTY_ARTICLE: Omit<Article, "id"> = {
   date: new Date().toISOString().split("T")[0],
   excerpt: "",
   content: "",
+  coverImage: null,
   published: true,
 };
 
@@ -71,6 +90,7 @@ function normalizeJobRow(row: Record<string, unknown>): Job {
 }
 
 function normalizeArticleRow(row: Record<string, unknown>): Article {
+  const c = row.coverImage ?? row.cover_image;
   return {
     id: String(row.id),
     title: String(row.title),
@@ -78,6 +98,7 @@ function normalizeArticleRow(row: Record<string, unknown>): Article {
     date: String(row.date),
     excerpt: String(row.excerpt),
     content: String(row.content ?? ""),
+    coverImage: typeof c === "string" && c.length > 0 ? c : null,
     published: Boolean(row.published),
   };
 }
@@ -139,12 +160,10 @@ export default function AdminPage() {
     (async () => {
       setLoadError(null);
       try {
-        const r = await fetch("/api/admin/jobs", { credentials: "include", cache: "no-store" });
+        const r = await fetch("/api/admin/session", { credentials: "include", cache: "no-store" });
         if (r.ok) {
           setAuthState("admin");
-          const d = await r.json();
-          const raw = Array.isArray(d.jobs) ? d.jobs : [];
-          setJobs(raw.map((row: Record<string, unknown>) => normalizeJobRow(row)));
+          await refreshJobs();
         } else {
           setAuthState("guest");
         }
@@ -153,7 +172,7 @@ export default function AdminPage() {
         setLoadError("Could not reach server.");
       }
     })();
-  }, []);
+  }, [refreshJobs]);
 
   useEffect(() => {
     if (authState !== "admin") return;
@@ -224,6 +243,7 @@ export default function AdminPage() {
   };
 
   const deleteJob = async (id: string) => {
+    if (!confirm("Delete this job opening? It will be removed from /careers.")) return;
     const r = await fetch(`/api/admin/jobs/${id}`, { method: "DELETE", credentials: "include" });
     if (r.ok) {
       if (editingJobId === id) {
@@ -299,6 +319,27 @@ export default function AdminPage() {
     }
   };
 
+  const downloadApplicationCv = async (a: ApplicationListItem) => {
+    const r = await fetch(`/api/admin/applications/${a.id}/cv`, { credentials: "include" });
+    if (!r.ok) {
+      alert(r.status === 404 ? "CV not available." : "Could not download CV.");
+      return;
+    }
+    const blob = await r.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = (a.cvFileName && a.cvFileName.trim()) || "cv.pdf";
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const deleteApplication = async (id: string) => {
+    if (!confirm("Delete this application permanently?")) return;
+    const r = await fetch(`/api/admin/applications/${id}`, { method: "DELETE", credentials: "include" });
+    if (r.ok) await refreshApplications();
+  };
+
   const toggleArticlePublished = async (article: Article) => {
     const r = await fetch(`/api/admin/news/${article.id}`, {
       method: "PATCH",
@@ -318,6 +359,7 @@ export default function AdminPage() {
       date: /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : new Date().toISOString().split("T")[0]!,
       excerpt: article.excerpt,
       content: article.content,
+      coverImage: article.coverImage,
       published: article.published,
     });
     setArticleFormError(null);
@@ -601,7 +643,15 @@ export default function AdminPage() {
             <div className="flex flex-col gap-4">
               <h3 className="font-semibold text-[15px] text-[#64748b] uppercase tracking-[0.08em]">Posted Jobs</h3>
               {jobs.length === 0 ? (
-                <div className="bg-white rounded-2xl border border-[#e2e8f0] p-8 text-center text-[14px] text-[#94a3b8]">No jobs in database yet.</div>
+                <div className="bg-white rounded-2xl border border-[#e2e8f0] p-8 text-center text-[13px] text-[#64748b] leading-relaxed">
+                  <p className="text-[#94a3b8] mb-3">No jobs in the database yet.</p>
+                  <p>
+                    If <a href="/careers" className="text-[#229388] underline">/careers</a> still lists sample roles, those are fallbacks until the API returns DB
+                    data. Create openings here, or run{" "}
+                    <code className="text-[12px] bg-[#f1f5f9] px-1.5 py-0.5 rounded">schema-migrations/002-seed-default-careers-jobs.sql</code> on D1 to import
+                    the default three.
+                  </p>
+                </div>
               ) : (
                 jobs.map((job) => (
                   <div
@@ -726,6 +776,61 @@ export default function AdminPage() {
                   />
                 </div>
                 <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-[0.08em] text-[#94a3b8] mb-1.5">Cover image</label>
+                  <p className="text-[12px] text-[#94a3b8] mb-2">Shown on the public news page. JPEG, PNG, GIF, or WebP — max ~2MB.</p>
+                  {articleForm.coverImage && (
+                    <div className="mb-3 relative rounded-xl overflow-hidden border border-[#e2e8f0] bg-[#f8fafc] max-h-[200px]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={articleForm.coverImage} alt="" className="w-full max-h-[200px] object-cover" />
+                    </div>
+                  )}
+                  <div className="flex flex-wrap items-center gap-3">
+                    <label className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#e2e8f0] text-[13px] font-semibold text-[#374151] cursor-pointer hover:bg-[#f8fafc] transition-colors">
+                      <ImagePlus size={16} className="text-[#229388]" />
+                      {articleForm.coverImage ? "Replace image" : "Upload image"}
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/gif,image/webp"
+                        className="sr-only"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          e.target.value = "";
+                          if (!file) return;
+                          if (!file.type.startsWith("image/")) {
+                            setArticleFormError("Please choose an image file.");
+                            return;
+                          }
+                          if (file.size > MAX_COVER_FILE_BYTES) {
+                            setArticleFormError("Image must be under 2MB.");
+                            return;
+                          }
+                          const reader = new FileReader();
+                          reader.onload = () => {
+                            const dataUrl = typeof reader.result === "string" ? reader.result : "";
+                            if (dataUrl.length > MAX_NEWS_COVER_DATA_URL_LENGTH) {
+                              setArticleFormError("Image is too large after encoding. Try a smaller file.");
+                              return;
+                            }
+                            setArticleFormError(null);
+                            setArticleForm((v) => ({ ...v, coverImage: dataUrl || null }));
+                          };
+                          reader.onerror = () => setArticleFormError("Could not read file.");
+                          reader.readAsDataURL(file);
+                        }}
+                      />
+                    </label>
+                    {articleForm.coverImage && (
+                      <button
+                        type="button"
+                        onClick={() => setArticleForm((v) => ({ ...v, coverImage: null }))}
+                        className="text-[13px] font-semibold text-[#64748b] hover:text-[#ef4444]"
+                      >
+                        Remove cover
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <div>
                   <label className="block text-[11px] font-bold uppercase tracking-[0.08em] text-[#94a3b8] mb-1.5">Full Content</label>
                   <textarea
                     rows={6}
@@ -772,7 +877,14 @@ export default function AdminPage() {
                       editingArticleId === article.id ? "border-[#229388] ring-2 ring-[#229388]/20" : "border-[#e2e8f0]"
                     }`}
                   >
-                    <div className="min-w-0 flex-1">
+                    <div className="min-w-0 flex-1 flex gap-3">
+                      {article.coverImage ? (
+                        <div className="w-14 h-14 rounded-lg overflow-hidden border border-[#e2e8f0] shrink-0 bg-[#f1f5f9]">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={article.coverImage} alt="" className="w-full h-full object-cover" />
+                        </div>
+                      ) : null}
+                      <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2 mb-1">
                         <p className="font-semibold text-[14px] text-[#111827] leading-snug">{article.title}</p>
                         <span
@@ -788,6 +900,7 @@ export default function AdminPage() {
                       <p className="text-[12px] text-[#64748b]">
                         {article.category} · {formatAdminArticleDate(article.date)}
                       </p>
+                      </div>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0">
                       <button
@@ -858,10 +971,32 @@ export default function AdminPage() {
                           </a>
                         )}
                       </div>
-                      <div className="text-right text-[11px] text-[#94a3b8]">
-                        {new Date(a.createdAt).toLocaleString()}
-                        {a.hasCv && (
-                          <p className="text-[#229388] font-semibold mt-1">CV on file</p>
+                      <div className="flex flex-col items-end gap-2 text-[11px] text-[#94a3b8]">
+                        <span>{new Date(a.createdAt).toLocaleString()}</span>
+                        <div className="flex flex-wrap items-center justify-end gap-1">
+                          {a.hasCv && (
+                            <button
+                              type="button"
+                              onClick={() => void downloadApplicationCv(a)}
+                              className="inline-flex items-center gap-1 rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-2.5 py-1.5 text-[12px] font-semibold text-[#229388] hover:bg-[#f0fdfc]"
+                            >
+                              <Download size={14} />
+                              Download CV
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            title="Delete application"
+                            onClick={() => void deleteApplication(a.id)}
+                            className="p-2 rounded-lg text-[#94a3b8] hover:text-[#ef4444] hover:bg-red-50 transition-colors"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
+                        {a.hasCv && a.cvFileName && (
+                          <span className="text-[10px] text-[#64748b] max-w-[220px] truncate" title={a.cvFileName}>
+                            {a.cvFileName}
+                          </span>
                         )}
                       </div>
                     </div>

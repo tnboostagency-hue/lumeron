@@ -14,6 +14,7 @@ interface Article {
   date: string;
   excerpt: string;
   content: string;
+  coverImage: string | null;
 }
 
 function formatArticleDate(iso: string): string {
@@ -25,6 +26,7 @@ function formatArticleDate(iso: string): string {
 
 function mapApiArticle(row: Record<string, unknown>): Article {
   const rawDate = String(row.date ?? "");
+  const c = row.coverImage ?? row.cover_image;
   return {
     id: String(row.id),
     title: String(row.title),
@@ -32,6 +34,7 @@ function mapApiArticle(row: Record<string, unknown>): Article {
     date: formatArticleDate(rawDate),
     excerpt: String(row.excerpt ?? ""),
     content: String(row.content ?? ""),
+    coverImage: typeof c === "string" && c.length > 0 ? c : null,
   };
 }
 
@@ -153,8 +156,21 @@ export default function NewsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filtered.map((article) => (
                     <div key={article.id} className="bg-white rounded-2xl border border-[#e2e8f0] overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
-                      {/* Category color bar */}
-                      <div className="h-1 w-full" style={{ background: CATEGORY_COLORS[article.category] || "#229388" }} />
+                      {article.coverImage ? (
+                        <>
+                          <div className="aspect-[16/10] w-full bg-[#f1f5f9]">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={article.coverImage}
+                              alt=""
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="h-1 w-full" style={{ background: CATEGORY_COLORS[article.category] || "#229388" }} />
+                        </>
+                      ) : (
+                        <div className="h-1 w-full" style={{ background: CATEGORY_COLORS[article.category] || "#229388" }} />
+                      )}
                       <div className="p-7">
                         <div className="flex items-center gap-3 mb-4">
                           <span className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.1em] px-3 py-1 rounded-full" style={{ background: "rgba(34,147,136,0.08)", color: "#229388" }}>

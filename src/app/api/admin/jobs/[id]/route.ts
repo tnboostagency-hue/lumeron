@@ -15,6 +15,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
   if (denied) return denied;
   const { id } = await ctx.params;
   try {
+    const db = getDb();
     const body = await req.json();
     const patch: Partial<{
       title: string;

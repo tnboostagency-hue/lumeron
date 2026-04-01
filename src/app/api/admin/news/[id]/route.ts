@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { newsArticles } from "@/db/schema";
 import { requireAdminSession } from "@/lib/admin-api";
+import { parseNewsCoverInput } from "@/lib/news-cover";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
       date: string;
       excerpt: string;
       content: string;
+      coverImage: string | null;
       published: boolean;
       updatedAt: string;
     }> = { updatedAt: nowIso() };
@@ -32,6 +34,13 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
     if (body.excerpt != null) patch.excerpt = String(body.excerpt).trim();
     if (body.content != null) patch.content = String(body.content).trim();
     if (typeof body.published === "boolean") patch.published = body.published;
+    if ("coverImage" in body) {
+      const coverParsed = parseNewsCoverInput(body.coverImage);
+      if (!coverParsed.ok) {
+        return NextResponse.json({ error: coverParsed.error }, { status: 400 });
+      }
+      patch.coverImage = coverParsed.value;
+    }
     await db.update(newsArticles).set(patch).where(eq(newsArticles.id, id));
     const [row] = await db.select().from(newsArticles).where(eq(newsArticles.id, id)).limit(1);
     if (!row) return NextResponse.json({ error: "Not found" }, { status: 404 });
