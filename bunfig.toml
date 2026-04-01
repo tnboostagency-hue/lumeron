@@ -1,0 +1,3 @@
+# Use binary lockfile (bun.lockb) for tooling/CI that expects it (e.g. some Cloudflare setups).
+[install]
+saveTextLockfile = false
