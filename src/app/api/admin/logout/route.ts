@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { ADMIN_SESSION_COOKIE_NAME } from "@/lib/admin-session";
+import { ADMIN_SESSION_COOKIE_NAME, adminCookieSecure } from "@/lib/admin-session";
 
 export async function POST() {
   const res = NextResponse.json({ ok: true });
   res.cookies.set(ADMIN_SESSION_COOKIE_NAME, "", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: adminCookieSecure(),
     sameSite: "lax",
     path: "/",
     maxAge: 0,
