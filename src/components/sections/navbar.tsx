@@ -62,9 +62,9 @@ const Navbar = () => {
           backdropFilter: isScrolled ? "blur(60px) saturate(1.8) brightness(1.05)" : "blur(40px) saturate(1.6)",
         }}
       >
-        <div className="container mx-auto px-4 sm:px-6 md:px-8 flex items-center justify-between gap-3">
-          {/* Logo — may shrink on narrow phones so the menu button stays visible */}
-          <div className="min-w-0 flex-1">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 flex items-center gap-2 sm:gap-3 lg:gap-4 min-h-[4rem]">
+          {/* Logo — grows on mobile; capped on lg+ so main nav stays between logo and language/CTAs */}
+          <div className="min-w-0 flex-1 lg:flex-initial lg:shrink-0 lg:max-w-[min(230px,28vw)] xl:max-w-[270px]">
             <Link href="/" className="flex items-center gap-2 sm:gap-3 group min-w-0 max-w-full">
               {/* Main logo */}
               <motion.div
@@ -134,19 +134,19 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Desktop nav — About Us | Services | Careers | News | Contact */}
-          <div className="hidden lg:flex items-center space-x-8 absolute left-1/2 -translate-x-1/2">
+          {/* Desktop nav — flex track between logo and right cluster (avoids overlap with EN | عربي) */}
+          <div className="hidden lg:flex flex-1 min-w-0 items-center justify-center gap-3 min-[1100px]:gap-5 xl:gap-6 2xl:gap-8 px-1">
             {/* About Us */}
             <Link
               href="/about"
-              className="text-[15px] font-semibold flex items-center gap-1.5 transition-all hover:opacity-70 whitespace-nowrap text-foreground"
+              className="text-[14px] xl:text-[15px] font-semibold flex items-center gap-1.5 transition-all hover:opacity-70 whitespace-nowrap text-foreground shrink-0"
             >
               {t.nav.about}
             </Link>
 
             {/* Services dropdown */}
-            <div className="relative group">
-              <button className="text-[15px] font-semibold flex items-center gap-1.5 transition-all hover:opacity-70 whitespace-nowrap text-foreground">
+            <div className="relative group shrink-0">
+              <button className="text-[14px] xl:text-[15px] font-semibold flex items-center gap-1.5 transition-all hover:opacity-70 whitespace-nowrap text-foreground">
                 {t.nav.services}
                 <ChevronDown className="w-4 h-4 mt-0.5 opacity-60 transition-transform duration-300 group-hover:rotate-180" />
               </button>
@@ -174,7 +174,7 @@ const Navbar = () => {
             {/* Careers */}
             <Link
               href="/careers"
-              className="text-[15px] font-semibold flex items-center gap-1.5 transition-all hover:opacity-70 whitespace-nowrap text-foreground"
+              className="text-[14px] xl:text-[15px] font-semibold flex items-center gap-1.5 transition-all hover:opacity-70 whitespace-nowrap text-foreground shrink-0"
             >
               {lang === "ar" ? "الوظائف" : "Careers"}
             </Link>
@@ -182,7 +182,7 @@ const Navbar = () => {
             {/* News */}
             <Link
               href="/news"
-              className="text-[15px] font-semibold flex items-center gap-1.5 transition-all hover:opacity-70 whitespace-nowrap text-foreground"
+              className="text-[14px] xl:text-[15px] font-semibold flex items-center gap-1.5 transition-all hover:opacity-70 whitespace-nowrap text-foreground shrink-0"
             >
               {lang === "ar" ? "الأخبار" : "News"}
             </Link>
@@ -190,41 +190,30 @@ const Navbar = () => {
             {/* Contact — leads to contact section on home page */}
             <Link
               href="/#contact"
-              className="text-[15px] font-semibold flex items-center gap-1.5 transition-all hover:opacity-70 whitespace-nowrap text-foreground"
+              className="text-[14px] xl:text-[15px] font-semibold flex items-center gap-1.5 transition-all hover:opacity-70 whitespace-nowrap text-foreground shrink-0"
             >
               {t.nav.contact}
             </Link>
           </div>
 
-          {/* Right side — never shrink so hamburger stays on-screen */}
-          <div className="flex shrink-0 items-center gap-3 md:gap-4">
-            <div className="md:hidden flex items-center rounded-full border border-[#0f172a]/12 bg-white/85 px-2 py-1 text-[12px] font-semibold text-foreground">
+          {/* Right side — language + CTAs; nowrap so toggle never slips under nav */}
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3 md:gap-4 lg:gap-3 xl:gap-4 whitespace-nowrap">
+            {/* Language: desktop header only (lg+). Mobile/tablet: toggle lives at top of slide-out menu. */}
+            <div className="hidden lg:flex items-center text-[14px] font-semibold text-foreground shrink-0 pl-1 lg:pl-2 xl:pl-3 border-l border-[#0f172a]/10">
               <button
+                type="button"
                 onClick={() => setLanguage("en")}
-                className={`px-1.5 ${lang === "en" ? "text-[#229388]" : "opacity-50"}`}
+                className={`hover:opacity-70 transition-opacity px-0.5 ${lang === "en" ? "text-[#229388]" : "opacity-50"}`}
               >
                 EN
               </button>
-              <span className="text-muted-foreground/70">|</span>
+              <span className="mx-1.5 xl:mx-2 font-light text-muted-foreground select-none" aria-hidden>
+                |
+              </span>
               <button
+                type="button"
                 onClick={() => setLanguage("ar")}
-                className={`font-sans px-1.5 ${lang === "ar" ? "text-[#229388]" : "opacity-50"}`}
-              >
-                عربي
-              </button>
-            </div>
-
-            <div className="hidden md:flex items-center text-[14px] font-semibold text-foreground">
-              <button
-                onClick={() => setLanguage("en")}
-                className={`hover:opacity-70 transition-opacity ${lang === "en" ? "text-[#229388]" : "opacity-50"}`}
-              >
-                EN
-              </button>
-              <span className="mx-2 font-light text-muted-foreground">|</span>
-              <button
-                onClick={() => setLanguage("ar")}
-                className={`font-sans hover:opacity-70 transition-opacity ${lang === "ar" ? "text-[#229388]" : "opacity-50"}`}
+                className={`font-sans hover:opacity-70 transition-opacity px-0.5 ${lang === "ar" ? "text-[#229388]" : "opacity-50"}`}
               >
                 عربي
               </button>
@@ -276,7 +265,29 @@ const Navbar = () => {
           isMobileMenuOpen ? "translate-y-0" : "-translate-y-full"
         }`}
       >
-        <div className="flex flex-col h-full pt-28 px-8 pb-10 overflow-y-auto">
+        <div className="flex flex-col h-full pt-24 px-8 pb-10 overflow-y-auto" dir={lang === "ar" ? "rtl" : "ltr"}>
+          <div className="flex items-center justify-end mb-6 pb-4 border-b border-[#0f172a]/10">
+            <div className="flex items-center rounded-full border border-[#0f172a]/12 bg-[#f8fafc] px-2.5 py-1.5 text-[13px] font-semibold text-foreground shadow-sm">
+              <button
+                type="button"
+                onClick={() => setLanguage("en")}
+                className={`px-2 rounded-md transition-colors ${lang === "en" ? "text-[#229388]" : "text-foreground/45 hover:text-foreground/70"}`}
+              >
+                EN
+              </button>
+              <span className="text-muted-foreground/50 select-none" aria-hidden>
+                |
+              </span>
+              <button
+                type="button"
+                onClick={() => setLanguage("ar")}
+                className={`font-sans px-2 rounded-md transition-colors ${lang === "ar" ? "text-[#229388]" : "text-foreground/45 hover:text-foreground/70"}`}
+              >
+                عربي
+              </button>
+            </div>
+          </div>
+
           <div className="flex flex-col space-y-6">
             {/* About Us */}
             <Link
@@ -353,21 +364,6 @@ const Navbar = () => {
             >
               {t.nav.connect}
             </button>
-            <div className="flex flex-wrap items-center gap-3 text-lg font-semibold text-foreground">
-              <button
-                onClick={() => setLanguage("en")}
-                className={lang === "en" ? "text-[#229388]" : "opacity-50"}
-              >
-                English
-              </button>
-              <span className="text-muted-foreground font-light">|</span>
-              <button
-                onClick={() => setLanguage("ar")}
-                className={`font-sans ${lang === "ar" ? "text-[#229388]" : "opacity-50"}`}
-              >
-                عربي
-              </button>
-            </div>
             <p className="text-sm text-muted-foreground">
               {lang === 'ar' ? "MASCO Digital تسارع رؤية المملكة 2030." : "MASCO Digital accelerating Saudi Vision 2030."}
             </p>

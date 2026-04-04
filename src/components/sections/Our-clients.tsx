@@ -45,7 +45,6 @@ const clientFiles = [
   "image37.jpg",
   "image38.jpg",
   "image39.jpg",
-  "image40.png",
   "image41.jpeg",
   "image42.png",
 ];

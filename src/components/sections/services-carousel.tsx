@@ -693,7 +693,7 @@ export default function ServicesCarousel() {
     <section
       id="services"
       ref={sectionRef}
-      className="bg-white relative z-[2] pb-32 lg:pb-40"
+      className="bg-white relative z-[2] pb-14 md:pb-20 lg:pb-40"
       dir={isAr ? 'rtl' : 'ltr'}
     >
       {/* Soft white fades so sticky transitions do not feel clipped at bounds */}
@@ -709,7 +709,7 @@ export default function ServicesCarousel() {
       />
 
       {/* ── Section Header (stack above sticky left panel) ──────── */}
-      <div className="container mx-auto px-5 sm:px-8 max-w-[1440px] pt-[80px] pb-[60px] lg:pt-[120px] lg:pb-[80px] relative z-20">
+      <div className="container mx-auto px-5 sm:px-8 max-w-[1440px] pt-12 pb-8 sm:pt-16 sm:pb-10 lg:pt-[120px] lg:pb-[80px] relative z-20">
         <div className={`flex items-center gap-3 mb-4 ${isAr ? 'flex-row-reverse' : ''}`}>
           <div className="w-2 h-2 bg-[#229388] flex-shrink-0" />
           <span className="uppercase tracking-[0.18em] text-[11px] text-[#229388] font-semibold">
@@ -733,7 +733,7 @@ export default function ServicesCarousel() {
 
       {/* ── Timeline Split Layout — columns synced; left sticky + vertically centred ───────── */}
       <div className="container mx-auto px-5 sm:px-8 max-w-[1440px] lg:[zoom:85%] lg:[transform-origin:top_center]">
-        <div ref={scrollZoneRef} className="flex gap-12 xl:gap-20 flex-col lg:flex-row lg:items-stretch overflow-visible">
+        <div ref={scrollZoneRef} className="flex gap-6 md:gap-10 xl:gap-20 flex-col lg:flex-row lg:items-stretch overflow-visible">
 
           {/* ══════════════════════════════════════════════════════
               LEFT PANEL — wrapper for layout; inner div is sticky + centred
@@ -892,17 +892,17 @@ export default function ServicesCarousel() {
           {/* ══════════════════════════════════════════════════════
               RIGHT PANEL — scrollable service blocks (synced with left via activeIdx)
           ══════════════════════════════════════════════════════ */}
-          <div className="w-full lg:w-[52%] xl:w-[50%] pb-24 overflow-visible">
+          <div className="w-full lg:w-[52%] xl:w-[50%] pb-6 md:pb-10 lg:pb-24 overflow-visible">
 
             {/* Mobile: show 3D canvas + info inline above each block */}
             {SERVICES.map((service, sIdx) => (
               <div
                 key={service.id}
                 ref={el => { rowRefs.current[sIdx] = el; }}
-                className="mb-24 lg:mb-32"
+                className="mb-12 md:mb-16 lg:mb-32 last:mb-0"
               >
                 {/* ── Mobile canvas (hidden on desktop) ── */}
-                <div className="lg:hidden mb-6">
+                <div className="lg:hidden mb-4">
                   <div
                     className="w-full rounded-2xl overflow-hidden mb-5"
                     style={{ height: '240px', background: 'linear-gradient(135deg,#f7fffe 0%,#edfbf9 100%)' }}
@@ -915,7 +915,7 @@ export default function ServicesCarousel() {
                 </div>
 
                 {/* ── Service header ── */}
-                <div className={`flex items-center gap-4 mb-8 ${isAr ? 'flex-row-reverse' : ''}`}>
+                <div className={`flex items-center gap-4 mb-5 md:mb-8 ${isAr ? 'flex-row-reverse' : ''}`}>
                   <span
                     className="text-[11px] uppercase tracking-[0.18em] font-semibold transition-colors duration-300"
                     style={{ color: sIdx === activeIdx ? service.color : '#d1d5db' }}
@@ -939,7 +939,7 @@ export default function ServicesCarousel() {
                 </div>
 
                 {/* ── Step cards ── */}
-                <div className="flex flex-col gap-7 pb-4 overflow-visible">
+                <div className="flex flex-col gap-5 md:gap-7 pb-2 md:pb-4 overflow-visible">
                   {service.steps.map((step, stIdx) => (
                     <StepCard
                       key={stIdx}
