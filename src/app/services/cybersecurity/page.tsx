@@ -7,11 +7,12 @@ import ContactModal from "@/components/sections/contact-modal";
 import PageWrapper from "@/components/ui/page-wrapper";
 import ServiceHeroOtherServices from "@/components/ui/service-hero-other-services";
 
+/** Short general informational highlights (no performance claims) */
 const stats = [
-  { num: "500", unit: "+", label: "Threats blocked daily" },
-  { num: "99.97", unit: "%", label: "Threat detection rate" },
-  { num: "15", unit: " min", label: "Mean time to respond" },
-  { num: "24", unit: "/7", label: "SOC monitoring" },
+  { num: "Monitoring", unit: "", label: "Ongoing vigilance" },
+  { num: "Detection", unit: "", label: "Layered visibility" },
+  { num: "Response", unit: "", label: "Coordinated handling" },
+  { num: "Coverage", unit: "", label: "Always-on operations" },
 ];
 
 const services = [
@@ -161,7 +162,6 @@ const SOC_DASHBOARD_FEED = [
   { y: 294, dot: "#3ec8ba" as const, msg: "Security tools and controls rolled out in step" },
 ];
 
-/** Qualitative summary tiles (no percentages in the illustration) */
 const SOC_DASH_QUAL_METRICS = [
   { x: 30, label: "VISIBILITY", value: "Broad" },
   { x: 140, label: "RESPONSE", value: "Structured" },
@@ -169,10 +169,10 @@ const SOC_DASH_QUAL_METRICS = [
 ] as const;
 
 const specs = [
-  { name: "Visibility", val: "Layered monitoring" },
-  { name: "Triage", val: "Risk-based" },
-  { name: "Recovery", val: "Structured playbooks" },
-  { name: "Operations", val: "Continuous SOC" },
+  { name: "Monitoring", val: "Continuous" },
+  { name: "Detection", val: "Layered" },
+  { name: "Response", val: "Prioritized" },
+  { name: "SOC coverage", val: "Always-on" },
   { name: "National alignment", val: "NCA ECC" },
   { name: "Certification", val: "ISO 27001" },
   { name: "Financial sector", val: "SAMA CSF" },
@@ -248,8 +248,13 @@ export default function CybersecurityPage() {
         <div className="border-y border-[#e2e8f0] bg-white grid grid-cols-2 lg:grid-cols-4 shadow-sm">
           {stats.map((s) => (
             <div key={s.label} className="px-10 py-10 border-r border-[#e2e8f0] last:border-r-0">
-              <div className="font-bold leading-none mb-2" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(28px,3.5vw,46px)", color: "#111827", letterSpacing: "-0.02em" }}>
-                {s.num}<span className="text-[#229388]" style={{ fontSize: "0.55em" }}>{s.unit}</span>
+              <div className="font-bold leading-none mb-2" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(22px,2.8vw,36px)", color: "#111827", letterSpacing: "-0.02em" }}>
+                {s.num}
+                {s.unit ? (
+                  <span className="text-[#229388]" style={{ fontSize: "0.55em" }}>
+                    {s.unit}
+                  </span>
+                ) : null}
               </div>
               <div className="text-[12px] font-medium tracking-[0.07em] uppercase text-[#94a3b8]">{s.label}</div>
             </div>
@@ -470,9 +475,11 @@ export default function CybersecurityPage() {
                 <div className="w-5 h-px bg-[#229388]" />
               </div>
               <h2 className="font-bold mb-4" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(28px,3.5vw,44px)", color: "#111827", letterSpacing: "-0.025em" }}>
-                Measured in outcomes, not promises
+                How we operate & align
               </h2>
-              <p className="text-[15px] text-[#64748b] max-w-[440px] mx-auto leading-[1.7]">Clear delivery scope, accountable teams, and practical reporting your leadership can use.</p>
+              <p className="text-[15px] text-[#64748b] max-w-[440px] mx-auto leading-[1.7]">
+                Short summary of our security posture focus, plus national and sector alignment — general information, not contractual metrics.
+              </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto" style={{ border: "1px solid rgba(34,147,136,0.18)", gap: "1px", background: "rgba(34,147,136,0.12)", boxShadow: "0 4px 24px rgba(34,147,136,0.06)" }}>
               {specs.map((r) => (
