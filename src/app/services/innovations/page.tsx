@@ -5,6 +5,7 @@ import Navbar from "@/components/sections/navbar";
 import Footer from "@/components/sections/footer";
 import ContactModal from "@/components/sections/contact-modal";
 import PageWrapper from "@/components/ui/page-wrapper";
+import ServiceHeroOtherServices from "@/components/ui/service-hero-other-services";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function InnovationsPage() {
@@ -45,7 +46,7 @@ export default function InnovationsPage() {
       <PageWrapper>
 
       {/* HERO */}
-      <section className="relative min-h-[92vh] flex flex-col justify-end overflow-hidden bg-white pt-20">
+      <section className="relative min-h-[92vh] flex flex-col justify-end overflow-x-hidden overflow-y-visible bg-white pt-20">
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -72,7 +73,7 @@ export default function InnovationsPage() {
           </svg>
         </div>
 
-        <div className="container mx-auto px-6 md:px-8 pb-20 relative z-10">
+        <div className="container relative z-[115] mx-auto overflow-visible px-6 md:px-8 pb-20">
           <div className={`flex items-center gap-3 mb-3 ${lang === 'ar' ? 'flex-row-reverse' : ''}`}>
             <div className="w-6 h-px bg-[#229388]" />
             <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-[#229388]">Service</span>
@@ -96,7 +97,7 @@ export default function InnovationsPage() {
             </p>
             <div className="flex gap-4 flex-shrink-0">
               <button onClick={() => setModalOpen(true)} className="btn-primary text-[14px] px-8 py-3.5">{t.about.hero.cta1}</button>
-              <a href="#services" className="btn-outline text-[14px] px-8 py-3.5">{lang === 'ar' ? "خدماتنا" : "Our Services"}</a>
+              <ServiceHeroOtherServices excludeHref="/services/innovations" />
             </div>
           </div>
         </div>

@@ -5,6 +5,7 @@ import Navbar from "@/components/sections/navbar";
 import Footer from "@/components/sections/footer";
 import ContactModal from "@/components/sections/contact-modal";
 import PageWrapper from "@/components/ui/page-wrapper";
+import ServiceHeroOtherServices from "@/components/ui/service-hero-other-services";
 
 const stats = [
   { num: "500", unit: "+", label: "Threats blocked daily" },
@@ -137,15 +138,45 @@ const services = [
   },
 ];
 
+/** Radar rows: plain language, one theme per service area (01–06) — illustrative only */
+const SOC_RADAR_ANIMATION_ROWS = [0, 1, 2, 3, 4, 5].map((i) => ({
+  y: 94 + i * 26,
+  color: (["#ef4444", "#f59e0b", "#229388", "#229388", "#3ec8ba", "#94a3b8"] as const)[i],
+  area: ["SOC", "GRC", "Test", "OT", "DFIR", "Cloud"][i]!,
+  msg: [
+    "Endpoints & logs",
+    "Policy & compliance",
+    "Security testing",
+    "Industrial / OT",
+    "Incident ready",
+    "Hybrid cloud",
+  ][i]!,
+}));
+
+/** Dashboard activity lines — general status, no timestamps */
+const SOC_DASHBOARD_FEED = [
+  { y: 234, dot: "#229388" as const, msg: "Day-to-day monitoring across your estate" },
+  { y: 254, dot: "#f59e0b" as const, msg: "Governance and roadmap work in motion" },
+  { y: 274, dot: "#ef4444" as const, msg: "Forensics and response procedures on standby" },
+  { y: 294, dot: "#3ec8ba" as const, msg: "Security tools and controls rolled out in step" },
+];
+
+/** Qualitative summary tiles (no percentages in the illustration) */
+const SOC_DASH_QUAL_METRICS = [
+  { x: 30, label: "VISIBILITY", value: "Broad" },
+  { x: 140, label: "RESPONSE", value: "Structured" },
+  { x: 250, label: "COVERAGE", value: "Always-on" },
+] as const;
+
 const specs = [
-  { name: "Detection Rate", val: "99.97%" },
-  { name: "MTTD", val: "< 5 min" },
-  { name: "MTTR", val: "15 min" },
-  { name: "SOC Coverage", val: "24/7/365" },
-  { name: "Framework", val: "NCA ECC" },
+  { name: "Visibility", val: "Layered monitoring" },
+  { name: "Triage", val: "Risk-based" },
+  { name: "Recovery", val: "Structured playbooks" },
+  { name: "Operations", val: "Continuous SOC" },
+  { name: "National alignment", val: "NCA ECC" },
   { name: "Certification", val: "ISO 27001" },
-  { name: "SAMA Alignment", val: "CSF v1.0" },
-  { name: "PDPL Ready", val: "Yes" },
+  { name: "Financial sector", val: "SAMA CSF" },
+  { name: "Privacy", val: "PDPL-ready" },
 ];
 
 export default function CybersecurityPage() {
@@ -158,7 +189,7 @@ export default function CybersecurityPage() {
       <PageWrapper>
 
         {/* HERO — unchanged */}
-        <section className="relative min-h-[92vh] flex flex-col justify-end overflow-hidden bg-white pt-20">
+        <section className="relative min-h-[92vh] flex flex-col justify-end overflow-x-hidden overflow-y-visible bg-white pt-20">
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -180,7 +211,7 @@ export default function CybersecurityPage() {
             </svg>
           </div>
 
-          <div className="container mx-auto px-6 md:px-8 pb-20 relative z-10">
+          <div className="container relative z-[115] mx-auto overflow-visible px-6 md:px-8 pb-20">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-6 h-px bg-[#229388]" />
               <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-[#229388]">Service</span>
@@ -202,7 +233,7 @@ export default function CybersecurityPage() {
               </p>
               <div className="flex gap-4 flex-shrink-0">
                 <button onClick={() => setModalOpen(true)} className="btn-primary text-[14px] px-8 py-3.5">Connect Now</button>
-                <a href="#services" className="btn-outline text-[14px] px-8 py-3.5">Our Services</a>
+                <ServiceHeroOtherServices excludeHref="/services/cybersecurity" />
               </div>
             </div>
           </div>
@@ -251,7 +282,7 @@ export default function CybersecurityPage() {
                   {/* Outer frame */}
                   <rect x="20" y="20" width="360" height="280" rx="6" fill="rgba(34,147,136,0.03)" stroke="rgba(34,147,136,0.2)" strokeWidth="1"/>
                   <rect x="20" y="20" width="360" height="32" rx="6" fill="rgba(34,147,136,0.1)" stroke="rgba(34,147,136,0.2)" strokeWidth="1"/>
-                  <text x="200" y="40" textAnchor="middle" fontSize="9" fill="#229388" fontWeight="700" letterSpacing="1">SOC THREAT OPERATIONS CENTER</text>
+                  <text x="200" y="40" textAnchor="middle" fontSize="9" fill="#229388" fontWeight="700" letterSpacing="0.6">SOC OVERVIEW</text>
                   {/* Radar circles */}
                   {[60,45,30,15].map((r) => (
                     <circle key={r} cx="140" cy="175" r={r} stroke="rgba(34,147,136,0.2)" strokeWidth="0.8" fill="none"/>
@@ -268,25 +299,18 @@ export default function CybersecurityPage() {
                   <line x1="140" y1="115" x2="140" y2="235" stroke="rgba(34,147,136,0.15)" strokeWidth="0.5"/>
                   {/* Right panel — alert feed */}
                   <rect x="240" y="62" width="120" height="210" rx="4" fill="rgba(34,147,136,0.04)" stroke="rgba(34,147,136,0.15)" strokeWidth="0.8"/>
-                  <text x="300" y="78" textAnchor="middle" fontSize="7.5" fill="#94a3b8" fontWeight="600" letterSpacing="0.5">ACTIVE ALERTS</text>
-                  {[
-                    { y: 94,  color: "#ef4444", sev: "HIGH",   msg: "Brute-force SSH" },
-                    { y: 120, color: "#f59e0b", sev: "MED",    msg: "Port scan detect" },
-                    { y: 146, color: "#229388", sev: "LOW",    msg: "Policy deviation" },
-                    { y: 172, color: "#229388", sev: "INFO",   msg: "Auth anomaly" },
-                    { y: 198, color: "#3ec8ba", sev: "INFO",   msg: "Log spike event" },
-                    { y: 224, color: "#94a3b8", sev: "CLEAR",  msg: "All systems norm." },
-                  ].map((a) => (
+                  <text x="300" y="78" textAnchor="middle" fontSize="7.5" fill="#94a3b8" fontWeight="600" letterSpacing="0.5">FOCUS</text>
+                  {SOC_RADAR_ANIMATION_ROWS.map((a) => (
                     <g key={a.y}>
                       <circle cx="254" cy={a.y + 4} r="3" fill={a.color}/>
                       <text x="262" y={a.y + 8} fontSize="7" fill="#374151" fontWeight="500">{a.msg}</text>
-                      <text x="354" y={a.y + 8} textAnchor="end" fontSize="6.5" fill={a.color} fontWeight="700">{a.sev}</text>
+                      <text x="354" y={a.y + 8} textAnchor="end" fontSize="6.5" fill={a.color} fontWeight="700">{a.area}</text>
                     </g>
                   ))}
                   {/* Bottom bar */}
                   <rect x="20" y="280" width="360" height="20" rx="0" fill="rgba(34,147,136,0.08)"/>
                   <circle cx="36" cy="290" r="4" fill="#229388"><animate attributeName="opacity" values="1;0.2;1" dur="1s" repeatCount="indefinite"/></circle>
-                  <text x="48" y="294" fontSize="8" fill="#229388" fontWeight="700" letterSpacing="0.8">LIVE  ·  500+ THREATS BLOCKED TODAY  ·  99.97% DETECTION</text>
+                  <text x="48" y="294" fontSize="7.5" fill="#229388" fontWeight="700" letterSpacing="0.4">Illustrative · Aligned · Integrated</text>
                 </svg>
                 <div className="absolute -bottom-4 -left-4 text-white rounded-xl px-5 py-4 shadow-lg" style={{ background: "linear-gradient(135deg,#229388,#3ec8ba)" }}>
                   <div className="font-bold text-2xl leading-none" style={{ fontFamily: '"Avenir Next Arabic",sans-serif' }}>NCA</div>
@@ -366,7 +390,7 @@ export default function CybersecurityPage() {
                 Intelligence-led, outcome-driven security
               </h2>
               <p className="text-[16px] text-[#64748b] leading-[1.8] font-light mb-10">
-                Our security operations model integrates threat intelligence, behavioural analytics, and automated playbooks — enabling sub-15-minute response times while ensuring full NCA ECC, NIST CSF, and ISO 27001 alignment.
+                Our security operations model integrates threat intelligence, behavioural analytics, and automated playbooks — with fast, prioritized response and alignment to NCA ECC, NIST CSF, and ISO 27001.
               </p>
               <ul className="flex flex-col divide-y divide-[#e2e8f0]">
                 {[
@@ -396,23 +420,18 @@ export default function CybersecurityPage() {
                 <circle cx="70" cy="36" r="5" fill="rgba(34,147,136,0.2)"/>
                 <text x="190" y="40" textAnchor="middle" fontSize="9" fill="#229388" fontWeight="700" letterSpacing="1">SECURITY OPERATIONS CENTER</text>
 
-                {/* 3 metric cards */}
-                {[
-                  { x: 30,  label: "DETECTION", val: "99.97", unit: "%" },
-                  { x: 140, label: "MTTR",       val: "< 15",  unit: "min" },
-                  { x: 250, label: "THREATS",    val: "500",   unit: "/day" },
-                ].map((m) => (
+                {/* 3 qualitative summary tiles */}
+                {SOC_DASH_QUAL_METRICS.map((m) => (
                   <g key={m.label}>
                     <rect x={m.x} y="62" width="90" height="56" rx="5" fill="white" stroke="rgba(34,147,136,0.18)" strokeWidth="1"/>
                     <text x={m.x + 45} y="84" textAnchor="middle" fontSize="7.5" fill="#94a3b8" fontWeight="600" letterSpacing="0.8">{m.label}</text>
-                    <text x={m.x + 45} y="102" textAnchor="middle" fontSize="18" fill="#229388" fontWeight="800" letterSpacing="-0.5">{m.val}</text>
-                    <text x={m.x + 45} y="113" textAnchor="middle" fontSize="8" fill="#3ec8ba" fontWeight="600">{m.unit}</text>
+                    <text x={m.x + 45} y="104" textAnchor="middle" fontSize="13" fill="#229388" fontWeight="800" letterSpacing="-0.3">{m.value}</text>
                   </g>
                 ))}
 
                 {/* Threat trend sparkline */}
                 <rect x="30" y="128" width="300" height="90" rx="5" fill="rgba(34,147,136,0.03)" stroke="rgba(34,147,136,0.15)" strokeWidth="1"/>
-                <text x="42" y="142" fontSize="7.5" fill="#94a3b8" fontWeight="600" letterSpacing="0.8">THREAT VOLUME — 7 DAY TREND</text>
+                <text x="42" y="142" fontSize="7.5" fill="#94a3b8" fontWeight="600" letterSpacing="0.8">ACTIVITY OVERVIEW (ILLUSTRATIVE)</text>
                 {[155, 170, 185, 200].map((y) => (
                   <line key={y} x1="36" y1={y} x2="324" y2={y} stroke="rgba(34,147,136,0.07)" strokeWidth="0.5"/>
                 ))}
@@ -424,24 +443,18 @@ export default function CybersecurityPage() {
                 </circle>
 
                 {/* Alert feed */}
-                {[
-                  { y: 234, dot: "#229388", msg: "SOC-01  —  No active incidents",       time: "0m ago" },
-                  { y: 254, dot: "#f59e0b", msg: "IDS-07  —  Anomaly auto-contained",    time: "6m ago" },
-                  { y: 274, dot: "#3ec8ba", msg: "CLOUD   —  CSPM scan completed",       time: "18m ago" },
-                  { y: 294, dot: "#229388", msg: "OT-03   —  Purdue segmentation OK",    time: "31m ago" },
-                ].map((a) => (
+                {SOC_DASHBOARD_FEED.map((a) => (
                   <g key={a.y}>
                     <circle cx="40" cy={a.y} r="4" fill={a.dot}>
                       {a.dot === "#229388" && <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>}
                     </circle>
                     <text x="52" y={a.y + 4} fontSize="8.5" fill="#374151" fontWeight="500">{a.msg}</text>
-                    <text x="320" y={a.y + 4} textAnchor="end" fontSize="7.5" fill="#94a3b8">{a.time}</text>
                   </g>
                 ))}
 
                 <rect x="20" y="312" width="320" height="28" rx="0" fill="rgba(34,147,136,0.08)"/>
                 <circle cx="38" cy="326" r="4" fill="#229388"><animate attributeName="opacity" values="1;0.2;1" dur="1s" repeatCount="indefinite"/></circle>
-                <text x="50" y="330" fontSize="8.5" fill="#229388" fontWeight="700" letterSpacing="0.8">LIVE  ·  NCA ECC ALIGNED  ·  ISO 27001  ·  24/7</text>
+                <text x="50" y="330" fontSize="8.5" fill="#229388" fontWeight="700" letterSpacing="0.8">Framework-aligned programs · Enterprise coverage · Dedicated team</text>
               </svg>
             </div>
           </div>
@@ -459,7 +472,7 @@ export default function CybersecurityPage() {
               <h2 className="font-bold mb-4" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(28px,3.5vw,44px)", color: "#111827", letterSpacing: "-0.025em" }}>
                 Measured in outcomes, not promises
               </h2>
-              <p className="text-[15px] text-[#64748b] max-w-[440px] mx-auto leading-[1.7]">Industry-leading SLAs backed by contractual commitments and transparent reporting.</p>
+              <p className="text-[15px] text-[#64748b] max-w-[440px] mx-auto leading-[1.7]">Clear delivery scope, accountable teams, and practical reporting your leadership can use.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto" style={{ border: "1px solid rgba(34,147,136,0.18)", gap: "1px", background: "rgba(34,147,136,0.12)", boxShadow: "0 4px 24px rgba(34,147,136,0.06)" }}>
               {specs.map((r) => (

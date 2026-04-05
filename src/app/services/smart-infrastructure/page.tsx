@@ -5,6 +5,7 @@ import Navbar from "@/components/sections/navbar";
 import Footer from "@/components/sections/footer";
 import ContactModal from "@/components/sections/contact-modal";
 import PageWrapper from "@/components/ui/page-wrapper";
+import ServiceHeroOtherServices from "@/components/ui/service-hero-other-services";
 
 const stats = [
   { num: "500", unit: "+ km", label: "Fiber deployed" },
@@ -93,7 +94,7 @@ export default function SmartInfrastructurePage() {
       <PageWrapper>
 
         {/* HERO */}
-        <section className="relative min-h-[92vh] flex flex-col justify-end overflow-hidden bg-white pt-20">
+        <section className="relative min-h-[92vh] flex flex-col justify-end overflow-x-hidden overflow-y-visible bg-white pt-20">
           <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "linear-gradient(rgba(34,147,136,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(34,147,136,0.06) 1px,transparent 1px)", backgroundSize: "72px 72px", maskImage: "radial-gradient(ellipse 80% 70% at 50% 0%,black 30%,transparent 80%)" }} />
           <div className="absolute pointer-events-none" style={{ top: "-5%", left: "50%", transform: "translateX(-50%)", width: "860px", height: "500px", background: "radial-gradient(ellipse at center,rgba(34,147,136,0.09) 0%,transparent 65%)" }} />
           <div className="absolute inset-0 pointer-events-none">
@@ -114,7 +115,7 @@ export default function SmartInfrastructurePage() {
             </svg>
           </div>
 
-          <div className="container mx-auto px-6 md:px-8 pb-20 relative z-10">
+          <div className="container relative z-[115] mx-auto overflow-visible px-6 md:px-8 pb-20">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-6 h-px bg-[#229388]" />
               <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-[#229388]">Service</span>
@@ -133,7 +134,7 @@ export default function SmartInfrastructurePage() {
               </p>
               <div className="flex gap-4 flex-shrink-0">
                 <button onClick={() => setModalOpen(true)} className="btn-primary text-[14px] px-8 py-3.5">Connect Now</button>
-                <a href="#services" className="btn-outline text-[14px] px-8 py-3.5">Our Services</a>
+                <ServiceHeroOtherServices excludeHref="/services/smart-infrastructure" />
               </div>
             </div>
           </div>
