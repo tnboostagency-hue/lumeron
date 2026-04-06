@@ -160,21 +160,6 @@ export default function CareersPage() {
           </div>
         </section>
 
-        {/* STATS */}
-        <div className="border-y border-[#e2e8f0] bg-white grid grid-cols-2 lg:grid-cols-4 shadow-sm">
-          {[
-            { num: "Al Khobar", label: "Headquarters" },
-            { num: "5+", label: "Service divisions" },
-            { num: "Vision", label: "2030 aligned" },
-            { num: "Saudi-first", label: "Talent philosophy" },
-          ].map((s) => (
-            <div key={s.label} className="px-10 py-10 border-r border-[#e2e8f0] last:border-r-0">
-              <div className="font-bold leading-none mb-2 text-[#111827]" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(20px,2.5vw,32px)", letterSpacing: "-0.02em" }}>{s.num}</div>
-              <div className="text-[12px] font-medium tracking-[0.07em] uppercase text-[#94a3b8]">{s.label}</div>
-            </div>
-          ))}
-        </div>
-
         {/* OPEN POSITIONS */}
         <section id="openings" className="py-28 bg-[#f8fafc] border-t border-[#e2e8f0]">
           <div className="container mx-auto px-6 md:px-8">

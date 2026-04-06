@@ -12,13 +12,6 @@ export default function InnovationsPage() {
   const { lang, t } = useLanguage();
   const [modalOpen, setModalOpen] = useState(false);
 
-  const stats = [
-    { num: "40", unit: "+", label: lang === 'ar' ? "مشاريع بحث وتطوير نشطة" : "Active R&D projects" },
-    { num: "12", unit: "+", label: lang === 'ar' ? "براءات اختراع مسجلة" : "Patents filed" },
-    { num: "Vision", unit: " 2030", label: lang === 'ar' ? "توافق استراتيجي" : "Strategic alignment" },
-    { num: "3", unit: "x", label: lang === 'ar' ? "سرعة الابتكار مقابل السوق" : "Innovation velocity vs. market" },
-  ];
-
   const services = [
     { num: "01", title: lang === 'ar' ? "الذكاء الاصطناعي" : "Artificial Intelligence", desc: lang === 'ar' ? "نماذج لغوية كبيرة ورؤية حاسوبية وتحليلات تنبؤية مصممة خصيصاً للغة العربية وسياقات قطاع الشرق الأوسط وشمال أفريقيا." : "Large language models, computer vision, and predictive analytics custom-built for Arabic language and MENA sector contexts." },
     { num: "02", title: lang === 'ar' ? "منصة المدن الذكية" : "Smart Cities Platform", desc: lang === 'ar' ? "مجموعة ذكاء حضري متكاملة تربط أجهزة استشعار إنترنت الأشياء وبيانات التنقل والخدمات البلدية في نظام تشغيل مدينة موحد." : "Integrated urban intelligence stack connecting IoT sensors, mobility data, and municipal services into a unified city OS." },
@@ -26,17 +19,6 @@ export default function InnovationsPage() {
     { num: "04", title: lang === 'ar' ? "التوأم الرقمي" : "Digital Twin", desc: lang === 'ar' ? "محاكاة عالية الدقة للأصول المادية - المصانع والمجمعات والشبكات - مما يمكن من العمليات التنبؤية وتخطيط السيناريوهات." : "High-fidelity simulation of physical assets — factories, campuses, grids — enabling predictive operations and scenario planning." },
     { num: "05", title: lang === 'ar' ? "الواقع الممتد (XR)" : "Extended Reality (XR)", desc: lang === 'ar' ? "بيئات تدريب AR/VR ومنصات تعاون عن بعد وأماكن عمل رقمية غامرة للمؤسسات والحكومة." : "AR/VR training environments, remote collaboration platforms, and immersive digital workplaces for enterprise and government." },
     { num: "06", title: lang === 'ar' ? "استشارات التقنيات الناشئة" : "Emerging Tech Advisory", desc: lang === 'ar' ? "رادار تكنولوجي على مستوى مجلس الإدارة ومعايير تنافسية ورسم خرائط طريق استراتيجية لإبقاء القيادة في طليعة الابتكار." : "Board-level technology radar, competitive benchmarking, and strategic roadmapping to keep leadership ahead of disruption." },
-  ];
-
-  const specs = [
-    { name: lang === 'ar' ? "نماذج الذكاء الاصطناعي المنشورة" : "AI Models Deployed", val: "20+" },
-    { name: lang === 'ar' ? "بيانات معالجة يومياً" : "Data Processed Daily", val: "50 TB" },
-    { name: lang === 'ar' ? "اللغات المدعومة" : "Languages Supported", val: lang === 'ar' ? "العربية + الإنجليزية" : "Arabic + EN" },
-    { name: lang === 'ar' ? "منصات السحاب" : "Cloud Platforms", val: lang === 'ar' ? "سحاب متعدد" : "Multi-cloud" },
-    { name: lang === 'ar' ? "استثمار البحث والتطوير" : "R&D Investment", val: lang === 'ar' ? "15% من الإيرادات" : "15% Revenue" },
-    { name: lang === 'ar' ? "براءات الاختراع" : "Patents Filed", val: "12+" },
-    { name: lang === 'ar' ? "رؤية 2030" : "Vision 2030", val: lang === 'ar' ? "متوافقة" : "Aligned" },
-    { name: lang === 'ar' ? "شبكة الشركاء" : "Partner Network", val: lang === 'ar' ? "عالمية" : "Global" },
   ];
 
   return (
@@ -107,18 +89,6 @@ export default function InnovationsPage() {
           <span className="text-[10px] tracking-[0.15em] uppercase text-[#94a3b8]" style={{ writingMode: "vertical-rl" }}>{lang === 'ar' ? "اسحب لأسفل" : "Scroll"}</span>
         </div>
       </section>
-
-      {/* STATS BAR */}
-      <div className="border-y border-[#e2e8f0] bg-white grid grid-cols-2 lg:grid-cols-4 shadow-sm">
-        {stats.map((s) => (
-          <div key={s.label} className="px-10 py-10 border-r border-[#e2e8f0] last:border-r-0">
-            <div className={`font-bold leading-none mb-2 ${lang === 'ar' ? 'text-right' : ''}`} style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(28px,3.5vw,46px)", color: "#111827", letterSpacing: "-0.02em" }}>
-              {s.num}<span className="text-[#229388]" style={{ fontSize: "0.55em" }}>{s.unit}</span>
-            </div>
-            <div className={`text-[12px] font-medium tracking-[0.07em] uppercase text-[#94a3b8] ${lang === 'ar' ? 'text-right' : ''}`}>{s.label}</div>
-          </div>
-        ))}
-      </div>
 
       {/* ABOUT */}
       <section id="about" className="bg-white py-32">
@@ -353,30 +323,6 @@ export default function InnovationsPage() {
                 <circle cx="97" cy="333" r="4" fill="#229388"><animate attributeName="opacity" values="1;0.3;1" dur="1.4s" repeatCount="indefinite"/></circle>
                 <text x="108" y="337" fontSize="8.5" fill="#229388" fontWeight="700" letterSpacing="0.6">{lang === 'ar' ? "نموذج لغوي عربي — الاستنتاج نشط" : "ARABIC LLM — INFERENCE ACTIVE"}</text>
             </svg>
-          </div>
-        </div>
-      </section>
-
-      {/* SPECS */}
-      <section className="py-28 bg-[#f8fafc] border-t border-[#e2e8f0]">
-        <div className="container mx-auto px-6 md:px-8">
-          <div className="text-center mb-16">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-5 h-px bg-[#229388]" />
-              <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#229388]">{lang === 'ar' ? "القدرات في لمحة" : "Capabilities at a Glance"}</span>
-              <div className="w-5 h-px bg-[#229388]" />
-            </div>
-            <h2 className="font-bold mb-4" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(28px,3.5vw,44px)", color: "#111827", letterSpacing: "-0.025em" }}>
-              {lang === 'ar' ? "الابتكار بالأرقام" : "Innovation by the numbers"}
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto" style={{ border: "1px solid rgba(34,147,136,0.18)", gap: "1px", background: "rgba(34,147,136,0.12)", boxShadow: "0 4px 24px rgba(34,147,136,0.06)" }}>
-            {specs.map((r) => (
-              <div key={r.name} className={`bg-white px-10 py-7 flex justify-between items-center hover:bg-[#f0fdfc] transition-colors duration-200 ${lang === 'ar' ? 'flex-row-reverse' : ''}`}>
-                <span className="text-[12px] font-bold tracking-[0.07em] uppercase text-[#94a3b8]">{r.name}</span>
-                <span className="font-semibold text-[20px] text-[#111827]" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', letterSpacing: "-0.01em" }}>{r.val}</span>
-              </div>
-            ))}
           </div>
         </div>
       </section>

@@ -129,7 +129,7 @@ const Footer = () => {
             <span>{t.footer.location}</span>
           </div>
           <p className="text-[13px] text-white/40">
-            © {currentYear} {t.hero.title} • MASCO ENERGY. {lang === 'ar' ? "جميع الحقوق محفوظة." : "All rights reserved."}
+            © {currentYear} {t.hero.title}. {lang === 'ar' ? "جميع الحقوق محفوظة." : "All rights reserved."}
           </p>
         </div>
       </div>

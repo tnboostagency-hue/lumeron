@@ -7,13 +7,6 @@ import ContactModal from "@/components/sections/contact-modal";
 import PageWrapper from "@/components/ui/page-wrapper";
 import ServiceHeroOtherServices from "@/components/ui/service-hero-other-services";
 
-const stats = [
-  { num: "500", unit: "+ km", label: "Fiber deployed" },
-  { num: "99.99", unit: "%", label: "Network uptime SLA" },
-  { num: "40", unit: "+", label: "Sites connected" },
-  { num: "24", unit: "/7", label: "NOC coverage" },
-];
-
 const services = [
   {
     num: "01", badge: "Network Design",
@@ -71,17 +64,6 @@ const services = [
     items: ["24/7 network monitoring & alerting", "Incident management & SLA-backed response", "Configuration & change management", "Capacity trend analysis & planning", "Monthly performance reporting", "Vendor & carrier management on your behalf"],
     pct: 96,
   },
-];
-
-const specs = [
-  { name: "Fiber Standard", val: "ITU-T G.652D" },
-  { name: "Structured Cabling", val: "TIA-568 / ISO 11801" },
-  { name: "Wireless Standard", val: "IEEE 802.11ax" },
-  { name: "SD-WAN Vendors", val: "Cisco · Fortinet · VMware" },
-  { name: "5G Standard", val: "3GPP Release 16/17" },
-  { name: "BMS Protocols", val: "BACnet · Modbus · KNX" },
-  { name: "NOC SLA", val: "15-min MTTR" },
-  { name: "Certification", val: "BICSI · RCDD" },
 ];
 
 export default function SmartInfrastructurePage() {
@@ -143,18 +125,6 @@ export default function SmartInfrastructurePage() {
             <span className="text-[10px] tracking-[0.15em] uppercase text-[#94a3b8]" style={{ writingMode: "vertical-rl" }}>Scroll</span>
           </div>
         </section>
-
-        {/* STATS BAR */}
-        <div className="border-y border-[#e2e8f0] bg-white grid grid-cols-2 lg:grid-cols-4 shadow-sm">
-          {stats.map((s) => (
-            <div key={s.label} className="px-10 py-10 border-r border-[#e2e8f0] last:border-r-0">
-              <div className="font-bold leading-none mb-2" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(28px,3.5vw,46px)", color: "#111827", letterSpacing: "-0.02em" }}>
-                {s.num}<span className="text-[#229388]" style={{ fontSize: "0.55em" }}>{s.unit}</span>
-              </div>
-              <div className="text-[12px] font-medium tracking-[0.07em] uppercase text-[#94a3b8]">{s.label}</div>
-            </div>
-          ))}
-        </div>
 
         {/* ABOUT */}
         <section id="about" className="bg-white py-32">
@@ -397,31 +367,6 @@ export default function SmartInfrastructurePage() {
                 <rect x="20" y="312" width="320" height="28" rx="0" fill="rgba(34,147,136,0.08)"/>
                 <text x="180" y="330" textAnchor="middle" fontSize="8.5" fill="#229388" fontWeight="700" letterSpacing="0.8">LIVE · 40+ SITES · 24/7 · SLA 99.99%</text>
               </svg>
-            </div>
-          </div>
-        </section>
-
-        {/* SPECS */}
-        <section className="py-28 bg-[#f8fafc] border-t border-[#e2e8f0]">
-          <div className="container mx-auto px-6 md:px-8">
-            <div className="text-center mb-16">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="w-5 h-px bg-[#229388]" />
-                <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#229388]">Technical Parameters</span>
-                <div className="w-5 h-px bg-[#229388]" />
-              </div>
-              <h2 className="font-bold mb-4" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(28px,3.5vw,44px)", color: "#111827", letterSpacing: "-0.025em" }}>
-                Standards & certifications
-              </h2>
-              <p className="text-[15px] text-[#64748b] max-w-[440px] mx-auto leading-[1.7]">Every deployment is compliant with international standards and independently certified.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto" style={{ border: "1px solid rgba(34,147,136,0.18)", gap: "1px", background: "rgba(34,147,136,0.12)", boxShadow: "0 4px 24px rgba(34,147,136,0.06)" }}>
-              {specs.map((r) => (
-                <div key={r.name} className="bg-white px-10 py-7 flex justify-between items-center hover:bg-[#f0fdfc] transition-colors duration-200">
-                  <span className="text-[12px] font-bold tracking-[0.07em] uppercase text-[#94a3b8]">{r.name}</span>
-                  <span className="font-semibold text-[20px] text-[#111827]" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', letterSpacing: "-0.01em" }}>{r.val}</span>
-                </div>
-              ))}
             </div>
           </div>
         </section>

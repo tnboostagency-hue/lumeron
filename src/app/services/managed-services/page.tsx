@@ -7,13 +7,6 @@ import ContactModal from "@/components/sections/contact-modal";
 import PageWrapper from "@/components/ui/page-wrapper";
 import ServiceHeroOtherServices from "@/components/ui/service-hero-other-services";
 
-const stats = [
-  { num: "200", unit: "+", label: "Managed enterprise clients" },
-  { num: "99.95", unit: "%", label: "Service availability SLA" },
-  { num: "24", unit: "/7", label: "Operations center coverage" },
-  { num: "< 4", unit: " hr", label: "Mean time to resolution" },
-];
-
 const services = [
   { num: "01", title: "Managed IT Infrastructure", desc: "Full lifecycle management of servers, storage, and networking — from procurement and deployment through day-to-day operations." },
   { num: "02", title: "Cloud Management", desc: "Multi-cloud governance, cost optimization, capacity planning, and FinOps across AWS, Azure, Google Cloud, and local providers." },
@@ -21,17 +14,6 @@ const services = [
   { num: "04", title: "Network Operations", desc: "Proactive monitoring, performance management, and optimization of WAN, SD-WAN, and campus network environments." },
   { num: "05", title: "Database Administration", desc: "DBA-as-a-service covering Oracle, SQL Server, PostgreSQL, and NoSQL platforms with backup, patching, and performance tuning." },
   { num: "06", title: "IT Service Management", desc: "ITIL-aligned ITSM practices — change management, CMDB, SLA reporting, and continuous service improvement programs." },
-];
-
-const specs = [
-  { name: "Availability SLA", val: "99.95%" },
-  { name: "MTTR", val: "< 4 hours" },
-  { name: "First-Call Resolution", val: "85%+" },
-  { name: "NOC Coverage", val: "24/7/365" },
-  { name: "ITIL Version", val: "v4" },
-  { name: "Cloud Platforms", val: "4 providers" },
-  { name: "Languages", val: "AR + EN" },
-  { name: "Escalation Tiers", val: "3 levels" },
 ];
 
 export default function ManagedServicesPage() {
@@ -99,18 +81,6 @@ export default function ManagedServicesPage() {
           <span className="text-[10px] tracking-[0.15em] uppercase text-[#94a3b8]" style={{ writingMode: "vertical-rl" }}>Scroll</span>
         </div>
       </section>
-
-      {/* STATS BAR */}
-      <div className="border-y border-[#e2e8f0] bg-white grid grid-cols-2 lg:grid-cols-4 shadow-sm">
-        {stats.map((s) => (
-          <div key={s.label} className="px-10 py-10 border-r border-[#e2e8f0] last:border-r-0">
-            <div className="font-bold leading-none mb-2" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(28px,3.5vw,46px)", color: "#111827", letterSpacing: "-0.02em" }}>
-              {s.num}<span className="text-[#229388]" style={{ fontSize: "0.55em" }}>{s.unit}</span>
-            </div>
-            <div className="text-[12px] font-medium tracking-[0.07em] uppercase text-[#94a3b8]">{s.label}</div>
-          </div>
-        ))}
-      </div>
 
       {/* ABOUT */}
       <section id="about" className="bg-white py-32">
@@ -311,31 +281,6 @@ export default function ManagedServicesPage() {
               <circle cx="38" cy="329" r="4" fill="#229388"><animate attributeName="opacity" values="1;0.2;1" dur="1s" repeatCount="indefinite"/></circle>
               <text x="50" y="333" fontSize="8.5" fill="#229388" fontWeight="700" letterSpacing="0.8">LIVE  ·  200+ SYSTEMS MONITORED  ·  SLA: 99.95%</text>
             </svg>
-          </div>
-        </div>
-      </section>
-
-      {/* SPECS */}
-      <section className="py-28 bg-[#f8fafc] border-t border-[#e2e8f0]">
-        <div className="container mx-auto px-6 md:px-8">
-          <div className="text-center mb-16">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-5 h-px bg-[#229388]" />
-              <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#229388]">Service Level Agreement</span>
-              <div className="w-5 h-px bg-[#229388]" />
-            </div>
-            <h2 className="font-bold mb-4" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(28px,3.5vw,44px)", color: "#111827", letterSpacing: "-0.025em" }}>
-              Commitments you can hold us to
-            </h2>
-            <p className="text-[15px] text-[#64748b] max-w-[440px] mx-auto leading-[1.7]">Every service parameter defined, measured, and reported with full transparency.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto" style={{ border: "1px solid rgba(34,147,136,0.18)", gap: "1px", background: "rgba(34,147,136,0.12)", boxShadow: "0 4px 24px rgba(34,147,136,0.06)" }}>
-            {specs.map((r) => (
-              <div key={r.name} className="bg-white px-10 py-7 flex justify-between items-center hover:bg-[#f0fdfc] transition-colors duration-200">
-                <span className="text-[12px] font-bold tracking-[0.07em] uppercase text-[#94a3b8]">{r.name}</span>
-                <span className="font-semibold text-[20px] text-[#111827]" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', letterSpacing: "-0.01em" }}>{r.val}</span>
-              </div>
-            ))}
           </div>
         </div>
       </section>

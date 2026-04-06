@@ -7,13 +7,6 @@ import ContactModal from "@/components/sections/contact-modal";
 import PageWrapper from "@/components/ui/page-wrapper";
 import ServiceHeroOtherServices from "@/components/ui/service-hero-other-services";
 
-const stats = [
-  { num: "8", unit: "", label: "Service lines" },
-  { num: "50", unit: "+", label: "OEM integrations" },
-  { num: "99.7", unit: "%", label: "Uptime SLA" },
-  { num: "15", unit: "+", label: "Active plants" },
-];
-
 const services = [
   {
     num: "01", badge: "Automation",
@@ -73,17 +66,6 @@ const services = [
   },
 ];
 
-const specs = [
-  { name: "Cybersecurity Standard", val: "IEC 62443" },
-  { name: "Asset Management", val: "ISO 55001" },
-  { name: "Comm. Protocols", val: "OPC-UA / MQTT" },
-  { name: "Robotics Brands", val: "KUKA · ABB · Fanuc" },
-  { name: "Control Systems", val: "Siemens · Rockwell · ABB" },
-  { name: "IIoT Platforms", val: "Azure IoT · AWS IoT" },
-  { name: "ERP Integration", val: "SAP · Oracle · Infor" },
-  { name: "Compliance", val: "NIST SP 800-82" },
-];
-
 export default function IndustrialPage() {
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -139,18 +121,6 @@ export default function IndustrialPage() {
             <span className="text-[10px] tracking-[0.15em] uppercase text-[#94a3b8]" style={{ writingMode: "vertical-rl" }}>Scroll</span>
           </div>
         </section>
-
-        {/* STATS BAR */}
-        <div className="border-y border-[#e2e8f0] bg-white grid grid-cols-2 lg:grid-cols-4 shadow-sm">
-          {stats.map((s) => (
-            <div key={s.label} className="px-10 py-10 border-r border-[#e2e8f0] last:border-r-0">
-              <div className="font-bold leading-none mb-2" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(28px,3.5vw,46px)", color: "#111827", letterSpacing: "-0.02em" }}>
-                {s.num}<span className="text-[#229388]" style={{ fontSize: "0.55em" }}>{s.unit}</span>
-              </div>
-              <div className="text-[12px] font-medium tracking-[0.07em] uppercase text-[#94a3b8]">{s.label}</div>
-            </div>
-          ))}
-        </div>
 
         {/* ABOUT */}
         <section id="about" className="bg-white py-32">
@@ -395,31 +365,6 @@ export default function IndustrialPage() {
                 </circle>
                 <text x="50" y="330" fontSize="8.5" fill="#229388" fontWeight="700" letterSpacing="0.8">LIVE · 8 SENSORS · IEC 62443 SECURED · OPC-UA</text>
               </svg>
-            </div>
-          </div>
-        </section>
-
-        {/* SPECS */}
-        <section className="py-28 bg-[#f8fafc] border-t border-[#e2e8f0]">
-          <div className="container mx-auto px-6 md:px-8">
-            <div className="text-center mb-16">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="w-5 h-px bg-[#229388]" />
-                <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#229388]">Technical Parameters</span>
-                <div className="w-5 h-px bg-[#229388]" />
-              </div>
-              <h2 className="font-bold mb-4" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(28px,3.5vw,44px)", color: "#111827", letterSpacing: "-0.025em" }}>
-                Standards & platforms we work with
-              </h2>
-              <p className="text-[15px] text-[#64748b] max-w-[440px] mx-auto leading-[1.7]">Every deployment is standards-compliant, vendor-neutral and built for long-term operational resilience.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto" style={{ border: "1px solid rgba(34,147,136,0.18)", gap: "1px", background: "rgba(34,147,136,0.12)", boxShadow: "0 4px 24px rgba(34,147,136,0.06)" }}>
-              {specs.map((r) => (
-                <div key={r.name} className="bg-white px-10 py-7 flex justify-between items-center hover:bg-[#f0fdfc] transition-colors duration-200">
-                  <span className="text-[12px] font-bold tracking-[0.07em] uppercase text-[#94a3b8]">{r.name}</span>
-                  <span className="font-semibold text-[20px] text-[#111827]" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', letterSpacing: "-0.01em" }}>{r.val}</span>
-                </div>
-              ))}
             </div>
           </div>
         </section>

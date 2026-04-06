@@ -7,13 +7,6 @@ import ContactModal from "@/components/sections/contact-modal";
 import PageWrapper from "@/components/ui/page-wrapper";
 import ServiceHeroOtherServices from "@/components/ui/service-hero-other-services";
 
-const stats = [
-  { num: "50", unit: "+", label: "AI models deployed" },
-  { num: "10B", unit: "+", label: "Daily inferences" },
-  { num: "98.5", unit: "%", label: "Model accuracy avg." },
-  { num: "20", unit: "+", label: "Industry use cases" },
-];
-
 const services = [
   {
     num: "01", badge: "Strategy",
@@ -132,18 +125,6 @@ export default function AIPage() {
             <span className="text-[10px] tracking-[0.15em] uppercase text-[#94a3b8]" style={{ writingMode: "vertical-rl" }}>Scroll</span>
           </div>
         </section>
-
-        {/* STATS BAR */}
-        <div className="border-y border-[#e2e8f0] bg-white grid grid-cols-2 lg:grid-cols-4 shadow-sm">
-          {stats.map((s) => (
-            <div key={s.label} className="px-10 py-10 border-r border-[#e2e8f0] last:border-r-0">
-              <div className="font-bold leading-none mb-2" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(28px,3.5vw,46px)", color: "#111827", letterSpacing: "-0.02em" }}>
-                {s.num}<span className="text-[#229388]" style={{ fontSize: "0.55em" }}>{s.unit}</span>
-              </div>
-              <div className="text-[12px] font-medium tracking-[0.07em] uppercase text-[#94a3b8]">{s.label}</div>
-            </div>
-          ))}
-        </div>
 
         {/* ABOUT */}
         <section id="about" className="bg-white py-32">

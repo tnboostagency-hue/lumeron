@@ -197,9 +197,9 @@ const Navbar = () => {
           </div>
 
           {/* Right side — language + CTAs; nowrap so toggle never slips under nav */}
-          <div className="flex shrink-0 items-center gap-2 sm:gap-3 md:gap-4 lg:gap-3 xl:gap-4 whitespace-nowrap">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3 md:gap-4 lg:gap-2 xl:gap-3 whitespace-nowrap">
             {/* Language: desktop header only (lg+). Mobile/tablet: toggle lives at top of slide-out menu. */}
-            <div className="hidden lg:flex items-center text-[14px] font-semibold text-foreground shrink-0 pl-1 lg:pl-2 xl:pl-3 border-l border-[#0f172a]/10">
+            <div className="hidden lg:flex items-center text-[14px] font-semibold text-foreground shrink-0 pl-2 lg:pl-2.5 border-l border-[#0f172a]/10">
               <button
                 type="button"
                 onClick={() => setLanguage("en")}
@@ -224,15 +224,15 @@ const Navbar = () => {
                 href="https://sdaia.gov.sa/ar/MediaCenter/Pages/ai-year.aspx"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative h-[32px] w-[184px] xl:w-[196px] shrink-0 -mr-1"
+                className="inline-flex shrink-0 items-center leading-none -mr-1"
                 aria-label={lang === "ar" ? "عام الذكاء الاصطناعي - يفتح في تبويب جديد" : "AI year page (opens in new tab)"}
               >
                 <Image
                   src="/logos/header-secondary.svg"
                   alt={lang === "ar" ? "شعار ذكاء اصطناعي — المملكة العربية السعودية" : "Saudi AI mark"}
-                  fill
-                  sizes="196px"
-                  className="object-contain object-right"
+                  width={196}
+                  height={32}
+                  className="h-8 w-auto max-h-8 max-w-[196px] object-contain object-start"
                   priority={false}
                 />
               </a>
