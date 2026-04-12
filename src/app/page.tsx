@@ -7,6 +7,7 @@ import ServicesCarousel from "@/components/sections/services-carousel";
 import MissionStatement from "@/components/sections/mission-statement";
 import OurClients from "@/components/sections/Our-clients";
 import StrategyAllies from "@/components/sections/strategy-allies";
+import GlobalPresence from "@/components/sections/global-presence";
 import SlidingTagsSection from "@/components/sections/sliding-tags-section";
 import CTABottom from "@/components/sections/cta-bottom";
 import ContactSection from "@/components/sections/contact-section";
@@ -24,6 +25,7 @@ export default function Home() {
       <ContactModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
       <Hero />
       <ServicesCarousel />
+      <GlobalPresence />
       <SlidingTagsSection />
       <MissionStatement />
       <OurClients />

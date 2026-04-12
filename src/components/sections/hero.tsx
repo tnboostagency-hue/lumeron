@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { motion, type Variants } from 'framer-motion';
 import FloatingElement from '@/components/animations/floating-element';
@@ -8,14 +8,24 @@ import { useLanguage } from '@/context/LanguageContext';
 
 export default function Hero() {
   const { lang, t } = useLanguage();
-  const words = lang === 'ar'
-    ? ["المستقبل", "التحول", "الاقتصاد", "الابتكار", "البنية التحتية"]
-    : ["FUTURE", "TRANSFORMATION", "ECONOMY", "INNOVATION", "INFRASTRUCTURE"];
+  const words = useMemo(
+    () =>
+      lang === 'ar'
+        ? ['من الاقتصاد الرقمي', 'من البنية التحتية الرقمية', 'من المستقبل الرقمي']
+        : ['FUTURE', 'TRANSFORMATION', 'ECONOMY', 'INNOVATION', 'INFRASTRUCTURE'],
+    [lang]
+  );
     
   const [index, setIndex] = useState(0);
   const [subIndex, setSubIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isMorse, setIsMorse] = useState(false);
+
+  useEffect(() => {
+    setIndex(0);
+    setSubIndex(0);
+    setIsDeleting(false);
+  }, [lang]);
 
   // Fix 100vh on mobile browsers (address bar gap)
   useEffect(() => {

@@ -140,7 +140,7 @@ export default function InnovationsPage() {
       {/* SERVICES — bento mosaic */}
       <section id="services" className="py-28 relative overflow-hidden" style={{ background: "#f8fafc" }}>
         <div className="container mx-auto px-6 md:px-8">
-          <div className={`flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16 ${lang === 'ar' ? 'lg:flex-row-reverse text-right' : ''}`}>
+          <div className={`mb-16 ${lang === 'ar' ? 'text-right' : ''}`}>
             <div>
               <div className={`flex items-center gap-3 mb-4 ${lang === 'ar' ? 'flex-row-reverse' : ''}`}>
                 <div className="w-5 h-px bg-[#229388]" />
@@ -150,9 +150,6 @@ export default function InnovationsPage() {
                 {lang === 'ar' ? "تكنولوجيا ناشئة، قابلة للنشر" : "Emerging technology, made deployable"}
               </h2>
             </div>
-            <p className="text-[15px] text-[#64748b] leading-[1.7] max-w-[360px] font-light">
-              {lang === 'ar' ? "نحن نسد الفجوة بين الأبحاث والإنتاج - نأخذ التقنيات الرائدة من إثبات المفهوم إلى النشر على مستوى المؤسسة." : "We bridge the gap between research and production — taking frontier technologies from proof-of-concept to enterprise-scale deployment."}
-            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

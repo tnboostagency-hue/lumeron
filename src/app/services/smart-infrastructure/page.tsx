@@ -223,7 +223,7 @@ export default function SmartInfrastructurePage() {
         {/* SERVICES */}
         <section id="services" className="py-28 bg-[#f8fafc] border-y border-[#e2e8f0]">
           <div className="container mx-auto px-6 md:px-8">
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16">
+            <div className="mb-16">
               <div>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-5 h-px bg-[#229388]" />
@@ -233,9 +233,6 @@ export default function SmartInfrastructurePage() {
                   Eight connectivity & infrastructure capabilities
                 </h2>
               </div>
-              <p className="text-[15px] text-[#64748b] leading-[1.7] max-w-[360px] font-light">
-                From the physical fiber in the ground to the cloud-managed WAN — every layer delivered by one expert team.
-              </p>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {services.map((s, i) => (
