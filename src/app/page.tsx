@@ -24,8 +24,8 @@ export default function Home() {
       <Navbar />
       <ContactModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
       <Hero />
-      <ServicesCarousel />
       <GlobalPresence />
+      <ServicesCarousel />
       <SlidingTagsSection />
       <MissionStatement />
       <OurClients />

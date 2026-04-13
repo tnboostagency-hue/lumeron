@@ -111,7 +111,7 @@ export default function GlobalPresence() {
   const pickNearest = useCallback((mx: number, my: number, w: number, h: number, dpr: number) => {
     const dots = dotsRef.current;
     if (!dots.length) return -1;
-    const rHit = 14 * dpr;
+    const rHit = 11 * dpr;
     const r2 = rHit * rHit;
     let best = -1;
     let bestD = r2;
@@ -310,8 +310,9 @@ export default function GlobalPresence() {
 
       drawDecor(wPx, hPx, gcx, gcy, t, motion);
 
-      const baseR = Math.max(1.1, w / 520) * dpr;
+      const baseR = Math.max(0.72, w / 680) * dpr * 0.92;
       const hi = hoveredRef.current;
+      const dotOpacity = 0.7;
 
       const drawDot = (i: number, float: number) => {
         const d = dots[i];
@@ -324,13 +325,14 @@ export default function GlobalPresence() {
         }
         const liftPx = float * 6 * dpr;
         const scale = 1 + float * 0.45;
-        const saudiBoost = d.saudi ? 1.12 : 1;
+        const saudiBoost = d.saudi ? 1.06 : 1;
         const r = baseR * scale * saudiBoost;
+        const alphaMain = dotOpacity + float * 0.28;
         ctx.fillStyle = d.saudi ? DOT_SAUDI : DOT_SLATE;
         if (d.saudi && float < 0.05) {
-          ctx.globalAlpha = 0.92;
+          ctx.globalAlpha = dotOpacity * 0.9;
           ctx.beginPath();
-          ctx.arc(cx, cy, r * 1.65, 0, Math.PI * 2);
+          ctx.arc(cx, cy, r * 1.5, 0, Math.PI * 2);
           ctx.fillStyle = ACCENT_SOFT;
           ctx.fill();
           ctx.globalAlpha = 1;
@@ -345,9 +347,11 @@ export default function GlobalPresence() {
           ctx.shadowBlur = 0;
           ctx.shadowOffsetY = 0;
         }
+        ctx.globalAlpha = alphaMain;
         ctx.beginPath();
         ctx.arc(cx, cy - liftPx, r, 0, Math.PI * 2);
         ctx.fill();
+        ctx.globalAlpha = 1;
         ctx.shadowColor = "transparent";
         ctx.shadowBlur = 0;
         ctx.shadowOffsetY = 0;
@@ -401,27 +405,11 @@ export default function GlobalPresence() {
         >
           {isAr ? "أساسنا" : "Our foundation"}
         </h2>
-        <p className="text-[15px] text-[#94a3b8] font-light leading-relaxed max-w-xl mx-auto mb-5">
+        <p className="text-[15px] text-[#94a3b8] font-light leading-relaxed max-w-xl mx-auto">
           {isAr
             ? "لوميرون · الخبر، المنطقة الشرقية، المملكة العربية السعودية"
             : "Lumeron · Al Khobar, Eastern Province, Saudi Arabia"}
         </p>
-        <div
-          className={`flex flex-wrap items-center justify-center gap-2 md:gap-3 text-[11px] md:text-xs text-[#64748b] ${isAr ? "flex-row-reverse" : ""}`}
-        >
-          {(
-            isAr
-              ? ["رؤية 2030", "مجلس التعاون · الخليج", "مقر في الخليج"]
-              : ["Vision 2030 aligned", "GCC footprint", "Gulf HQ"]
-          ).map((label) => (
-            <span
-              key={label}
-              className="rounded-full border border-[#e2e8f0] bg-white/80 px-3 py-1 font-medium text-[#475569] shadow-[0_1px_2px_rgba(15,23,42,0.04)] backdrop-blur-sm"
-            >
-              {label}
-            </span>
-          ))}
-        </div>
       </div>
 
       <div

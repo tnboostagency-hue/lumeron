@@ -9,11 +9,19 @@ import ServiceHeroOtherServices from "@/components/ui/service-hero-other-service
 
 const services = [
   {
-    num: "01", badge: "Strategy",
-    title: "AI Strategy & Roadmap",
-    desc: "Define your organisation's AI vision with a pragmatic, ROI-driven roadmap — from readiness assessment through governance and change management.",
-    items: ["AI maturity & readiness assessment", "Business case & ROI modelling", "Use-case prioritisation framework", "Data governance & AI ethics policy", "Build vs. buy vs. partner analysis", "Executive AI literacy programs"],
-    pct: 98,
+    num: "01",
+    badge: "Integration",
+    title: "AI Integration & Deployment",
+    desc: "Embed AI seamlessly into your existing industrial infrastructure — bridging the gap between strategy and live operational value.",
+    items: [
+      "AI model integration with SCADA, ERP, and MES systems",
+      "OT/IT convergence and AI readiness assessment",
+      "Edge AI deployment for real-time field and asset intelligence",
+      "API and middleware development for AI connectivity",
+      "Post-deployment model monitoring and performance management",
+      "Operational team enablement and AI adoption support",
+    ],
+    pct: 96,
   },
   {
     num: "02", badge: "Industrial AI",
@@ -23,42 +31,28 @@ const services = [
     pct: 95,
   },
   {
-    num: "03", badge: "Vision AI",
-    title: "Computer Vision",
-    desc: "Extract intelligence from cameras and imaging systems — enabling automated inspection, safety monitoring and crowd analytics at scale.",
-    items: ["Automated visual defect detection", "PPE & safety compliance monitoring", "Crowd analytics & flow management", "Facial recognition & access control", "OCR & document digitisation", "Drone-based infrastructure inspection"],
-    pct: 93,
-  },
-  {
-    num: "04", badge: "Forecasting",
+    num: "03", badge: "Forecasting",
     title: "Predictive Analytics",
     desc: "Turn historical and real-time data into forward-looking intelligence — reducing uncertainty across demand, risk and customer behaviour.",
     items: ["Demand & sales forecasting models", "Customer churn prediction", "Credit & financial risk scoring", "Inventory optimisation algorithms", "Time-series anomaly detection", "Scenario modelling & Monte Carlo simulation"],
     pct: 96,
   },
   {
-    num: "05", badge: "Smart City",
-    title: "Smart City Analytics",
-    desc: "Deliver data-driven governance for urban infrastructure — from traffic optimisation and energy grids to emergency response intelligence.",
-    items: ["Adaptive traffic signal optimisation", "Energy grid load balancing models", "Urban crowd & event management", "Emergency response routing AI", "Public transport demand prediction", "City-level KPI dashboards & GIS integration"],
-    pct: 90,
-  },
-  {
-    num: "06", badge: "Data Eng.",
+    num: "04", badge: "Data Eng.",
     title: "Data Engineering & Pipelines",
     desc: "Build the data foundation that powers your AI — reliable, scalable pipelines from raw ingestion to feature-ready datasets.",
     items: ["ETL/ELT pipeline design & orchestration", "Lakehouse & data mesh architecture", "Real-time streaming (Kafka, Flink)", "Data quality & lineage management", "Feature store design & implementation", "Data catalogue & metadata management"],
     pct: 97,
   },
   {
-    num: "07", badge: "BI",
+    num: "05", badge: "BI",
     title: "Business Intelligence",
     desc: "Empower every decision-maker with self-serve analytics — beautiful dashboards, governed datasets and a culture of data literacy.",
     items: ["Power BI & Tableau enterprise rollout", "Self-serve analytics portal design", "Semantic layer & data model development", "Executive KPI dashboards", "Embedded analytics in business apps", "BI governance & certification programs"],
     pct: 94,
   },
   {
-    num: "08", badge: "Gen AI",
+    num: "06", badge: "Gen AI",
     title: "Generative AI",
     desc: "Harness large language models and generative AI to automate knowledge work, enhance customer experience and unlock new capabilities.",
     items: ["LLM fine-tuning on enterprise data", "Retrieval-augmented generation (RAG)", "Arabic NLP & bilingual AI systems", "Enterprise AI chatbot & copilot development", "Document intelligence & summarisation", "AI code generation & developer tools"],
@@ -233,7 +227,7 @@ export default function AIPage() {
                   <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#229388]">What We Offer</span>
                 </div>
                 <h2 className="font-bold leading-tight" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(28px,3.5vw,44px)", color: "#111827", letterSpacing: "-0.025em", maxWidth: "480px" }}>
-                  Eight AI & analytics capabilities
+                  Six AI & analytics capabilities
                 </h2>
               </div>
             </div>
