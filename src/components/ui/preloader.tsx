@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 const MorseDot = ({ delay = 0 }: { delay?: number }) => (
   <motion.div
@@ -40,6 +41,8 @@ const MorseDash = ({ delay = 0 }: { delay?: number }) => (
 const MAX_LOADING_MS = 4000; // safety: never show preloader longer than this
 
 export default function Preloader() {
+  const { t, lang } = useLanguage();
+  const slogan = t.mission.title;
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -91,11 +94,26 @@ export default function Preloader() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 0.5, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
               className="text-[#009b88] font-bold tracking-[0.2em] text-sm uppercase"
             >
               Lumeron
             </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 14, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{
+                delay: 0.95,
+                duration: 0.95,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className={`mt-1 max-w-[min(90vw,320px)] text-center text-[11px] sm:text-[12px] font-medium leading-snug text-[#475569] ${lang === "ar" ? "px-2" : "tracking-[0.04em]"}`}
+            >
+              <span className="bg-gradient-to-r from-[#229388] via-[#3ec8ba] to-[#229388] bg-[length:120%_auto] bg-clip-text text-transparent">
+                {slogan}
+              </span>
+            </motion.p>
           </div>
           
           {/* Subtle Background Elements */}

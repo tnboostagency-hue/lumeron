@@ -89,10 +89,24 @@ const MissionStatement: React.FC = () => {
           className="text-[30px] sm:text-[42px] md:text-[56px] font-semibold leading-[1.1] tracking-[-0.02em] mb-6 text-white text-center"
         >
           {lang === 'ar' ? (
-            <>نسعى <span className="text-primary">للكمال</span>، ونرضى <span className="underline decoration-primary/50 underline-offset-8 decoration-2">بالتميز</span>.</>
+            <>
+              تمكين <span className="text-primary">الثقة الرقمية</span>
+            </>
           ) : (
-            <>Strive for <span className="text-primary">Perfection</span>,<br />
-            Settle for <span className="underline decoration-primary/50 underline-offset-8 decoration-2">Excellence</span>.</>
+            <>
+              {(() => {
+                const [a, b, c] = t.mission.title.split(' ');
+                return (
+                  <>
+                    <span className="text-white">{a} </span>
+                    <span className="text-primary">{b} </span>
+                    <span className="underline decoration-primary/50 underline-offset-8 decoration-2 text-white">
+                      {c}
+                    </span>
+                  </>
+                );
+              })()}
+            </>
           )}
         </motion.h2>
 

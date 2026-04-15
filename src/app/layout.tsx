@@ -10,8 +10,9 @@ import ScrollToTop from "@/components/ui/scroll-to-top";
 import { LanguageProvider } from "@/context/LanguageContext";
 
 export const metadata: Metadata = {
-  title: "Lumeron | Empowering Saudi Arabia's Digital Future",
-  description: "MASCO Digital accelerates Vision 2030 through resilient infrastructure, managed services, and emerging technologies.",
+  title: "Lumeron | Enabling Digital Confidence",
+  description:
+    "Enabling Digital Confidence — MASCO Digital accelerates Vision 2030 through resilient infrastructure, managed services, and emerging technologies.",
   icons: {
     icon: [{ url: "/favicon.png", type: "image/png" }],
     apple: [{ url: "/favicon.png", type: "image/png" }],

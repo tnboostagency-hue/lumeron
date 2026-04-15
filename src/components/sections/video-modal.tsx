@@ -108,7 +108,7 @@ export default function VideoModal({ isOpen, onClose }: VideoModalProps) {
 
         {/* Caption */}
         <p className="text-center mt-4 text-[13px] font-medium" style={{ color: "rgba(255,255,255,0.45)", letterSpacing: "0.04em" }}>
-          LUMERON — Powering Saudi Arabia's Digital Future
+          LUMERON — Enabling Digital Confidence
         </p>
       </div>
     </div>

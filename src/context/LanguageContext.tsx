@@ -16,6 +16,7 @@ const dictionary = {
       title: "LUMERON",
       subtitle: "EMPOWERING SAUDI ARABIA'S",
       highlight: "DIGITAL TRANSFORMATION",
+      tagline: "MASCO Digital | Enabling Digital Confidence",
       description: "MASCO Digital accelerates Vision 2030 through resilient infrastructure, managed services, and emerging technologies.",
       explore: "Explore Services",
       watch: "Watch Video",
@@ -37,7 +38,7 @@ const dictionary = {
     },
     mission: {
       badge: "BUILT FOR THE NATION. GUIDED BY VISION.",
-      title: "Strive for Perfection, Settle for Excellence",
+      title: "Enabling Digital Confidence",
       description: "Lumeron is MASCO Digital, bridging ambition with execution. We understand the critical context of Saudi Arabia, providing resilient infrastructure that enables a knowledge-based economic development aligned with Vision 2030.",
       roadmap: "Our Mission Roadmap",
       pillars: {
@@ -66,7 +67,7 @@ const dictionary = {
       values: "Our Values",
       hero: {
         badge: "About Lumeron",
-        title: "Powering Saudi Arabia's Digital Future.",
+        title: "Enabling Digital Confidence",
         description: "Lumeron is MASCO Digital — a sovereign digital infrastructure company built to accelerate Vision 2030 through resilient data centers, advanced cybersecurity, and emerging technologies.",
         cta1: "Connect Now",
         cta2: "Our Journey",
@@ -142,6 +143,7 @@ const dictionary = {
       title: "لوميرون",
       subtitle: "تمكين المملكة العربية السعودية",
       highlight: "في المملكة العربية السعودية",
+      tagline: "MASCO Digital | تمكين الثقة الرقمية",
       description: "MASCO Digital يسرّع رؤية 2030 من خلال بنية تحتية مرنة، وخدمات مدارة، وتقنيات ناشئة.",
       explore: "استكشف الخدمات",
       watch: "شاهد الفيديو",
@@ -163,7 +165,7 @@ const dictionary = {
     },
     mission: {
       badge: "بنيت للوطن. تسترشد بالرؤية.",
-      title: "نسعى للكمال، ونرضى بالتميز",
+      title: "تمكين الثقة الرقمية",
       description: "لوميرون هي MASCO Digital، حيث تربط الطموح بالتنفيذ. نحن نتفهم السياق الحيوي للمملكة العربية السعودية، ونوفر بنية تحتية مرنة تمكن من تطوير اقتصادي قائم على المعرفة يتماشى مع رؤية 2030.",
       roadmap: "خارطة طريق مهمتنا",
       pillars: {
@@ -192,7 +194,7 @@ const dictionary = {
       values: "قيمنا",
       hero: {
         badge: "عن لوميرون",
-        title: "تمكين المستقبل الرقمي للمملكة.",
+        title: "تمكين الثقة الرقمية",
         description: "لوميرون هي MASCO Digital — شركة بنية تحتية رقمية سيادية بُنيت لتسريع رؤية 2030 من خلال مراكز بيانات مرنة وأمن سيبراني متقدم وتقنيات ناشئة.",
         cta1: "اتصل الآن",
         cta2: "رحلتنا",

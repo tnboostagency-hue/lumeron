@@ -180,7 +180,7 @@ export default function Hero() {
             </motion.h2>
 
             <motion.p variants={itemVariants} className="text-muted-foreground text-[14px] sm:text-[15px] md:text-[17px] max-w-[520px] leading-[1.65] mb-7">
-              {lang === 'ar' ? 'MASCO Digital | حيث تلتقي الصناعة بالتحول الرقمي' : 'MASCO Digital | Where Industry Meets Digitalization'}
+              {t.hero.tagline}
             </motion.p>
 
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center sm:w-fit">

@@ -35,8 +35,8 @@ const TIMELINE_STEPS = [
     year: "2024",
     titleEn: "Mega Contracts",
     titleAr: "عقود ضخمة",
-    descEn: "Two mega Aramco contracts exceeding 2.2B SAR. Partnerships with NEOM & Qiddiya.",
-    descAr: "عقدان ضخمان مع أرامكو تتجاوز قيمتهما 2.2 مليار ريال.",
+    descEn: "Mega Aramco contracts exceeding 50B SAR. Partnerships with NEOM & Qiddiya.",
+    descAr: "عقود أرامكو الضخمة التي تتجاوز 50 مليار ريال. شراكات مع نيوم وقدية.",
   },
   {
     year: "2025",
@@ -202,7 +202,7 @@ export default function AboutPage() {
     { val: "60+", label: lang === "ar" ? "سنوات من النمو" : "Years of Growth", sub: lang === "ar" ? "من الطرق إلى التقنية" : "From roads to technology" },
     { val: "1960", label: lang === "ar" ? "التأسيس" : "Founded", sub: lang === "ar" ? "محمد علي السويلم" : "Mohammad Ali Alswailem" },
     { val: "2025", label: lang === "ar" ? "انطلاق لوميرون" : "Lumeron Launch", sub: "MASCO Digital" },
-    { val: "2.2B+", label: lang === "ar" ? "عقود أرامكو" : "SAR Contracts", sub: lang === "ar" ? "2024" : "2024" },
+    { val: "50B", label: lang === "ar" ? "عقود أرامكو" : "SAR Contracts", sub: lang === "ar" ? "2024" : "2024" },
   ];
 
   return (

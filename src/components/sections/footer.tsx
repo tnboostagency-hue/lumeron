@@ -119,6 +119,12 @@ const Footer = () => {
           </div>
         </div>
 
+        <p
+          className={`text-center text-[13px] sm:text-[14px] text-white/50 mb-8 max-w-xl mx-auto leading-relaxed ${lang === "ar" ? "font-medium" : "tracking-[0.06em]"}`}
+        >
+          <span className="text-[#3ec8ba]/95">{t.mission.title}</span>
+        </p>
+
         {/* Divider */}
         <div className="w-full h-px bg-white/10 mb-6" />
 
