@@ -83,6 +83,10 @@ const allies = [
   { name: 'SAP', logo: '/logos/partners/SAP.png' },
   { name: 'Siemens', logo: '/logos/partners/Siemens.png' },
   { name: 'VMware', logo: '/logos/partners/VMware.jpeg' },
+  { name: 'IBM', logo: '/logos/partners/IBM.png' },
+  { name: 'ENG', logo: '/logos/partners/ENG.png' },
+  { name: 'Zscaler', logo: '/logos/partners/Zscaler.png' },
+  { name: 'Davra', logo: '/logos/partners/Davra.png' },
 ];
 
 const COLS_PER_ROW = 4;

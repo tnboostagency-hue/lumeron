@@ -251,14 +251,14 @@ export default function SlidingTagsSection() {
   return (
     <>
       <style>{`
-        .tags-row-ltr { animation: tagsSlideLTR 32s linear infinite; }
-        .tags-row-rtl { animation: tagsSlideRTL 28s linear infinite; }
-        .tags-row-ltr:nth-child(2) { animation-duration: 38s; }
-        .tags-row-rtl:nth-child(4) { animation-duration: 26s; }
-        @keyframes tagsSlideLTR { 0% { transform: translateX(0) } 100% { transform: translateX(-50%) } }
-        @keyframes tagsSlideRTL { 0% { transform: translateX(-50%) } 100% { transform: translateX(0) } }
-        .tags-wrapper:hover .tags-row-ltr,
-        .tags-wrapper:hover .tags-row-rtl { animation-play-state: paused; }
+        @keyframes iconPulse {
+          0%, 100% { transform: translateY(0) scale(1); opacity: 1; }
+          50% { transform: translateY(-2px) scale(1.08); opacity: 0.88; }
+        }
+        .sliding-tags-pill-icon {
+          animation: iconPulse 1.8s ease-in-out infinite;
+          transform-origin: center;
+        }
 
         /* Keep desktop visuals identical; only scale down typography/padding on mobile. */
         .sliding-tags-section { background: #ffffff; overflow: hidden; font-family: 'DM Sans','Inter',sans-serif; padding: 80px 0 100px; }
@@ -293,26 +293,20 @@ export default function SlidingTagsSection() {
           </p>
         </div>
 
-        {/* Rows */}
-        <div dir="ltr" className="tags-wrapper relative flex flex-col gap-[14px] max-md:gap-[12px]">
-          {/* Fade masks */}
-          <div className="absolute left-0 top-0 bottom-0 z-[2] w-[140px] pointer-events-none bg-[linear-gradient(to_right,#fff_40%,transparent)] max-md:w-[70px]" />
-          <div className="absolute right-0 top-0 bottom-0 z-[2] w-[140px] pointer-events-none bg-[linear-gradient(to_left,#fff_40%,transparent)] max-md:w-[70px]" />
-
-          {localizedRows.map((row, rowIndex) => {
-            const isRTL = rowIndex % 2 === 1;
-            const repeated = [...row, ...row, ...row, ...row, ...row, ...row];
-            return (
-              <div
-                key={rowIndex}
-                className={`${isRTL ? "tags-row-rtl" : "tags-row-ltr"} flex w-max gap-[13px] py-[3px] max-md:gap-[10px] max-md:py-[2px]`}
-              >
-                {repeated.map((term, i) => (
-                  <Pill key={`${term.label}-${i}`} term={term} rowIndex={rowIndex} tagIndex={i % row.length} />
-                ))}
-              </div>
-            );
-          })}
+        {/* Static 4 rows */}
+        <div dir="ltr" className="tags-wrapper relative flex flex-col gap-[13px] max-md:gap-[10px]">
+          {localizedRows.map((row, rowIndex) => (
+            <div key={rowIndex} className="flex flex-wrap justify-center gap-[13px] max-md:gap-[10px]">
+              {row.map((term, tagIndex) => (
+                <Pill
+                  key={`${term.label}-${tagIndex}`}
+                  term={term}
+                  rowIndex={rowIndex}
+                  tagIndex={tagIndex}
+                />
+              ))}
+            </div>
+          ))}
         </div>
       </section>
     </>

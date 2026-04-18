@@ -20,6 +20,7 @@ export default function Hero() {
   const [subIndex, setSubIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isMorse, setIsMorse] = useState(false);
+  const currentWord = words[index] ?? words[0] ?? "";
 
   useEffect(() => {
     setIndex(0);
@@ -53,7 +54,7 @@ export default function Hero() {
   };
 
   useEffect(() => {
-    if (subIndex === words[index].length + 1 && !isDeleting) {
+    if (subIndex === currentWord.length + 1 && !isDeleting) {
       setTimeout(() => setIsDeleting(true), 2000);
       return;
     }
@@ -73,7 +74,7 @@ export default function Hero() {
     }, isDeleting ? 50 : 150);
 
     return () => clearTimeout(timeout);
-  }, [subIndex, index, isDeleting, words]);
+  }, [subIndex, index, isDeleting, words, currentWord]);
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -173,7 +174,7 @@ export default function Hero() {
               <br />
                 <span className="relative inline-flex flex-col">
                   <span className="bg-gradient-to-r from-[#229388] to-[#3ec8ba] bg-clip-text text-transparent">
-                  {lang === 'ar' ? words[index].substring(0, subIndex) : `${t.hero.highlight.split(' ')[0]} ${words[index].substring(0, subIndex)}`}
+                  {lang === 'ar' ? currentWord.substring(0, subIndex) : `${t.hero.highlight.split(' ')[0]} ${currentWord.substring(0, subIndex)}`}
                   <span className={`inline-block w-[3px] h-[0.65em] ${lang === 'ar' ? 'mr-1' : 'ml-1'} align-middle bg-[#229388] rounded-sm ${isMorse ? 'opacity-100' : 'animate-pulse'}`} />
                 </span>
               </span>
