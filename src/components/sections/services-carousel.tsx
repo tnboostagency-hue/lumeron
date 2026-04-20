@@ -193,6 +193,15 @@ const SERVICES: ServiceItem[] = [
   },
 ];
 
+const SERVICE_DISPLAY_ORDER = ["data-centers", "industrial", "cybersecurity", "ai", "smart-infra"] as const;
+const ORDERED_SERVICES: ServiceItem[] = SERVICE_DISPLAY_ORDER
+  .map((id, idx) => {
+    const match = SERVICES.find((s) => s.id === id);
+    if (!match) return null;
+    return { ...match, number: String(idx + 1).padStart(2, "0") };
+  })
+  .filter((s): s is ServiceItem => s !== null);
+
 // ─── Per-service 3D animations ────────────────────────────────────────────────
 
 type SceneObjects = {
@@ -632,6 +641,7 @@ export default function ServicesCarousel() {
   const { lang } = useLanguage();
   const [activeIdx, setActiveIdx] = useState(0);
   const isAr = lang === 'ar';
+  const services = ORDERED_SERVICES;
 
   // Refs
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -647,7 +657,7 @@ export default function ServicesCarousel() {
         const sectionRect = section.getBoundingClientRect();
         // Stabilize edge states so last item doesn't snap when next section appears.
         if (sectionRect.bottom <= window.innerHeight * 0.55) {
-          setActiveIdx(SERVICES.length - 1);
+          setActiveIdx(services.length - 1);
           return;
         }
         if (sectionRect.top >= window.innerHeight * 0.55) {
@@ -687,7 +697,7 @@ export default function ServicesCarousel() {
     return () => clearTimeout(timer);
   }, [activeIdx]);
 
-  const active = SERVICES[activeIdx];
+  const active = services[activeIdx];
 
   return (
     <section
@@ -768,7 +778,7 @@ export default function ServicesCarousel() {
 
               {/* Service nav dots — inside canvas bottom bar */}
               <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2 pointer-events-auto">
-                {SERVICES.map((s, i) => (
+                {services.map((s, i) => (
                   <button
                     key={s.id}
                     onClick={() => {
@@ -804,7 +814,7 @@ export default function ServicesCarousel() {
                   className="text-[11px] uppercase tracking-[0.18em] font-semibold"
                   style={{ color: active.color }}
                 >
-                  {active.number} / 06
+                  {active.number} / {String(services.length).padStart(2, "0")}
                 </span>
               </div>
 
@@ -854,13 +864,13 @@ export default function ServicesCarousel() {
             <div
               className="absolute top-0 left-0 w-full transition-all duration-500"
               style={{
-                height: `${(activeIdx / (SERVICES.length - 1)) * 100}%`,
+                height: `${(activeIdx / (services.length - 1)) * 100}%`,
                 background: `linear-gradient(to bottom, #229388, #3ec8ba)`,
               }}
             />
             {/* Dot markers evenly spaced */}
             <div className="absolute inset-0 flex flex-col justify-between py-12">
-              {SERVICES.map((s, i) => (
+                {services.map((s, i) => (
                 <button
                   key={s.id}
                   onClick={() => {
@@ -895,7 +905,7 @@ export default function ServicesCarousel() {
           <div className="w-full lg:w-[52%] xl:w-[50%] pb-6 md:pb-10 lg:pb-24 overflow-visible">
 
             {/* Mobile: show 3D canvas + info inline above each block */}
-            {SERVICES.map((service, sIdx) => (
+            {services.map((service, sIdx) => (
               <div
                 key={service.id}
                 ref={el => { rowRefs.current[sIdx] = el; }}

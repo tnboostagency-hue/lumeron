@@ -292,11 +292,7 @@ export default function GlobalPresence() {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, wPx, hPx);
 
-      const bgGrad = ctx.createLinearGradient(0, 0, wPx, hPx);
-      bgGrad.addColorStop(0, "#ffffff");
-      bgGrad.addColorStop(0.5, "#fafdfe");
-      bgGrad.addColorStop(1, "#f4fbfb");
-      ctx.fillStyle = bgGrad;
+      ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, wPx, hPx);
 
       const gcx = saudiU * wPx;
@@ -414,7 +410,7 @@ export default function GlobalPresence() {
 
       <div
         ref={wrapRef}
-        className="relative z-[1] mx-auto w-full max-w-[1100px] overflow-hidden rounded-2xl border border-[#e8eef0] bg-white shadow-[0_20px_50px_-24px_rgba(15,23,42,0.12),0_1px_0_rgba(15,23,42,0.04)] ring-1 ring-[#f1f5f9]"
+        className="relative z-[1] mx-auto w-full max-w-[1100px] overflow-hidden rounded-2xl bg-white"
       >
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.35]"
