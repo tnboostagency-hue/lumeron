@@ -16,5 +16,18 @@
       "binding": "WORKER_SELF_REFERENCE",
       "service": "lumeron"
     }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "lumeron",
+      "database_id": "32614563-0aee-4bcf-8c77-0f1c7d6edf53"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "FILES_BUCKET",
+      "bucket_name": "lumeron-files"
+    }
   ]
 }

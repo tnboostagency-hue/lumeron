@@ -40,8 +40,14 @@ CREATE TABLE IF NOT EXISTS job_applications (
   phone TEXT,
   linkedin TEXT,
   cover_letter TEXT,
+  theme_guide TEXT,
   cv_file_name TEXT,
   cv_mime_type TEXT,
+  cv_object_key TEXT,
   cv_base64 TEXT,
+  portfolio_image_file_name TEXT,
+  portfolio_image_mime_type TEXT,
+  portfolio_image_object_key TEXT,
+  portfolio_image_base64 TEXT,
   created_at TEXT NOT NULL
 );

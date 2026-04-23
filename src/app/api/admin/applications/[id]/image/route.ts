@@ -20,29 +20,29 @@ export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> 
     const db = getDb();
     const [row] = await db
       .select({
-        cvObjectKey: jobApplications.cvObjectKey,
-        cvBase64: jobApplications.cvBase64,
-        cvFileName: jobApplications.cvFileName,
-        cvMimeType: jobApplications.cvMimeType,
+        portfolioImageObjectKey: jobApplications.portfolioImageObjectKey,
+        portfolioImageBase64: jobApplications.portfolioImageBase64,
+        portfolioImageFileName: jobApplications.portfolioImageFileName,
+        portfolioImageMimeType: jobApplications.portfolioImageMimeType,
       })
       .from(jobApplications)
       .where(eq(jobApplications.id, id))
       .limit(1);
     if (!row) {
-      return NextResponse.json({ error: "CV not found" }, { status: 404 });
+      return NextResponse.json({ error: "Image not found" }, { status: 404 });
     }
 
-    if (row.cvObjectKey) {
+    if (row.portfolioImageObjectKey) {
       const { env } = getCloudflareContext();
       const bucket = env.FILES_BUCKET as
         | { get: (key: string) => Promise<{ arrayBuffer: () => Promise<ArrayBuffer> } | null> }
         | undefined;
       if (bucket) {
-        const obj = await bucket.get(row.cvObjectKey);
+        const obj = await bucket.get(row.portfolioImageObjectKey);
         if (obj) {
           const arr = await obj.arrayBuffer();
-          const name = safeFileName(row.cvFileName, "cv.pdf");
-          const type = row.cvMimeType?.trim() || "application/octet-stream";
+          const name = safeFileName(row.portfolioImageFileName, "portfolio-image.png");
+          const type = row.portfolioImageMimeType?.trim() || "application/octet-stream";
           const asciiName = name.replace(/[^\x20-\x7e]/g, "_");
           return new NextResponse(arr, {
             status: 200,
@@ -56,20 +56,20 @@ export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> 
       }
     }
 
-    if (!row.cvBase64) {
-      return NextResponse.json({ error: "CV not found" }, { status: 404 });
+    if (!row.portfolioImageBase64) {
+      return NextResponse.json({ error: "Image not found" }, { status: 404 });
     }
     let buf: Buffer;
     try {
-      buf = Buffer.from(row.cvBase64, "base64");
+      buf = Buffer.from(row.portfolioImageBase64, "base64");
     } catch {
-      return NextResponse.json({ error: "Invalid CV data" }, { status: 500 });
+      return NextResponse.json({ error: "Invalid image data" }, { status: 500 });
     }
     if (buf.length === 0) {
-      return NextResponse.json({ error: "CV not found" }, { status: 404 });
+      return NextResponse.json({ error: "Image not found" }, { status: 404 });
     }
-    const name = safeFileName(row.cvFileName, "cv.pdf");
-    const type = row.cvMimeType?.trim() || "application/octet-stream";
+    const name = safeFileName(row.portfolioImageFileName, "portfolio-image.png");
+    const type = row.portfolioImageMimeType?.trim() || "application/octet-stream";
     const asciiName = name.replace(/[^\x20-\x7e]/g, "_");
     return new NextResponse(new Uint8Array(buf), {
       status: 200,

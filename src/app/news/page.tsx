@@ -17,6 +17,16 @@ interface Article {
   coverImage: string | null;
 }
 
+interface FeedItem {
+  id: string;
+  type: "job" | "news";
+  title: string;
+  category: string;
+  excerpt: string;
+  date: string;
+  href: string;
+}
+
 function formatArticleDate(iso: string): string {
   if (!iso) return "";
   const d = new Date(/^\d{4}-\d{2}-\d{2}$/.test(iso) ? `${iso}T12:00:00` : iso);
@@ -54,6 +64,7 @@ export default function NewsPage() {
   const [loadNote, setLoadNote] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [filter, setFilter] = useState("All");
+  const [careerFeed, setCareerFeed] = useState<FeedItem[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -74,6 +85,28 @@ export default function NewsPage() {
         }
       } finally {
         if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const r = await fetch("/api/feed", { cache: "no-store" });
+        const d = await r.json();
+        if (cancelled) return;
+        const list = Array.isArray(d.items) ? d.items : [];
+        setCareerFeed(
+          list
+            .filter((item: FeedItem) => item.type === "job")
+            .slice(0, 3)
+        );
+      } catch {
+        if (!cancelled) setCareerFeed([]);
       }
     })();
     return () => {
@@ -109,6 +142,26 @@ export default function NewsPage() {
             </p>
           </div>
         </section>
+
+        {careerFeed.length > 0 && (
+          <section className="py-14 bg-white border-t border-[#e2e8f0]">
+            <div className="container mx-auto px-6 md:px-8">
+              <div className="flex items-center justify-between mb-6 gap-3">
+                <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-[#229388]">Open roles from careers feed</p>
+                <a href="/careers" className="text-[12px] font-semibold text-[#229388] underline">View all roles</a>
+              </div>
+              <div className="grid md:grid-cols-3 gap-4">
+                {careerFeed.map((item) => (
+                  <a key={item.id} href={item.href} className="rounded-2xl border border-[#e2e8f0] bg-[#f8fafc] p-5 hover:bg-white hover:shadow-sm transition-all">
+                    <p className="text-[11px] uppercase tracking-[0.08em] text-[#229388] font-semibold mb-2">{item.category}</p>
+                    <h3 className="text-[15px] font-semibold text-[#111827] leading-snug mb-2">{item.title}</h3>
+                    <p className="text-[12px] text-[#64748b] leading-relaxed line-clamp-3">{item.excerpt}</p>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* ARTICLES */}
         <section className="py-24 bg-[#f8fafc] border-t border-[#e2e8f0]">
@@ -159,7 +212,6 @@ export default function NewsPage() {
                       {article.coverImage ? (
                         <>
                           <div className="aspect-[16/10] w-full bg-[#f1f5f9]">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={article.coverImage}
                               alt=""

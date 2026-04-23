@@ -41,10 +41,21 @@ export const jobApplications = sqliteTable("job_applications", {
   phone: text("phone"),
   linkedin: text("linkedin"),
   coverLetter: text("cover_letter"),
+  /** Optional styling/theme notes submitted by candidate */
+  themeGuide: text("theme_guide"),
   cvFileName: text("cv_file_name"),
   cvMimeType: text("cv_mime_type"),
+  /** Preferred storage path in R2 */
+  cvObjectKey: text("cv_object_key"),
   /** Base64; omit or null if no file */
   cvBase64: text("cv_base64"),
+  /** Optional portfolio image attachment */
+  portfolioImageFileName: text("portfolio_image_file_name"),
+  portfolioImageMimeType: text("portfolio_image_mime_type"),
+  /** Preferred storage path in R2 */
+  portfolioImageObjectKey: text("portfolio_image_object_key"),
+  /** Base64 image; omit or null if no image file */
+  portfolioImageBase64: text("portfolio_image_base64"),
   createdAt: text("created_at").notNull(),
 });
 

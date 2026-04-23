@@ -5,7 +5,7 @@ import Navbar from "@/components/sections/navbar";
 import Footer from "@/components/sections/footer";
 import ContactModal from "@/components/sections/contact-modal";
 import PageWrapper from "@/components/ui/page-wrapper";
-import { ChevronDown, MapPin, Briefcase, Clock, Send } from "lucide-react";
+import { ChevronDown, MapPin, Briefcase, Clock, Send, Newspaper } from "lucide-react";
 
 interface Job {
   id: string;
@@ -14,6 +14,16 @@ interface Job {
   location: string;
   type: string;
   description: string;
+}
+
+interface FeedItem {
+  id: string;
+  type: "job" | "news";
+  title: string;
+  category: string;
+  excerpt: string;
+  date: string;
+  href: string;
 }
 
 function mapApiJob(row: Record<string, unknown>): Job {
@@ -27,41 +37,23 @@ function mapApiJob(row: Record<string, unknown>): Job {
   };
 }
 
-const DEFAULT_JOBS: Job[] = [
-  {
-    id: "default-1",
-    title: "AI & Machine Learning Engineer",
-    department: "Artificial Intelligence",
-    location: "Al Khobar, Saudi Arabia",
-    type: "Full-time",
-    description: "Design and deploy production-grade AI/ML systems including Arabic-native LLMs, computer vision pipelines, and industrial edge inference models. Work alongside multidisciplinary teams to deliver sovereign AI solutions aligned with Vision 2030.",
-  },
-  {
-    id: "default-2",
-    title: "Cybersecurity Analyst (SOC)",
-    department: "Cybersecurity",
-    location: "Al Khobar, Saudi Arabia",
-    type: "Full-time",
-    description: "Monitor, detect, and respond to threats across enterprise IT and OT environments in our 24/7 SOC. Apply SIEM, MDR/XDR, and threat intelligence platforms to protect critical national infrastructure aligned with NCA ECC frameworks.",
-  },
-  {
-    id: "default-3",
-    title: "Data Center Project Manager",
-    department: "Digital Infrastructure",
-    location: "Al Khobar, Saudi Arabia",
-    type: "Full-time",
-    description: "Lead end-to-end delivery of Tier IV data center projects from concept through Level 1–5 commissioning. Coordinate multidisciplinary engineering teams, manage CAPEX/OPEX budgets, and ensure compliance with Uptime Institute standards.",
-  },
-];
-
 export default function CareersPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [jobsLoading, setJobsLoading] = useState(true);
+  const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
   const [openJobId, setOpenJobId] = useState<string | null>(null);
   const [applied, setApplied] = useState<string | null>(null);
   const [applyError, setApplyError] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", linkedin: "", position: "", cover: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    linkedin: "",
+    position: "",
+    cover: "",
+    themeGuide: "",
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -72,19 +64,33 @@ export default function CareersPage() {
         const d = await r.json();
         if (cancelled) return;
         const list = Array.isArray(d.jobs) ? d.jobs.map((row: Record<string, unknown>) => mapApiJob(row)) : [];
-        if (list.length > 0) {
-          setJobs(list);
-          return;
-        }
-        if (d.error) {
-          setJobs(DEFAULT_JOBS);
-        } else {
-          setJobs([]);
-        }
+        setJobs(list);
       } catch {
-        if (!cancelled) setJobs(DEFAULT_JOBS);
+        if (!cancelled) setJobs([]);
       } finally {
         if (!cancelled) setJobsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const r = await fetch("/api/feed", { cache: "no-store" });
+        const d = await r.json();
+        if (cancelled) return;
+        const list = Array.isArray(d.items) ? d.items : [];
+        setFeedItems(
+          list
+            .filter((item: FeedItem) => item.type === "news")
+            .slice(0, 3)
+        );
+      } catch {
+        if (!cancelled) setFeedItems([]);
       }
     })();
     return () => {
@@ -112,8 +118,12 @@ export default function CareersPage() {
     fd.append("linkedin", form.linkedin.trim());
     fd.append("position", form.position.trim());
     fd.append("cover", form.cover);
+    fd.append("themeGuide", form.themeGuide);
+    const imageInput = formEl.querySelector<HTMLInputElement>('input[name="portfolioImage"]');
+    const portfolioImage = imageInput?.files?.[0];
     if (openJobId) fd.append("jobId", openJobId);
     if (file) fd.append("cv", file);
+    if (portfolioImage) fd.append("portfolioImage", portfolioImage);
 
     try {
       const res = await fetch("/api/apply", { method: "POST", body: fd });
@@ -124,8 +134,9 @@ export default function CareersPage() {
       }
       setApplied(openJobId);
       setOpenJobId(null);
-      setForm({ name: "", email: "", phone: "", linkedin: "", position: "", cover: "" });
+      setForm({ name: "", email: "", phone: "", linkedin: "", position: "", cover: "", themeGuide: "" });
       fileInput.value = "";
+      if (imageInput) imageInput.value = "";
     } catch {
       setApplyError("Network error. Check your connection and try again.");
     }
@@ -159,6 +170,27 @@ export default function CareersPage() {
             </div>
           </div>
         </section>
+
+        {/* NEWS FEED */}
+        {feedItems.length > 0 && (
+          <section className="py-14 bg-white border-t border-[#e2e8f0]">
+            <div className="container mx-auto px-6 md:px-8">
+              <div className="flex items-center gap-2 mb-6">
+                <Newspaper size={15} className="text-[#229388]" />
+                <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-[#229388]">Latest from News Feed</p>
+              </div>
+              <div className="grid md:grid-cols-3 gap-4">
+                {feedItems.map((item) => (
+                  <a key={item.id} href={item.href} className="rounded-2xl border border-[#e2e8f0] bg-[#f8fafc] p-5 hover:bg-white hover:shadow-sm transition-all">
+                    <p className="text-[11px] uppercase tracking-[0.08em] text-[#229388] font-semibold mb-2">{item.category}</p>
+                    <h3 className="text-[15px] font-semibold text-[#111827] leading-snug mb-2">{item.title}</h3>
+                    <p className="text-[12px] text-[#64748b] leading-relaxed line-clamp-3">{item.excerpt}</p>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* OPEN POSITIONS */}
         <section id="openings" className="py-28 bg-[#f8fafc] border-t border-[#e2e8f0]">
@@ -255,6 +287,25 @@ export default function CareersPage() {
                           className="w-full px-4 py-3 rounded-lg border border-[#e2e8f0] text-[14px] text-[#111827] focus:outline-none focus:border-[#229388] focus:ring-2 focus:ring-[#229388]/10 transition-all bg-white resize-none"
                         />
                       </div>
+                      <div className="mb-4">
+                        <label className="block text-[12px] font-semibold text-[#374151] mb-1.5 uppercase tracking-[0.06em]">Theme Guide (optional)</label>
+                        <textarea
+                          name="themeGuide"
+                          rows={3}
+                          value={form.themeGuide}
+                          onChange={(e) => setForm((v) => ({ ...v, themeGuide: e.target.value }))}
+                          placeholder="Share your visual approach, brand tone, and design thinking."
+                          className="w-full px-4 py-3 rounded-lg border border-[#e2e8f0] text-[14px] text-[#111827] focus:outline-none focus:border-[#229388] focus:ring-2 focus:ring-[#229388]/10 transition-all bg-white resize-none"
+                        />
+                      </div>
+                      <div className="mb-4 rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-4 py-3">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#229388] mb-1">Theme guide tips</p>
+                        <ul className="text-[12px] text-[#64748b] leading-relaxed list-disc pl-4 space-y-0.5">
+                          <li>Use clean typography and high-contrast hierarchy.</li>
+                          <li>Keep layout simple and outcome-focused.</li>
+                          <li>Match visuals to the role and business domain.</li>
+                        </ul>
+                      </div>
                       <div className="mb-6">
                         <label className="block text-[12px] font-semibold text-[#374151] mb-1.5 uppercase tracking-[0.06em]">Upload CV / Resume</label>
                         <input
@@ -265,6 +316,16 @@ export default function CareersPage() {
                           className="w-full text-[13px] text-[#64748b] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[12px] file:font-semibold file:bg-[#229388]/10 file:text-[#229388] hover:file:bg-[#229388]/20 transition-all cursor-pointer"
                         />
                         <p className="text-[11px] text-[#94a3b8] mt-1.5">PDF, DOC or DOCX — max 8MB</p>
+                      </div>
+                      <div className="mb-6">
+                        <label className="block text-[12px] font-semibold text-[#374151] mb-1.5 uppercase tracking-[0.06em]">Portfolio / Work Sample Image (optional)</label>
+                        <input
+                          name="portfolioImage"
+                          type="file"
+                          accept="image/png,image/jpeg,image/webp,image/gif"
+                          className="w-full text-[13px] text-[#64748b] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[12px] file:font-semibold file:bg-[#229388]/10 file:text-[#229388] hover:file:bg-[#229388]/20 transition-all cursor-pointer"
+                        />
+                        <p className="text-[11px] text-[#94a3b8] mt-1.5">PNG, JPG, GIF, or WebP — max 5MB</p>
                       </div>
                       <button type="submit" className="flex items-center gap-2 btn-primary text-[14px] px-8 py-3.5">
                         <Send size={15} /> Submit Application

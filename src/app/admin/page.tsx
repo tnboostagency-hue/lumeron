@@ -51,9 +51,13 @@ interface ApplicationListItem {
   phone: string | null;
   linkedin: string | null;
   coverLetter: string | null;
+  themeGuide: string | null;
   cvFileName: string | null;
   cvMimeType: string | null;
   hasCv: boolean;
+  portfolioImageFileName: string | null;
+  portfolioImageMimeType: string | null;
+  hasPortfolioImage: boolean;
   createdAt: string;
 }
 
@@ -330,6 +334,21 @@ export default function AdminPage() {
     const link = document.createElement("a");
     link.href = url;
     link.download = (a.cvFileName && a.cvFileName.trim()) || "cv.pdf";
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadApplicationImage = async (a: ApplicationListItem) => {
+    const r = await fetch(`/api/admin/applications/${a.id}/image`, { credentials: "include" });
+    if (!r.ok) {
+      alert(r.status === 404 ? "Image not available." : "Could not download image.");
+      return;
+    }
+    const blob = await r.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = (a.portfolioImageFileName && a.portfolioImageFileName.trim()) || "portfolio-image.png";
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -645,12 +664,7 @@ export default function AdminPage() {
               {jobs.length === 0 ? (
                 <div className="bg-white rounded-2xl border border-[#e2e8f0] p-8 text-center text-[13px] text-[#64748b] leading-relaxed">
                   <p className="text-[#94a3b8] mb-3">No jobs in the database yet.</p>
-                  <p>
-                    If <a href="/careers" className="text-[#229388] underline">/careers</a> still lists sample roles, those are fallbacks until the API returns DB
-                    data. Create openings here, or run{" "}
-                    <code className="text-[12px] bg-[#f1f5f9] px-1.5 py-0.5 rounded">schema-migrations/002-seed-default-careers-jobs.sql</code> on D1 to import
-                    the default three.
-                  </p>
+                  <p>Publish openings here and they appear on <a href="/careers" className="text-[#229388] underline">/careers</a> immediately when marked visible.</p>
                 </div>
               ) : (
                 jobs.map((job) => (
@@ -780,7 +794,6 @@ export default function AdminPage() {
                   <p className="text-[12px] text-[#94a3b8] mb-2">Shown on the public news page. JPEG, PNG, GIF, or WebP — max ~2MB.</p>
                   {articleForm.coverImage && (
                     <div className="mb-3 relative rounded-xl overflow-hidden border border-[#e2e8f0] bg-[#f8fafc] max-h-[200px]">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={articleForm.coverImage} alt="" className="w-full max-h-[200px] object-cover" />
                     </div>
                   )}
@@ -880,7 +893,6 @@ export default function AdminPage() {
                     <div className="min-w-0 flex-1 flex gap-3">
                       {article.coverImage ? (
                         <div className="w-14 h-14 rounded-lg overflow-hidden border border-[#e2e8f0] shrink-0 bg-[#f1f5f9]">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={article.coverImage} alt="" className="w-full h-full object-cover" />
                         </div>
                       ) : null}
@@ -984,6 +996,16 @@ export default function AdminPage() {
                               Download CV
                             </button>
                           )}
+                          {a.hasPortfolioImage && (
+                            <button
+                              type="button"
+                              onClick={() => void downloadApplicationImage(a)}
+                              className="inline-flex items-center gap-1 rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-2.5 py-1.5 text-[12px] font-semibold text-[#229388] hover:bg-[#f0fdfc]"
+                            >
+                              <Download size={14} />
+                              Download Image
+                            </button>
+                          )}
                           <button
                             type="button"
                             title="Delete application"
@@ -998,10 +1020,20 @@ export default function AdminPage() {
                             {a.cvFileName}
                           </span>
                         )}
+                        {a.hasPortfolioImage && a.portfolioImageFileName && (
+                          <span className="text-[10px] text-[#64748b] max-w-[220px] truncate" title={a.portfolioImageFileName}>
+                            {a.portfolioImageFileName}
+                          </span>
+                        )}
                       </div>
                     </div>
                     {a.coverLetter && (
                       <p className="mt-4 text-[13px] text-[#64748b] leading-relaxed border-t border-[#e2e8f0] pt-4 whitespace-pre-wrap">{a.coverLetter}</p>
+                    )}
+                    {a.themeGuide && (
+                      <p className="mt-3 text-[13px] text-[#64748b] leading-relaxed border-t border-[#e2e8f0] pt-4 whitespace-pre-wrap">
+                        <span className="font-semibold text-[#111827]">Theme guide:</span> {a.themeGuide}
+                      </p>
                     )}
                   </div>
                 ))}

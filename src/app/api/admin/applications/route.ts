@@ -17,9 +17,12 @@ export async function GET() {
       .from(jobApplications)
       .orderBy(desc(jobApplications.createdAt))
       .limit(200);
-    const applications = rows.map(({ cvBase64, ...rest }) => ({
+    const applications = rows.map(({ cvBase64, cvObjectKey, portfolioImageBase64, portfolioImageObjectKey, ...rest }) => ({
       ...rest,
-      hasCv: Boolean(cvBase64 && cvBase64.length > 0),
+      hasCv: Boolean((cvObjectKey && cvObjectKey.length > 0) || (cvBase64 && cvBase64.length > 0)),
+      hasPortfolioImage: Boolean(
+        (portfolioImageObjectKey && portfolioImageObjectKey.length > 0) || (portfolioImageBase64 && portfolioImageBase64.length > 0)
+      ),
     }));
     return NextResponse.json({ applications });
   } catch (e) {
