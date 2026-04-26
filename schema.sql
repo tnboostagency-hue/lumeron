@@ -28,6 +28,18 @@ CREATE TABLE IF NOT EXISTS news_articles (
   updated_at TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS links_profile (
+  id TEXT PRIMARY KEY NOT NULL,
+  phone_contact TEXT,
+  whatsapp TEXT,
+  linkedin TEXT,
+  website TEXT,
+  x TEXT,
+  instagram TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
 -- Existing D1 databases created before cover_image: run once if the column is missing:
 -- wrangler d1 execute lumeron --remote --command "ALTER TABLE news_articles ADD COLUMN cover_image TEXT;"
 

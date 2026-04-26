@@ -31,6 +31,19 @@ export const newsArticles = sqliteTable("news_articles", {
   updatedAt: text("updated_at").notNull(),
 });
 
+/** Public links page profile (managed in admin, shown on /links) */
+export const linksProfile = sqliteTable("links_profile", {
+  id: text("id").primaryKey(),
+  phoneContact: text("phone_contact"),
+  whatsapp: text("whatsapp"),
+  linkedin: text("linkedin"),
+  website: text("website"),
+  x: text("x"),
+  instagram: text("instagram"),
+  createdAt: text("created_at").notNull(),
+  updatedAt: text("updated_at").notNull(),
+});
+
 /** Candidate applications (from /careers apply form) */
 export const jobApplications = sqliteTable("job_applications", {
   id: text("id").primaryKey(),
@@ -61,4 +74,5 @@ export const jobApplications = sqliteTable("job_applications", {
 
 export type JobRow = typeof jobs.$inferSelect;
 export type NewsArticleRow = typeof newsArticles.$inferSelect;
+export type LinksProfileRow = typeof linksProfile.$inferSelect;
 export type JobApplicationRow = typeof jobApplications.$inferSelect;

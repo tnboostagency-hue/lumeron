@@ -14,6 +14,7 @@ import {
   X,
   ImagePlus,
   Download,
+  Link2,
 } from "lucide-react";
 import { MAX_NEWS_COVER_DATA_URL_LENGTH } from "@/lib/news-cover";
 
@@ -61,6 +62,16 @@ interface ApplicationListItem {
   createdAt: string;
 }
 
+interface LinksProfile {
+  id: string;
+  phoneContact: string;
+  whatsapp: string;
+  linkedin: string;
+  website: string;
+  x: string;
+  instagram: string;
+}
+
 const EMPTY_JOB: Omit<Job, "id"> = {
   title: "",
   department: "",
@@ -78,6 +89,15 @@ const EMPTY_ARTICLE: Omit<Article, "id"> = {
   content: "",
   coverImage: null,
   published: true,
+};
+const EMPTY_LINKS: LinksProfile = {
+  id: "primary",
+  phoneContact: "",
+  whatsapp: "",
+  linkedin: "",
+  website: "",
+  x: "",
+  instagram: "",
 };
 
 function normalizeJobRow(row: Record<string, unknown>): Job {
@@ -115,7 +135,7 @@ function formatAdminArticleDate(raw: string): string {
 }
 
 type AuthState = "loading" | "guest" | "admin";
-type AdminTab = "jobs" | "news" | "applications";
+type AdminTab = "jobs" | "news" | "applications" | "links";
 
 export default function AdminPage() {
   const [authState, setAuthState] = useState<AuthState>("loading");
@@ -127,6 +147,7 @@ export default function AdminPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
   const [applications, setApplications] = useState<ApplicationListItem[]>([]);
+  const [linksForm, setLinksForm] = useState<LinksProfile>(EMPTY_LINKS);
   const [jobForm, setJobForm] = useState<Omit<Job, "id">>(EMPTY_JOB);
   const [articleForm, setArticleForm] = useState<Omit<Article, "id">>(EMPTY_ARTICLE);
   const [jobSuccess, setJobSuccess] = useState(false);
@@ -136,6 +157,8 @@ export default function AdminPage() {
   const [editingArticleId, setEditingArticleId] = useState<string | null>(null);
   const [jobFormError, setJobFormError] = useState<string | null>(null);
   const [articleFormError, setArticleFormError] = useState<string | null>(null);
+  const [linksFormError, setLinksFormError] = useState<string | null>(null);
+  const [linksSuccess, setLinksSuccess] = useState(false);
 
   const refreshJobs = useCallback(async () => {
     const r = await fetch("/api/admin/jobs", { credentials: "include", cache: "no-store" });
@@ -160,6 +183,22 @@ export default function AdminPage() {
     setApplications(d.applications ?? []);
   }, []);
 
+  const refreshLinks = useCallback(async () => {
+    const r = await fetch("/api/admin/links", { credentials: "include", cache: "no-store" });
+    if (!r.ok) return;
+    const d = await r.json();
+    const l = d?.links ?? {};
+    setLinksForm({
+      id: "primary",
+      phoneContact: String(l.phoneContact ?? ""),
+      whatsapp: String(l.whatsapp ?? ""),
+      linkedin: String(l.linkedin ?? ""),
+      website: String(l.website ?? ""),
+      x: String(l.x ?? ""),
+      instagram: String(l.instagram ?? ""),
+    });
+  }, []);
+
   useEffect(() => {
     (async () => {
       setLoadError(null);
@@ -182,7 +221,8 @@ export default function AdminPage() {
     if (authState !== "admin") return;
     refreshNews();
     refreshApplications();
-  }, [authState, refreshNews, refreshApplications]);
+    refreshLinks();
+  }, [authState, refreshNews, refreshApplications, refreshLinks]);
 
   const handlePin = async () => {
     setPinError(false);
@@ -199,6 +239,7 @@ export default function AdminPage() {
         await refreshJobs();
         await refreshNews();
         await refreshApplications();
+        await refreshLinks();
       } else {
         setPinError(true);
         setShake(true);
@@ -367,6 +408,32 @@ export default function AdminPage() {
       body: JSON.stringify({ published: !article.published }),
     });
     if (r.ok) await refreshNews();
+  };
+
+  const saveLinks = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLinksFormError(null);
+    const r = await fetch("/api/admin/links", {
+      method: "PATCH",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        phoneContact: linksForm.phoneContact,
+        whatsapp: linksForm.whatsapp,
+        linkedin: linksForm.linkedin,
+        website: linksForm.website,
+        x: linksForm.x,
+        instagram: linksForm.instagram,
+      }),
+    });
+    if (!r.ok) {
+      const d = await r.json().catch(() => ({}));
+      setLinksFormError(typeof d.error === "string" ? d.error : "Could not save links.");
+      return;
+    }
+    setLinksSuccess(true);
+    setTimeout(() => setLinksSuccess(false), 3000);
+    await refreshLinks();
   };
 
   const startEditArticle = (article: Article) => {
@@ -538,6 +605,12 @@ export default function AdminPage() {
               ["jobs", "Jobs", Briefcase, jobs.length],
               ["news", "News", Newspaper, articles.length],
               ["applications", "Applications", Users, applications.length],
+              [
+                "links",
+                "Links",
+                Link2,
+                [linksForm.phoneContact, linksForm.whatsapp, linksForm.linkedin, linksForm.website, linksForm.x, linksForm.instagram].filter(Boolean).length,
+              ],
             ] as const
           ).map(([key, label, Icon, count]) => (
             <button
@@ -1039,6 +1112,63 @@ export default function AdminPage() {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {tab === "links" && (
+          <div className="grid lg:grid-cols-[1fr_330px] gap-8 items-start">
+            <div className="bg-white rounded-2xl border border-[#e2e8f0] p-7 shadow-sm">
+              <h2 className="font-bold text-[20px] text-[#111827] mb-6" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif' }}>
+                Link in bio setup
+              </h2>
+              <form onSubmit={saveLinks} className="space-y-4">
+                {linksFormError && (
+                  <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-800">{linksFormError}</div>
+                )}
+                {(
+                  [
+                    ["phoneContact", "Phone Contact", "+966..."],
+                    ["whatsapp", "WhatsApp", "https://wa.me/... or phone"],
+                    ["linkedin", "LinkedIn", "linkedin.com/company/..."],
+                    ["website", "Website", "lumeron.sa"],
+                    ["x", "X", "x.com/..."],
+                    ["instagram", "Instagram", "instagram.com/..."],
+                  ] as const
+                ).map(([key, label, placeholder]) => (
+                  <div key={key}>
+                    <label className="block text-[11px] font-bold uppercase tracking-[0.08em] text-[#94a3b8] mb-1.5">{label}</label>
+                    <input
+                      type="text"
+                      value={linksForm[key]}
+                      placeholder={placeholder}
+                      onChange={(e) => setLinksForm((v) => ({ ...v, [key]: e.target.value }))}
+                      className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] text-[14px] text-[#111827] focus:outline-none focus:border-[#229388] focus:ring-2 focus:ring-[#229388]/10 transition-all"
+                    />
+                  </div>
+                ))}
+                {linksSuccess && (
+                  <div className="rounded-xl px-4 py-3 text-[13px] font-semibold text-[#229388]" style={{ background: "rgba(34,147,136,0.08)" }}>
+                    ✓ Links saved — synced to <a href="/links" className="underline">/links</a>.
+                  </div>
+                )}
+                <button
+                  type="submit"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-white text-[14px] transition-all hover:opacity-90"
+                  style={{ background: "linear-gradient(135deg,#229388,#3ec8ba)" }}
+                >
+                  <Link2 size={16} /> Save links
+                </button>
+              </form>
+            </div>
+            <div className="bg-white rounded-2xl border border-[#e2e8f0] p-6 shadow-sm">
+              <h3 className="font-semibold text-[14px] uppercase tracking-[0.08em] text-[#64748b] mb-4">Public page</h3>
+              <p className="text-[13px] text-[#64748b] leading-relaxed mb-3">
+                The <a href="/links" className="text-[#229388] underline">/links</a> page is optimized for mobile and shows only non-empty links.
+              </p>
+              <p className="text-[12px] text-[#94a3b8]">
+                Tips: use full URLs for social channels. For WhatsApp you can paste a URL or phone number.
+              </p>
+            </div>
           </div>
         )}
       </div>
