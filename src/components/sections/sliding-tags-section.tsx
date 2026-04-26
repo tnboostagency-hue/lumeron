@@ -207,7 +207,7 @@ function Pill({ term, rowIndex, tagIndex }: { term: typeof terms[0]; rowIndex: n
       href={term.href}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="sliding-tags-pill inline-flex items-center gap-[10px] rounded-[100px] px-[24px] py-[13px] whitespace-nowrap no-underline select-none tracking-[0.01em] font-medium text-[0.95rem] cursor-pointer max-md:gap-[8px] max-md:px-[18px] max-md:py-[10px] max-md:text-[0.85rem]"
+      className="sliding-tags-pill inline-flex items-center gap-[10px] rounded-[100px] px-[24px] py-[13px] whitespace-nowrap no-underline select-none tracking-[0.01em] font-medium text-[0.95rem] cursor-pointer max-md:gap-[7px] max-md:px-[14px] max-md:py-[9px] max-md:text-[0.78rem] max-md:leading-[1.15] max-md:text-center"
       style={{
         fontFamily: "'DM Sans','Inter',sans-serif",
         background: hovered ? "#1e8178" : v.bg,
@@ -241,12 +241,21 @@ export default function SlidingTagsSection() {
     ...t,
     label: isAr ? arabicLabels[t.label] ?? t.label : t.label,
   }));
+  const mobileTerms = localizedTerms.filter(
+    (t) => t.label !== (isAr ? arabicLabels["Security Operation Center"] : "Security Operation Center") && t.label !== (isAr ? arabicLabels["Managed Services"] : "Managed Services")
+  );
   const localizedRows = [
     localizedTerms.slice(0, 4),
     localizedTerms.slice(4, 8),
     localizedTerms.slice(8, 12),
     localizedTerms.slice(12, 16),
   ];
+  const mobileRows = [
+    mobileTerms.slice(0, 4),
+    mobileTerms.slice(4, 8),
+    mobileTerms.slice(8, 12),
+    mobileTerms.slice(12, 16),
+  ].filter((r) => r.length > 0);
 
   return (
     <>
@@ -269,6 +278,7 @@ export default function SlidingTagsSection() {
           .sliding-tags-section { padding: 40px 0 64px; }
           .sliding-tags-title { font-size: clamp(1.7rem, 7vw, 2.3rem); margin-bottom: 10px; }
           .sliding-tags-subtitle { font-size: 0.98rem; }
+          .sliding-tags-pill-icon svg { width: 14px; height: 14px; }
         }
       `}</style>
 
@@ -293,10 +303,26 @@ export default function SlidingTagsSection() {
           </p>
         </div>
 
-        {/* Static 4 rows */}
-        <div dir="ltr" className="tags-wrapper relative flex flex-col gap-[13px] max-md:gap-[10px]">
+        {/* Static 4 rows (desktop/tablet) */}
+        <div dir="ltr" className="tags-wrapper relative hidden md:flex flex-col gap-[13px]">
           {localizedRows.map((row, rowIndex) => (
-            <div key={rowIndex} className="flex flex-wrap justify-center gap-[13px] max-md:gap-[10px]">
+            <div key={rowIndex} className="flex flex-wrap justify-center gap-[13px]">
+              {row.map((term, tagIndex) => (
+                <Pill
+                  key={`${term.label}-${tagIndex}`}
+                  term={term}
+                  rowIndex={rowIndex}
+                  tagIndex={tagIndex}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+
+        {/* Mobile: keep previous row layout with smaller sizing */}
+        <div dir="ltr" className="tags-wrapper relative md:hidden flex flex-col gap-[10px] px-[10px]">
+          {mobileRows.map((row, rowIndex) => (
+            <div key={rowIndex} className="flex flex-wrap justify-center gap-[9px]">
               {row.map((term, tagIndex) => (
                 <Pill
                   key={`${term.label}-${tagIndex}`}
