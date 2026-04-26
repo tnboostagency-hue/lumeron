@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { Phone, MessageCircle, Linkedin, Globe, Instagram } from "lucide-react";
 import { RiTwitterXLine } from "react-icons/ri";
 
@@ -112,8 +113,14 @@ export default function LinksPage() {
       <div className="mx-auto w-full max-w-md">
         <div className="rounded-[30px] border border-[#e2e8f0] bg-white p-6 sm:p-7 shadow-[0_24px_50px_-30px_rgba(15,23,42,0.35)]">
           <div className="text-center mb-6">
-            <div className="mx-auto mb-4 w-20 h-20 rounded-2xl bg-gradient-to-br from-[#229388] to-[#3ec8ba] flex items-center justify-center text-white text-[28px] font-bold">
-              L
+            <div className="mx-auto mb-4 h-16 w-[180px] sm:w-[210px] relative">
+              <Image
+                src="/lumeron-logo.svg"
+                alt="Lumeron"
+                fill
+                priority
+                className="object-contain"
+              />
             </div>
             <h1 className="text-[26px] font-bold text-[#111827]" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif' }}>
               Lumeron Links
