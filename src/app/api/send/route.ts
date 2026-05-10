@@ -1,19 +1,60 @@
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+/** Verified sender in Resend (e.g. Lumeron <noreply@yourdomain.com>). Falls back to Resend test inbox. */
+const DEFAULT_FROM = "Lumeron Website <onboarding@resend.dev>";
+const DEFAULT_TO = "info@lumeron.sa";
 
 export async function POST(req: NextRequest) {
+  const apiKey = process.env.RESEND_API_KEY?.trim();
+  if (!apiKey) {
+    console.error("POST /api/send: RESEND_API_KEY is not set");
+    return NextResponse.json(
+      { error: "Email service is not configured. Please contact us at info@lumeron.sa." },
+      { status: 503 }
+    );
+  }
+
+  const resend = new Resend(apiKey);
+  const from = (process.env.RESEND_FROM?.trim() || DEFAULT_FROM).slice(0, 320);
+  const toRaw = process.env.RESEND_TO?.trim() || DEFAULT_TO;
+  const toList = toRaw
+    .split(/[,;]\s*/)
+    .map((e) => e.trim())
+    .filter(Boolean);
+  if (toList.length === 0) {
+    return NextResponse.json({ error: "Invalid recipient configuration" }, { status: 500 });
+  }
+
   try {
-    const { name, email, company, service, message } = await req.json();
+    const body = await req.json();
+    const name = String(body?.name ?? "").trim();
+    const email = String(body?.email ?? "").trim();
+    const company = String(body?.company ?? "").trim();
+    const service = String(body?.service ?? "").trim();
+    const message = String(body?.message ?? "").trim();
 
     if (!name || !email || !message) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safeCompany = escapeHtml(company);
+    const safeService = escapeHtml(service);
+    const safeMessage = escapeHtml(message);
+
     const { error } = await resend.emails.send({
-      from: "Lumeron Website <onboarding@resend.dev>",
-      to: ["infos@lumeron"],
+      from,
+      to: toList,
       replyTo: email,
       subject: `Inquiry from ${name}${company ? ` — ${company}` : ""}${service ? ` | ${service}` : ""}`,
       html: `
@@ -26,26 +67,26 @@ export async function POST(req: NextRequest) {
             <table style="width: 100%; border-collapse: collapse;">
               <tr>
                 <td style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; color: #64748b; font-size: 13px; width: 140px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Name</td>
-                <td style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; color: #111827; font-size: 15px;">${name}</td>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; color: #111827; font-size: 15px;">${safeName}</td>
               </tr>
               <tr>
                 <td style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; color: #64748b; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Email</td>
-                <td style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; color: #111827; font-size: 15px;"><a href="mailto:${email}" style="color: #229388;">${email}</a></td>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; color: #111827; font-size: 15px;"><a href="mailto:${safeEmail}" style="color: #229388;">${safeEmail}</a></td>
               </tr>
               ${company ? `
               <tr>
                 <td style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; color: #64748b; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Company</td>
-                <td style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; color: #111827; font-size: 15px;">${company}</td>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; color: #111827; font-size: 15px;">${safeCompany}</td>
               </tr>` : ""}
               ${service ? `
               <tr>
                 <td style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; color: #64748b; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Service</td>
-                <td style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; color: #111827; font-size: 15px;">${service}</td>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f0f0f0; color: #111827; font-size: 15px;">${safeService}</td>
               </tr>` : ""}
             </table>
             <div style="margin-top: 24px;">
               <p style="color: #64748b; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px;">Message</p>
-              <div style="background: #f8fafc; border-left: 3px solid #229388; padding: 16px 20px; border-radius: 0 8px 8px 0; color: #111827; font-size: 15px; line-height: 1.7; white-space: pre-wrap;">${message}</div>
+              <div style="background: #f8fafc; border-left: 3px solid #229388; padding: 16px 20px; border-radius: 0 8px 8px 0; color: #111827; font-size: 15px; line-height: 1.7; white-space: pre-wrap;">${safeMessage}</div>
             </div>
           </div>
           <div style="padding: 20px 40px; background: #f9fafb; text-align: center;">
