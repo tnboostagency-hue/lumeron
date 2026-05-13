@@ -2,11 +2,11 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 /**
  * When `RESEND_FROM` is not set, use an address on your verified domain (lumeron.sa).
- * Resend's `onboarding@resend.dev` only allows sending TO the account owner's email — not info@lumeron.sa.
+ * Avoid `onboarding@resend.dev` in production — it restricts which recipients you can use.
  */
-export const DEFAULT_RESEND_FROM_CONTACT = "Lumeron <noreply@lumeron.sa>";
-export const DEFAULT_RESEND_FROM_CAREERS = "Lumeron Careers <noreply@lumeron.sa>";
-export const DEFAULT_RESEND_FROM_PORTAL = "Lumeron <noreply@lumeron.sa>";
+export const DEFAULT_RESEND_FROM_CONTACT = "Lumeron <no-reply@lumeron.sa>";
+export const DEFAULT_RESEND_FROM_CAREERS = "Lumeron Careers <no-reply@lumeron.sa>";
+export const DEFAULT_RESEND_FROM_PORTAL = "Lumeron <no-reply@lumeron.sa>";
 
 /**
  * Cloudflare Workers expose secrets on `env`, not always on `process.env`.

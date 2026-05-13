@@ -177,8 +177,8 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                     sendErrorDetail.toLowerCase().includes("verify a domain")) ? (
                     <p className="text-[13px] text-slate-600 max-w-sm mx-auto mb-4 leading-relaxed text-left">
                       {lang === "ar"
-                        ? "يجب أن يكون عنوان المرسل من نطاق موثّق في Resend (مثل lumeron.sa). تم ضبط الإرسال الافتراضي على noreply@lumeron.sa — أعد المحاولة بعد نشر التحديث، أو عيّن RESEND_FROM في Cloudflare."
-                        : "Resend requires the sender to use your verified domain. This app now defaults to noreply@lumeron.sa. Deploy the latest build, try again, or set RESEND_FROM in Cloudflare to any verified address on lumeron.sa."}
+                        ? "يجب أن يكون عنوان المرسل من نطاق موثّق في Resend (مثل lumeron.sa). الإرسال الافتراضي هو no-reply@lumeron.sa — أعد المحاولة بعد النشر، أو عيّن RESEND_FROM في Cloudflare."
+                        : "Resend requires the sender to use your verified domain. Defaults use no-reply@lumeron.sa. Deploy the latest build, try again, or set RESEND_FROM in Cloudflare to any verified address on lumeron.sa."}
                     </p>
                   ) : null}
                   <button
