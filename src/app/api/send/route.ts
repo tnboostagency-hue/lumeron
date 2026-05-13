@@ -1,5 +1,8 @@
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
+import { getResendApiKey, getResendFrom } from "@/lib/resend-env";
+
+export const dynamic = "force-dynamic";
 
 function escapeHtml(s: string): string {
   return s
@@ -15,7 +18,7 @@ const DEFAULT_FROM = "Lumeron Website <onboarding@resend.dev>";
 const INBOX = "info@lumeron.sa";
 
 export async function POST(req: NextRequest) {
-  const apiKey = process.env.RESEND_API_KEY?.trim();
+  const apiKey = getResendApiKey();
   if (!apiKey) {
     console.error("POST /api/send: RESEND_API_KEY is not set");
     return NextResponse.json(
@@ -25,7 +28,7 @@ export async function POST(req: NextRequest) {
   }
 
   const resend = new Resend(apiKey);
-  const from = (process.env.RESEND_FROM?.trim() || DEFAULT_FROM).slice(0, 320);
+  const from = getResendFrom(DEFAULT_FROM);
 
   try {
     const body = await req.json();

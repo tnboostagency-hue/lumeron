@@ -16,6 +16,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [sendError, setSendError] = useState(false);
+  const [sendErrorDetail, setSendErrorDetail] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
 
@@ -50,18 +51,27 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
     e.preventDefault();
     setSending(true);
     setSendError(false);
+    setSendErrorDetail(null);
     try {
       const res = await fetch("/api/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
+      let payload: { error?: string } = {};
+      try {
+        payload = (await res.json()) as { error?: string };
+      } catch {
+        /* non-JSON */
+      }
       if (!res.ok) {
+        setSendErrorDetail(typeof payload.error === "string" ? payload.error.slice(0, 280) : null);
         setSendError(true);
         setSending(false);
         return;
       }
     } catch {
+      setSendErrorDetail(null);
       setSendError(true);
       setSending(false);
       return;
@@ -157,8 +167,16 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                       ? "لم نتمكن من إرسال رسالتك. يرجى المحاولة مرة أخرى أو التواصل معنا مباشرة."
                       : "We couldn't send your message. Please try again or contact us at info@lumeron.sa"}
                   </p>
+                  {sendErrorDetail ? (
+                    <p className="text-left w-full max-w-sm mx-auto text-[12px] text-slate-500 font-mono bg-slate-50 border border-slate-200 rounded-lg p-3 mb-4 break-words">
+                      {sendErrorDetail}
+                    </p>
+                  ) : null}
                   <button
-                    onClick={() => setSendError(false)}
+                    onClick={() => {
+                      setSendError(false);
+                      setSendErrorDetail(null);
+                    }}
                     className="btn-primary px-6 py-2.5 text-[14px]"
                   >
                     {lang === 'ar' ? "حاول مجدداً" : "Try Again"}

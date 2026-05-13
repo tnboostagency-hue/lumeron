@@ -2,12 +2,11 @@ import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { getResendApiKey, getResendFrom } from "@/lib/resend-env";
 import { getDb } from "@/db";
 import { jobApplications } from "@/db/schema";
 
 export const dynamic = "force-dynamic";
-
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 const DEFAULT_FROM_APPLY = "Lumeron Careers <onboarding@resend.dev>";
 /** Careers applications (contact form uses info@lumeron.sa only). */
@@ -188,7 +187,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (resend) {
+    const resendApiKey = getResendApiKey();
+    let emailed = false;
+
+    if (resendApiKey) {
+      const resend = new Resend(resendApiKey);
       const html = `
         <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f9fafb; border-radius: 12px; overflow: hidden;">
           <div style="background: linear-gradient(135deg, #1a7a70 0%, #229388 50%, #3ec8ba 100%); padding: 32px 40px;">
@@ -250,7 +253,7 @@ export async function POST(req: NextRequest) {
         ...(cv ? [{ filename: cv.fileName, content: cv.content }] : []),
         ...(portfolioImage ? [{ filename: portfolioImage.fileName, content: portfolioImage.content }] : []),
       ];
-      const from = (process.env.RESEND_FROM?.trim() || DEFAULT_FROM_APPLY).slice(0, 320);
+      const from = getResendFrom(DEFAULT_FROM_APPLY);
       const { error } = await resend.emails.send({
         from,
         to: [CAREERS_INBOX],
@@ -263,9 +266,10 @@ export async function POST(req: NextRequest) {
         console.error("Resend error:", error);
         return NextResponse.json({ success: true, saved: true, emailed: false, emailError: error.message });
       }
+      emailed = true;
     }
 
-    return NextResponse.json({ success: true, saved: true, emailed: Boolean(resend), usedR2: Boolean(bucket) });
+    return NextResponse.json({ success: true, saved: true, emailed, usedR2: Boolean(bucket) });
   } catch (err) {
     console.error("Apply route error:", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

@@ -3,7 +3,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
+  BookOpen,
+  Copy,
   Headphones,
+  KeyRound,
   LayoutDashboard,
   LogOut,
   Mail,
@@ -51,6 +54,232 @@ function loadPrefs(email: string): Prefs {
   }
 }
 
+function copyText(text: string, setFeedback: (s: string | null) => void) {
+  void navigator.clipboard.writeText(text).then(
+    () => {
+      setFeedback("Copied to clipboard.");
+      setTimeout(() => setFeedback(null), 2000);
+    },
+    () => setFeedback("Copy failed — select and copy manually.")
+  );
+}
+
+function PortalIntegrationsGuide({
+  userEmail,
+  origin,
+}: {
+  userEmail: string;
+  origin: string;
+}) {
+  const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
+  const apiRoot = origin ? `${origin}/api` : "/api";
+  const examplePayload = `{
+  "event": "service.health",
+  "client_email": "${userEmail}",
+  "service_id": "managed",
+  "severity": "info",
+  "resource": "dc-cluster-01",
+  "message": "CPU below threshold after maintenance",
+  "timestamp": "${new Date().toISOString()}"
+}`;
+
+  const curlJsonLine = JSON.stringify({
+    event: "service.health",
+    client_email: userEmail,
+    service_id: "managed",
+    severity: "info",
+    resource: "dc-cluster-01",
+    message: "CPU below threshold after maintenance",
+    timestamp: new Date().toISOString(),
+  });
+
+  const exampleCurl = [
+    "# Example — call YOUR integration worker or Lumeron-provisioned ingest (when enabled).",
+    "# Replace placeholders. Lumeron issues LMN_API_KEY and signing secret per SOW.",
+    "",
+    `curl -sS -X POST "https://integrations.lumeron.sa/v1/client-events" \\`,
+    `  -H "Authorization: Bearer <LMN_API_KEY>" \\`,
+    `  -H "Content-Type: application/json" \\`,
+    `  -H "X-Lumeron-Idempotency-Key: $(uuidgen)" \\`,
+    `  -H "X-Lumeron-Signature: <HMAC_SHA256_OF_RAW_BODY_WITH_SIGNING_SECRET>" \\`,
+    `  -d '${curlJsonLine.replace(/'/g, "'\\''")}'`,
+  ].join("\n");
+
+  const serviceIdsList = SERVICE_ITEMS.map((s) => `"${s.id}"`).join(", ");
+
+  return (
+    <div className="space-y-8">
+      <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-sm space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div className="flex gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#f0fdf9] border border-[#3ec8ba]/30 text-[#229388]">
+              <KeyRound className="h-5 w-5" strokeWidth={2} />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-slate-900">API configuration</h3>
+              <p className="mt-1 text-sm text-slate-600 max-w-2xl">
+                Reference values for your IT and integration teams. Production keys and webhook secrets are issued by
+                Lumeron after onboarding — not shown in this demo portal.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <dl className="grid gap-4 sm:grid-cols-2">
+          <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-4">
+            <dt className="text-xs font-semibold uppercase tracking-wider text-slate-400">Portal origin</dt>
+            <dd className="mt-2 flex flex-wrap items-center gap-2">
+              <code className="text-sm text-slate-800 break-all">{origin || "—"}</code>
+              {origin ? (
+                <button
+                  type="button"
+                  onClick={() => copyText(origin, setCopyFeedback)}
+                  className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-600 hover:border-[#229388]/40 hover:text-[#229388]"
+                >
+                  <Copy className="h-3.5 w-3.5" />
+                  Copy
+                </button>
+              ) : null}
+            </dd>
+          </div>
+          <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-4">
+            <dt className="text-xs font-semibold uppercase tracking-wider text-slate-400">Public site API root</dt>
+            <dd className="mt-2 flex flex-wrap items-center gap-2">
+              <code className="text-sm text-slate-800 break-all">{apiRoot}</code>
+              {origin ? (
+                <button
+                  type="button"
+                  onClick={() => copyText(apiRoot, setCopyFeedback)}
+                  className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-600 hover:border-[#229388]/40 hover:text-[#229388]"
+                >
+                  <Copy className="h-3.5 w-3.5" />
+                  Copy
+                </button>
+              ) : null}
+            </dd>
+          </div>
+          <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-4 sm:col-span-2">
+            <dt className="text-xs font-semibold uppercase tracking-wider text-slate-400">Tenant identifier</dt>
+            <dd className="mt-2 text-sm text-slate-700">
+              Use the signed-in portal email as the stable <code className="rounded bg-white px-1.5 py-0.5 text-xs border border-slate-200">client_email</code> in every event you send. Current user:{" "}
+              <code className="rounded bg-white px-1.5 py-0.5 text-xs border border-slate-200">{userEmail}</code>
+            </dd>
+          </div>
+          <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-4 sm:col-span-2">
+            <dt className="text-xs font-semibold uppercase tracking-wider text-slate-400">Service line IDs (dashboard)</dt>
+            <dd className="mt-2 text-sm text-slate-700 leading-relaxed">
+              Map monitoring or CMDB groups to these IDs so the client dashboard can route notifications: {serviceIdsList}.
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <div className="rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-sm space-y-6">
+        <div className="flex gap-3">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#f0fdf9] border border-[#3ec8ba]/30 text-[#229388]">
+            <BookOpen className="h-5 w-5" strokeWidth={2} />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900">IT integration guide</h3>
+            <p className="mt-1 text-sm text-slate-600 max-w-2xl">
+              How to link your servers, observability stack, and service catalog to the Lumeron client experience.
+            </p>
+          </div>
+        </div>
+
+        <ol className="list-decimal pl-5 space-y-4 text-sm text-slate-700 leading-relaxed">
+          <li>
+            <strong className="text-slate-900">Choose an integration pattern.</strong>{" "}
+            <em>Push:</em> your automation posts signed JSON to a Lumeron-provisioned HTTPS endpoint (recommended for
+            real-time alerts). <em>Pull:</em> your SIEM or data plane calls read-only public endpoints where applicable
+            and merges data into your internal CMDB; Lumeron can later subscribe to your outbound feed if required by the
+            contract.
+          </li>
+          <li>
+            <strong className="text-slate-900">Authenticate every request.</strong> Use{" "}
+            <code className="rounded bg-slate-100 px-1 text-xs">Authorization: Bearer &lt;LMN_API_KEY&gt;</code> for
+            machine-to-machine calls. Rotate keys at least quarterly; store secrets in a vault (not in the portal).
+          </li>
+          <li>
+            <strong className="text-slate-900">Sign webhook bodies.</strong> Compute{" "}
+            <code className="rounded bg-slate-100 px-1 text-xs">X-Lumeron-Signature</code> as HMAC-SHA256 over the raw
+            request body using the signing secret Lumeron provides. Reject replays with a short server-side nonce or
+            timestamp skew check (&lt; 5 minutes).
+          </li>
+          <li>
+            <strong className="text-slate-900">Use idempotency.</strong> Send{" "}
+            <code className="rounded bg-slate-100 px-1 text-xs">X-Lumeron-Idempotency-Key</code> (UUID) so duplicate
+            deliveries from load balancers do not create duplicate incidents in downstream systems.
+          </li>
+          <li>
+            <strong className="text-slate-900">Model events for the dashboard.</strong> Include{" "}
+            <code className="rounded bg-slate-100 px-1 text-xs">service_id</code> from the list above, a{" "}
+            <code className="rounded bg-slate-100 px-1 text-xs">severity</code> (<code className="text-xs">info</code>,{" "}
+            <code className="text-xs">warning</code>, <code className="text-xs">critical</code>), and a{" "}
+            <code className="rounded bg-slate-100 px-1 text-xs">resource</code> (host, cluster, circuit ID) for traceability.
+          </li>
+          <li>
+            <strong className="text-slate-900">Network egress.</strong> Prefer TLS 1.2+, restrict outbound from your
+            integration workers to Lumeron IPs once your CSM shares the allowlist. For inbound from Lumeron to your
+            APIs, publish a dedicated integration URL with mutual TLS or IP allowlisting as agreed in the SOW.
+          </li>
+          <li>
+            <strong className="text-slate-900">Provision credentials.</strong> Email{" "}
+            <a href="mailto:info@lumeron.sa" className="font-medium text-[#229388] hover:underline">
+              info@lumeron.sa
+            </a>{" "}
+            with your company name, primary technical contact, and desired environments (production / staging). Lumeron
+            returns <code className="rounded bg-slate-100 px-1 text-xs">LMN_API_KEY</code>, signing secret, and the
+            final ingest URL — then replace the placeholder host in the example below.
+          </li>
+        </ol>
+
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Example event payload</p>
+          <pre className="text-xs leading-relaxed overflow-x-auto rounded-xl border border-slate-200 bg-slate-950 text-slate-100 p-4">
+            {examplePayload}
+          </pre>
+          <button
+            type="button"
+            onClick={() => copyText(examplePayload, setCopyFeedback)}
+            className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-[#229388] hover:underline"
+          >
+            <Copy className="h-4 w-4" />
+            Copy JSON
+          </button>
+        </div>
+
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Example curl (template)</p>
+          <pre className="text-xs leading-relaxed overflow-x-auto rounded-xl border border-slate-200 bg-slate-950 text-slate-100 p-4 whitespace-pre-wrap">
+            {exampleCurl}
+          </pre>
+          <button
+            type="button"
+            onClick={() => copyText(exampleCurl, setCopyFeedback)}
+            className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-[#229388] hover:underline"
+          >
+            <Copy className="h-4 w-4" />
+            Copy curl
+          </button>
+        </div>
+
+        <p className="text-xs text-slate-500 border-t border-slate-100 pt-4">
+          This portal UI is a client-facing shell. Ingest endpoints and live dashboard tiles are enabled per contract.
+          Coordinate schema changes (new <code className="text-[11px]">event</code> types or fields) with Lumeron before
+          promoting to production traffic.
+        </p>
+      </div>
+
+      {copyFeedback ? (
+        <p className="text-sm font-medium text-emerald-800 bg-emerald-50 border border-emerald-200/80 rounded-xl px-4 py-3">
+          {copyFeedback}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 function savePrefs(email: string, prefs: Prefs) {
   localStorage.setItem(`lumeron_portal_prefs_${email}`, JSON.stringify(prefs));
 }
@@ -65,12 +294,18 @@ export function PortalApp() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [prefs, setPrefs] = useState<Prefs>(defaultPrefs());
+  const [origin, setOrigin] = useState("");
+  const [settingsView, setSettingsView] = useState<"profile" | "integrations">("profile");
 
   const refreshSession = useCallback(async () => {
     const r = await fetch("/api/portal/session", { credentials: "include" });
     const j = (await r.json()) as { user: string | null };
     setUser(j.user ?? null);
     if (j.user) setPrefs(loadPrefs(j.user));
+  }, []);
+
+  useEffect(() => {
+    setOrigin(typeof window !== "undefined" ? window.location.origin : "");
   }, []);
 
   useEffect(() => {
@@ -83,6 +318,7 @@ export function PortalApp() {
     setStep("email");
     setCodeInput("");
     setTab("overview");
+    setSettingsView("profile");
   };
 
   const sendCode = async () => {
@@ -147,7 +383,7 @@ export function PortalApp() {
         { id: "overview" as const, label: "Dashboard", icon: LayoutDashboard },
         { id: "support" as const, label: "Support", icon: Headphones },
         { id: "services" as const, label: "Services", icon: Settings2 },
-        { id: "settings" as const, label: "Account", icon: ShieldCheck },
+        { id: "settings" as const, label: "Settings", icon: ShieldCheck },
       ] as const,
     []
   );
@@ -442,28 +678,60 @@ export function PortalApp() {
               </div>
             )}
 
-            {tab === "settings" && (
-              <div className="space-y-8 max-w-xl">
+            {tab === "settings" && user && (
+              <div className="space-y-8 max-w-4xl">
                 <div>
-                  <h2 className="text-2xl font-semibold tracking-tight text-slate-900">Account</h2>
-                  <p className="mt-1 text-slate-600">Signed in with passwordless email.</p>
+                  <h2 className="text-2xl font-semibold tracking-tight text-slate-900">Settings</h2>
+                  <p className="mt-1 text-slate-600">Account and IT integration reference.</p>
                 </div>
-                <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm space-y-4">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Email</p>
-                    <p className="mt-1 text-slate-900 font-medium">{user}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Session</p>
-                    <p className="mt-1 text-sm text-slate-600">Expires after 14 days of inactivity. Sign out on shared devices.</p>
-                  </div>
-                  <Link
-                    href="/privacy"
-                    className="inline-block text-sm font-medium text-[#229388] hover:underline"
+
+                <div className="flex flex-wrap gap-2 p-1 rounded-xl bg-slate-100/90 border border-slate-200/80 w-fit">
+                  <button
+                    type="button"
+                    onClick={() => setSettingsView("profile")}
+                    className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
+                      settingsView === "profile"
+                        ? "bg-white text-[#0f766e] shadow-sm"
+                        : "text-slate-600 hover:text-slate-900"
+                    }`}
                   >
-                    Privacy policy
-                  </Link>
+                    Profile
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSettingsView("integrations")}
+                    className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
+                      settingsView === "integrations"
+                        ? "bg-white text-[#0f766e] shadow-sm"
+                        : "text-slate-600 hover:text-slate-900"
+                    }`}
+                  >
+                    API & IT guide
+                  </button>
                 </div>
+
+                {settingsView === "profile" ? (
+                  <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm space-y-4 max-w-xl">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Email</p>
+                      <p className="mt-1 text-slate-900 font-medium">{user}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Session</p>
+                      <p className="mt-1 text-sm text-slate-600">
+                        Expires after 14 days of inactivity. Sign out on shared devices.
+                      </p>
+                    </div>
+                    <Link
+                      href="/privacy"
+                      className="inline-block text-sm font-medium text-[#229388] hover:underline"
+                    >
+                      Privacy policy
+                    </Link>
+                  </div>
+                ) : (
+                  <PortalIntegrationsGuide userEmail={user} origin={origin} />
+                )}
               </div>
             )}
           </main>

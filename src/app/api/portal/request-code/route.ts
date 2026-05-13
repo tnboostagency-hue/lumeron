@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
+import { getResendApiKey, getResendFrom } from "@/lib/resend-env";
 import {
   normalizePortalEmail,
   PORTAL_PENDING_COOKIE,
@@ -39,7 +40,7 @@ export async function POST(req: NextRequest) {
   }
 
   const email = normalizePortalEmail(raw);
-  const apiKey = process.env.RESEND_API_KEY?.trim();
+  const apiKey = getResendApiKey();
 
   if (!apiKey) {
     const res = NextResponse.json({
@@ -53,7 +54,7 @@ export async function POST(req: NextRequest) {
   const code = String(Math.floor(100000 + Math.random() * 900000));
   const { value: pendingValue, maxAge } = signPendingCookie(email, code);
 
-  const from = (process.env.RESEND_FROM?.trim() || DEFAULT_FROM).slice(0, 320);
+  const from = getResendFrom(DEFAULT_FROM);
   const resend = new Resend(apiKey);
   const safeEmail = escapeHtml(email);
   const safeCode = escapeHtml(code);
