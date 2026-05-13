@@ -9,6 +9,10 @@ export const dynamic = "force-dynamic";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
+const DEFAULT_FROM_APPLY = "Lumeron Careers <onboarding@resend.dev>";
+/** Careers applications (contact form uses info@lumeron.sa only). */
+const CAREERS_INBOX = "HR@lumeron.sa";
+
 const MAX_CV_BYTES = 8 * 1024 * 1024;
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
@@ -246,9 +250,10 @@ export async function POST(req: NextRequest) {
         ...(cv ? [{ filename: cv.fileName, content: cv.content }] : []),
         ...(portfolioImage ? [{ filename: portfolioImage.fileName, content: portfolioImage.content }] : []),
       ];
+      const from = (process.env.RESEND_FROM?.trim() || DEFAULT_FROM_APPLY).slice(0, 320);
       const { error } = await resend.emails.send({
-        from: "Lumeron Careers <onboarding@resend.dev>",
-        to: ["HR@lumeron.sa"],
+        from,
+        to: [CAREERS_INBOX],
         ...(email ? { replyTo: email } : {}),
         subject: `Job Application: ${jobTitle} — ${name}`,
         html,

@@ -11,7 +11,8 @@ function escapeHtml(s: string): string {
 
 /** Verified sender in Resend (e.g. Lumeron <noreply@yourdomain.com>). Falls back to Resend test inbox. */
 const DEFAULT_FROM = "Lumeron Website <onboarding@resend.dev>";
-const DEFAULT_TO = "info@lumeron.sa";
+/** All contact inquiries go here (not configurable — avoids mis-sent mail from env typos). */
+const INBOX = "info@lumeron.sa";
 
 export async function POST(req: NextRequest) {
   const apiKey = process.env.RESEND_API_KEY?.trim();
@@ -25,14 +26,6 @@ export async function POST(req: NextRequest) {
 
   const resend = new Resend(apiKey);
   const from = (process.env.RESEND_FROM?.trim() || DEFAULT_FROM).slice(0, 320);
-  const toRaw = process.env.RESEND_TO?.trim() || DEFAULT_TO;
-  const toList = toRaw
-    .split(/[,;]\s*/)
-    .map((e) => e.trim())
-    .filter(Boolean);
-  if (toList.length === 0) {
-    return NextResponse.json({ error: "Invalid recipient configuration" }, { status: 500 });
-  }
 
   try {
     const body = await req.json();
@@ -54,7 +47,7 @@ export async function POST(req: NextRequest) {
 
     const { error } = await resend.emails.send({
       from,
-      to: toList,
+      to: [INBOX],
       replyTo: email,
       subject: `Inquiry from ${name}${company ? ` — ${company}` : ""}${service ? ` | ${service}` : ""}`,
       html: `
