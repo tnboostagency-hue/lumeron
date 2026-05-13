@@ -12,8 +12,8 @@ import {
   Mail,
   Settings2,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
+import { PortalLoginShell } from "@/components/portal/portal-login-shell";
 
 type Tab = "overview" | "support" | "services" | "settings";
 
@@ -287,12 +287,6 @@ function savePrefs(email: string, prefs: Prefs) {
 export function PortalApp() {
   const [user, setUser] = useState<string | null | undefined>(undefined);
   const [tab, setTab] = useState<Tab>("overview");
-  const [emailInput, setEmailInput] = useState("");
-  const [codeInput, setCodeInput] = useState("");
-  const [step, setStep] = useState<"email" | "code">("email");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
   const [prefs, setPrefs] = useState<Prefs>(defaultPrefs());
   const [origin, setOrigin] = useState("");
   const [settingsView, setSettingsView] = useState<"profile" | "integrations">("profile");
@@ -315,54 +309,8 @@ export function PortalApp() {
   const logout = async () => {
     await fetch("/api/portal/logout", { method: "POST", credentials: "include" });
     setUser(null);
-    setStep("email");
-    setCodeInput("");
     setTab("overview");
     setSettingsView("profile");
-  };
-
-  const sendCode = async () => {
-    setError(null);
-    setNotice(null);
-    setLoading(true);
-    try {
-      const r = await fetch("/api/portal/request-code", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email: emailInput }),
-      });
-      const j = (await r.json()) as { error?: string; demoOnly?: boolean; message?: string };
-      if (!r.ok) {
-        setError(j.error || "Could not send code.");
-        return;
-      }
-      if (j.demoOnly && j.message) setNotice(j.message);
-      setStep("code");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const verify = async () => {
-    setError(null);
-    setLoading(true);
-    try {
-      const r = await fetch("/api/portal/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email: emailInput, code: codeInput }),
-      });
-      const j = (await r.json()) as { error?: string; email?: string };
-      if (!r.ok) {
-        setError(j.error || "Sign-in failed.");
-        return;
-      }
-      await refreshSession();
-    } finally {
-      setLoading(false);
-    }
   };
 
   const updatePref = (id: string, key: "emailDigest" | "priorityAlerts", value: boolean) => {
@@ -397,101 +345,7 @@ export function PortalApp() {
   }
 
   if (!user) {
-    return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#f0fdf9] via-white to-[#f8fafc]">
-        <header className="border-b border-slate-200/80 bg-white/80 backdrop-blur-md">
-          <div className="mx-auto max-w-6xl px-5 py-4 flex items-center justify-between">
-            <Link href="/" className="text-lg font-semibold tracking-tight text-[#0f172a]">
-              Lumeron
-            </Link>
-            <span className="text-xs font-medium uppercase tracking-wider text-[#64748b]">Client portal</span>
-          </div>
-        </header>
-        <main className="flex-1 flex items-center justify-center p-6">
-          <div className="w-full max-w-md rounded-2xl border border-slate-200/90 bg-white/90 shadow-xl shadow-slate-200/50 p-8 md:p-10">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-[#3ec8ba] to-[#229388] text-white shadow-md shadow-[#229388]/25">
-                <Sparkles className="h-5 w-5" strokeWidth={2} />
-              </div>
-              <div>
-                <h1 className="text-xl font-semibold text-slate-900 tracking-tight">Sign in</h1>
-                <p className="text-sm text-slate-500">Passwordless — we email you a one-time code.</p>
-              </div>
-            </div>
-
-            {step === "email" ? (
-              <div className="mt-8 space-y-4">
-                <label className="block text-sm font-medium text-slate-700">Work email</label>
-                <input
-                  type="email"
-                  autoComplete="email"
-                  value={emailInput}
-                  onChange={(e) => setEmailInput(e.target.value)}
-                  placeholder="you@company.com"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-[15px] text-slate-900 outline-none ring-[#229388]/30 focus:border-[#229388] focus:ring-2"
-                />
-                {error && <p className="text-sm text-red-600">{error}</p>}
-                <button
-                  type="button"
-                  disabled={loading}
-                  onClick={() => void sendCode()}
-                  className="w-full rounded-xl bg-[#229388] py-3.5 text-[15px] font-semibold text-white shadow-lg shadow-[#229388]/30 transition hover:bg-[#1a7a70] disabled:opacity-60"
-                >
-                  {loading ? "Sending…" : "Email me a code"}
-                </button>
-                <p className="text-xs text-slate-500 leading-relaxed pt-2">
-                  Demo: you can use code <span className="font-mono font-semibold text-[#229388]">123456</span> after
-                  entering your email. Turn off demo in production with{" "}
-                  <span className="font-mono">PORTAL_DISABLE_DEMO_OTP=true</span> in Cloudflare.
-                </p>
-              </div>
-            ) : (
-              <div className="mt-8 space-y-4">
-                {notice && (
-                  <p className="text-sm text-emerald-900 bg-emerald-50 border border-emerald-200/80 rounded-xl px-4 py-3 leading-relaxed">
-                    {notice}
-                  </p>
-                )}
-                <p className="text-sm text-slate-600">
-                  We sent a code to <span className="font-medium text-slate-900">{emailInput}</span>
-                </p>
-                <label className="block text-sm font-medium text-slate-700">One-time code</label>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  autoComplete="one-time-code"
-                  value={codeInput}
-                  onChange={(e) => setCodeInput(e.target.value.replace(/\D/g, "").slice(0, 8))}
-                  placeholder="123456"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-lg tracking-widest font-mono text-slate-900 outline-none ring-[#229388]/30 focus:border-[#229388] focus:ring-2"
-                />
-                {error && <p className="text-sm text-red-600">{error}</p>}
-                <button
-                  type="button"
-                  disabled={loading}
-                  onClick={() => void verify()}
-                  className="w-full rounded-xl bg-[#229388] py-3.5 text-[15px] font-semibold text-white shadow-lg shadow-[#229388]/30 transition hover:bg-[#1a7a70] disabled:opacity-60"
-                >
-                  {loading ? "Signing in…" : "Verify & continue"}
-                </button>
-                <button
-                  type="button"
-                  className="w-full text-sm text-[#229388] font-medium hover:underline"
-                  onClick={() => {
-                    setStep("email");
-                    setError(null);
-                    setNotice(null);
-                    setCodeInput("");
-                  }}
-                >
-                  Use a different email
-                </button>
-              </div>
-            )}
-          </div>
-        </main>
-      </div>
-    );
+    return <PortalLoginShell onLoggedIn={() => void refreshSession()} />;
   }
 
   return (

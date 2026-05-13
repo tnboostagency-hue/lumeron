@@ -14,6 +14,8 @@ declare global {
     PORTAL_DEMO_OTP?: string;
     /** Set to `true` / `1` to disable demo OTP and allow only email codes. */
     PORTAL_DISABLE_DEMO_OTP?: string;
+    /** Set to `true` to send portal OTP emails via Resend (default off = demo code only). */
+    PORTAL_USE_EMAIL_OTP?: string;
     /** Resend (contact form, careers, portal OTP). Prefer secret binding in Workers. */
     RESEND_API_KEY?: string;
     RESEND_FROM?: string;

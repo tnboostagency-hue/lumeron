@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getResendApiKey, getResendFrom, DEFAULT_RESEND_FROM_PORTAL } from "@/lib/resend-env";
 import {
   normalizePortalEmail,
@@ -11,6 +12,18 @@ import {
 export const dynamic = "force-dynamic";
 
 const DEFAULT_FROM = DEFAULT_RESEND_FROM_PORTAL;
+
+/** When not `true`, portal skips Resend entirely (demo code only — avoids test-domain recipient limits). */
+function portalUseEmailOtp(): boolean {
+  try {
+    const { env } = getCloudflareContext();
+    const v = env.PORTAL_USE_EMAIL_OTP;
+    if (typeof v === "string" && v.trim().toLowerCase() === "true") return true;
+  } catch {
+    /* no Worker */
+  }
+  return process.env.PORTAL_USE_EMAIL_OTP?.trim().toLowerCase() === "true";
+}
 
 function escapeHtml(s: string): string {
   return s
@@ -40,15 +53,26 @@ export async function POST(req: NextRequest) {
   }
 
   const email = normalizePortalEmail(raw);
-  const apiKey = getResendApiKey();
 
-  if (!apiKey) {
-    const res = NextResponse.json({
+  if (!portalUseEmailOtp()) {
+    return NextResponse.json({
       ok: true,
       demoOnly: true,
-      message: "Email delivery is not configured. Continue with demo code 123456 (or set RESEND_API_KEY).",
+      skipEmail: true,
+      message:
+        "Demo portal: no email is sent. Use access code 123456. To enable Resend OTP, set PORTAL_USE_EMAIL_OTP=true and configure Resend for your domain.",
     });
-    return res;
+  }
+
+  const apiKey = getResendApiKey();
+  if (!apiKey) {
+    return NextResponse.json({
+      ok: true,
+      demoOnly: true,
+      skipEmail: true,
+      message:
+        "PORTAL_USE_EMAIL_OTP is on but RESEND_API_KEY is missing. Use demo code 123456 or add the API key in Cloudflare.",
+    });
   }
 
   const code = String(Math.floor(100000 + Math.random() * 900000));
