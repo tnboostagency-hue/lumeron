@@ -59,9 +59,9 @@ const ProductLayers = () => {
           <span className="text-tagline mb-4 block">{t.services.title}</span>
           <p className="text-[15px] sm:text-[18px] md:text-[20px] leading-[1.6] text-muted-foreground">
             {lang === 'ar' ? (
-              <>منصات أصلية عبر أربع ركائز أساسية: <span className="font-semibold text-foreground">البنية التحتية</span>، و<span className="font-semibold text-foreground">السحابة</span>، و<span className="font-semibold text-foreground">الخدمات المدارة</span>، و<span className="font-semibold text-foreground">تقنيات المستقبل</span>. خبرة مدعومة من ماسكو مع دعم محلي وتموضع استراتيجي.</>
+              <>منصات أصلية عبر أربع ركائز أساسية: <span className="font-semibold text-foreground">البنية التحتية</span>، و<span className="font-semibold text-foreground">السحابة</span>، و<span className="font-semibold text-foreground">الخدمات المدارة</span>، و<span className="font-semibold text-foreground">تقنيات المستقبل</span>. خبرة رفيعة المستوى مع دعم محلي وتموضع استراتيجي.</>
             ) : (
-              <>Native platforms across four core pillars: <span className="font-semibold text-foreground">Infrastructure</span>, <span className="font-semibold text-foreground">Cloud</span>, <span className="font-semibold text-foreground">Managed Services</span>, and <span className="font-semibold text-foreground">Future Technologies</span>. MASCO-backed expertise with local support and strategic positioning.</>
+              <>Native platforms across four core pillars: <span className="font-semibold text-foreground">Infrastructure</span>, <span className="font-semibold text-foreground">Cloud</span>, <span className="font-semibold text-foreground">Managed Services</span>, and <span className="font-semibold text-foreground">Future Technologies</span>. Enterprise-grade expertise with local support and strategic positioning.</>
             )}
           </p>
         </motion.div>

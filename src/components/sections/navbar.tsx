@@ -365,7 +365,7 @@ const Navbar = () => {
               {t.nav.connect}
             </button>
             <p className="text-sm text-muted-foreground">
-              {lang === 'ar' ? "MASCO Digital تسارع رؤية المملكة 2030." : "MASCO Digital accelerating Saudi Vision 2030."}
+              {lang === 'ar' ? "لوميرون تسارع رؤية المملكة 2030." : "Lumeron accelerating Saudi Vision 2030."}
             </p>
           </div>
         </div>

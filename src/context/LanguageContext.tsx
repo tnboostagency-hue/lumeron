@@ -17,7 +17,7 @@ const dictionary = {
       subtitle: "EMPOWERING SAUDI ARABIA'S",
       highlight: "DIGITAL TRANSFORMATION",
       tagline: "Enabling Digital Confidence",
-      description: "MASCO Digital accelerates Vision 2030 through resilient infrastructure, managed services, and emerging technologies.",
+      description: "Lumeron accelerates Vision 2030 through resilient infrastructure, managed services, and emerging technologies.",
       explore: "Explore Services",
       watch: "Watch Video",
     },
@@ -39,7 +39,7 @@ const dictionary = {
     mission: {
       badge: "BUILT FOR THE NATION. GUIDED BY VISION.",
       title: "Enabling Digital Confidence",
-      description: "Lumeron is MASCO Digital, bridging ambition with execution. We understand the critical context of Saudi Arabia, providing resilient infrastructure that enables a knowledge-based economic development aligned with Vision 2030.",
+      description: "Lumeron bridges ambition with execution. We understand the critical context of Saudi Arabia, providing resilient infrastructure that enables a knowledge-based economic development aligned with Vision 2030.",
       roadmap: "Our Mission Roadmap",
       pillars: {
         precision: "Precision",
@@ -68,20 +68,20 @@ const dictionary = {
       hero: {
         badge: "About Lumeron",
         title: "Enabling Digital Confidence",
-        description: "Lumeron is MASCO Digital — a sovereign digital infrastructure company built to accelerate Vision 2030 through resilient data centers, advanced cybersecurity, and emerging technologies.",
+        description: "Lumeron is a sovereign digital infrastructure company built to accelerate Vision 2030 through resilient data centers, advanced cybersecurity, and emerging technologies.",
         cta1: "Connect Now",
         cta2: "Our Journey",
       },
       content: {
         badge: "Who We Are",
         title: "The Kingdom's sovereign technology partner",
-        p1: "Established under MASCO Digital, Lumeron bridges the gap between world-class digital infrastructure and the Kingdom's strategic ambitions. We don't just deploy technology — we build the foundations that national transformation runs on.",
+        p1: "Lumeron bridges the gap between world-class digital infrastructure and the Kingdom's strategic ambitions. We don't just deploy technology — we build the foundations that national transformation runs on.",
         p2: "From hyperscale data centers and 24/7 SOC operations to AI systems that understand Arabic cultural context and quantum-safe security architecture, Lumeron's portfolio spans the full stack of modern digital capability.",
-        p3: "Backed by MASCO's industrial heritage and guided by Vision 2030, we operate with a mandate to keep Saudi Arabia's data sovereign, its infrastructure resilient, and its enterprises ahead of the technology curve.",
+        p3: "Backed by deep regional industrial experience and guided by Vision 2030, we operate with a mandate to keep Saudi Arabia's data sovereign, its infrastructure resilient, and its enterprises ahead of the technology curve.",
       },
       stats: {
         founded: "Year Founded",
-        foundedSub: "Under MASCO Group",
+        foundedSub: "Headquartered in Saudi Arabia",
         clients: "Clients Served",
         clientsSub: "Across GCC & MENA",
         uptime: "Uptime SLA",
@@ -113,7 +113,7 @@ const dictionary = {
       button: "Contact Lumeron",
       features: [
         { title: "Resilient Ecosystems", desc: "Sustainable infrastructure enabling knowledge-based economic development across the Kingdom." },
-        { title: "Culturally Aligned", desc: "MASCO-backed expertise with local support and strategic positioning in the Saudi market." },
+        { title: "Culturally Aligned", desc: "Enterprise-grade expertise with local support and strategic positioning in the Saudi market." },
         { title: "Strategic Support", desc: "Deep local relationships ensuring alignment with national priorities and cultural values." }
       ]
     },
@@ -144,7 +144,7 @@ const dictionary = {
       subtitle: "تمكين المملكة العربية السعودية",
       highlight: "في المملكة العربية السعودية",
       tagline: "تمكين الثقة الرقمية",
-      description: "MASCO Digital يسرّع رؤية 2030 من خلال بنية تحتية مرنة، وخدمات مدارة، وتقنيات ناشئة.",
+      description: "لوميرون تسرّع رؤية 2030 من خلال بنية تحتية مرنة، وخدمات مدارة، وتقنيات ناشئة.",
       explore: "استكشف الخدمات",
       watch: "شاهد الفيديو",
     },
@@ -166,7 +166,7 @@ const dictionary = {
     mission: {
       badge: "بنيت للوطن. تسترشد بالرؤية.",
       title: "تمكين الثقة الرقمية",
-      description: "لوميرون هي MASCO Digital، حيث تربط الطموح بالتنفيذ. نحن نتفهم السياق الحيوي للمملكة العربية السعودية، ونوفر بنية تحتية مرنة تمكن من تطوير اقتصادي قائم على المعرفة يتماشى مع رؤية 2030.",
+      description: "لوميرون تربط الطموح بالتنفيذ. نحن نتفهم السياق الحيوي للمملكة العربية السعودية، ونوفر بنية تحتية مرنة تمكن من تطوير اقتصادي قائم على المعرفة يتماشى مع رؤية 2030.",
       roadmap: "خارطة طريق مهمتنا",
       pillars: {
         precision: "الدقة",
@@ -195,20 +195,20 @@ const dictionary = {
       hero: {
         badge: "عن لوميرون",
         title: "تمكين الثقة الرقمية",
-        description: "لوميرون هي MASCO Digital — شركة بنية تحتية رقمية سيادية بُنيت لتسريع رؤية 2030 من خلال مراكز بيانات مرنة وأمن سيبراني متقدم وتقنيات ناشئة.",
+        description: "لوميرون شركة بنية تحتية رقمية سيادية بُنيت لتسريع رؤية 2030 من خلال مراكز بيانات مرنة وأمن سيبراني متقدم وتقنيات ناشئة.",
         cta1: "اتصل الآن",
         cta2: "رحلتنا",
       },
       content: {
         badge: "من نحن",
         title: "شريك التكنولوجيا السيادي في المملكة",
-        p1: "تأسست لوميرون في إطار MASCO Digital، وهي تسد الفجوة بين البنية التحتية الرقمية ذات المستوى العالمي والطموحات الاستراتيجية للمملكة. نحن لا نقوم فقط بنشر التكنولوجيا - بل نبني الأسس التي يقوم عليها التحول الوطني.",
+        p1: "تأسست لوميرون لتسد الفجوة بين البنية التحتية الرقمية ذات المستوى العالمي والطموحات الاستراتيجية للمملكة. نحن لا نقوم فقط بنشر التكنولوجيا - بل نبني الأسس التي يقوم عليها التحول الوطني.",
         p2: "من مراكز البيانات فائقة النطاق وعمليات مركز العمليات الأمنية على مدار الساعة طوال أيام الأسبوع إلى أنظمة الذكاء الاصطناعي التي تفهم السياق الثقافي العربي وهندسة الأمن الآمنة كمياً، تغطي محفظة لوميرون كامل نطاق القدرات الرقمية الحديثة.",
-        p3: "بدعم من الإرث الصناعي لماسكو وبتوجيه من رؤية 2030، نعمل بتكليف للحفاظ على سيادة بيانات المملكة، ومرونة بنيتها التحتية، وبقاء مؤسساتها في طليعة التكنولوجيا.",
+        p3: "بدعم من إرث صناعي عميق في المنطقة وبتوجيه من رؤية 2030، نعمل بتكليف للحفاظ على سيادة بيانات المملكة، ومرونة بنيتها التحتية، وبقاء مؤسساتها في طليعة التكنولوجيا.",
       },
       stats: {
         founded: "سنة التأسيس",
-        foundedSub: "تحت مجموعة ماسكو",
+        foundedSub: "في المملكة العربية السعودية",
         clients: "العملاء المخدومون",
         clientsSub: "عبر دول مجلس التعاون وشمال أفريقيا",
         uptime: "اتفاقية مستوى الخدمة",
@@ -240,7 +240,7 @@ const dictionary = {
       button: "اتصل بـ لوميرون",
       features: [
         { title: "أنظمة مرنة", desc: "بنية تحتية مستدامة تمكن التنمية الاقتصادية القائمة على المعرفة في جميع أنحاء المملكة." },
-        { title: "توافق ثقافي", desc: "خبرة مدعومة من ماسكو مع دعم محلي وموقع استراتيجي في السوق السعودي." },
+        { title: "توافق ثقافي", desc: "خبرة رفيعة المستوى مع دعم محلي وموقع استراتيجي في السوق السعودي." },
         { title: "دعم استراتيجي", desc: "علاقات محلية عميقة تضمن التوافق مع الأولويات الوطنية والقيم الثقافية." }
       ]
     },

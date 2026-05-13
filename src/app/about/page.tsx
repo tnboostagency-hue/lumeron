@@ -8,14 +8,14 @@ import ContactModal from "@/components/sections/contact-modal";
 import PageWrapper from "@/components/ui/page-wrapper";
 import { useLanguage } from "@/context/LanguageContext";
 
-// 5-step condensed timeline (MASCO → Lumeron)
+// 5-step condensed timeline (national infrastructure heritage → Lumeron)
 const TIMELINE_STEPS = [
   {
     year: "1960",
     titleEn: "Founding",
     titleAr: "التأسيس",
-    descEn: "MASCO established by Mohammad Ali Alswailem. Started as road construction and material supplier.",
-    descAr: "تأسيس ماسكو على يد محمد علي السويلم. انطلقت في تشييد الطرق ومواد البناء.",
+    descEn: "Founded by Mohammad Ali Alswailem. Started as road construction and material supplier.",
+    descAr: "تأسيس على يد محمد علي السويلم. انطلق في تشييد الطرق ومواد البناء.",
   },
   {
     year: "1979",
@@ -42,8 +42,8 @@ const TIMELINE_STEPS = [
     year: "2025",
     titleEn: "Lumeron",
     titleAr: "لوميرون",
-    descEn: "Lumeron established under MASCO Digital — data centers, automation, AI, cybersecurity.",
-    descAr: "إطلاق لوميرون ضمن MASCO Digital — مراكز بيانات، أتمتة، ذكاء اصطناعي، أمن سيبراني.",
+    descEn: "Lumeron launches — data centers, automation, AI, and cybersecurity for national digital transformation.",
+    descAr: "انطلاق لوميرون — مراكز بيانات، أتمتة، ذكاء اصطناعي، وأمن سيبراني للتحول الرقمي الوطني.",
   },
 ];
 
@@ -52,7 +52,7 @@ const LUMERON_TIMELINE = [
   {
     year: "2025",
     items: [
-      "Lumeron established under MASCO Digital — the Group's digital technology company.",
+      "Lumeron established in 2025 as the Kingdom's digital infrastructure and technology company.",
       "Launched core service lines: Data Center Solutions, Industrial Automation & Robotics, AI Solutions, and Cybersecurity.",
       "Headquartered in Saudi Arabia, positioned to serve regional and national digital transformation needs.",
     ],
@@ -201,7 +201,7 @@ export default function AboutPage() {
   const stats = [
     { val: "60+", label: lang === "ar" ? "سنوات من النمو" : "Years of Growth", sub: lang === "ar" ? "من الطرق إلى التقنية" : "From roads to technology" },
     { val: "1960", label: lang === "ar" ? "التأسيس" : "Founded", sub: lang === "ar" ? "محمد علي السويلم" : "Mohammad Ali Alswailem" },
-    { val: "2025", label: lang === "ar" ? "انطلاق لوميرون" : "Lumeron Launch", sub: "MASCO Digital" },
+    { val: "2025", label: lang === "ar" ? "انطلاق لوميرون" : "Lumeron Launch", sub: lang === "ar" ? "البنية التحتية الرقمية" : "Digital infrastructure" },
     { val: "50B", label: lang === "ar" ? "عقود أرامكو" : "SAR Contracts", sub: lang === "ar" ? "2024" : "2024" },
   ];
 
@@ -265,8 +265,8 @@ export default function AboutPage() {
             <div className={`flex flex-col md:flex-row md:items-end md:justify-between gap-8 ${lang === "ar" ? "md:flex-row-reverse" : ""}`}>
               <p className={`text-[17px] text-[#64748b] leading-[1.75] max-w-[540px] font-light ${lang === "ar" ? "text-right" : ""}`}>
                 {lang === "ar"
-                  ? "مجموعة ماسكو: أكثر من 60 عاماً من بناء المملكة. منذ تأسيسنا عام 1960، نمونا من شركة تشييد طرق إلى قائد متنوع في البنية التحتية والمياه والطاقة والمشاريع الكبرى."
-                  : "MASCO Group: 60+ Years of Building the Kingdom. Since our establishment in 1960, we have grown from a road construction company into a diversified leader across infrastructure, water, energy, and large-scale developments."}
+                  ? "أكثر من ستة عقود من بناء المملكة: منذ 1960، نمونا من شركة تشييد طرق إلى رائد متنوّع في البنية التحتية والمياه والطاقة والمشاريع الكبرى."
+                  : "Six decades of building the Kingdom: since 1960, the journey has grown from road construction into a diversified leader across infrastructure, water, energy, and large-scale developments."}
               </p>
               <div className="flex gap-4 flex-shrink-0 flex-wrap">
                 <button onClick={() => setModalOpen(true)} className="btn-primary text-[14px] px-8 py-3.5">
@@ -288,7 +288,7 @@ export default function AboutPage() {
                 <div className={`flex items-center gap-3 mb-5 ${lang === "ar" ? "flex-row-reverse" : ""}`}>
                   <div className="w-5 h-px bg-[#229388]" />
                   <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#229388]">
-                    {lang === "ar" ? "مجموعة ماسكو" : "MASCO Group"}
+                    {lang === "ar" ? "إرث وطني" : "National heritage"}
                   </span>
                 </div>
                 <h2 className="font-bold leading-tight mb-8" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif', fontSize: "clamp(28px,3.5vw,44px)", color: "#111827", letterSpacing: "-0.025em" }}>
@@ -299,7 +299,7 @@ export default function AboutPage() {
                 <p className="text-[16px] text-[#64748b] leading-[1.8] font-light mb-5">
                   {lang === "ar"
                     ? "منذ تأسيسنا عام 1960، نمونا من شركة تشييد طرق إلى قائد متنوع في البنية التحتية والمياه والطاقة والمشاريع الكبرى. رحلتنا تعكس الطموح والمرونة والالتزام بتقدم المملكة."
-                    : "Since our establishment in 1960, MASCO has grown from a road construction company into a diversified leader across infrastructure, water, energy, and large-scale developments. Our journey reflects ambition, resilience, and commitment to Saudi Arabia's progress."}
+                    : "Since 1960, the organization has grown from road construction into a diversified leader across infrastructure, water, energy, and large-scale developments. That journey reflects ambition, resilience, and commitment to Saudi Arabia's progress."}
                 </p>
               </div>
 
@@ -342,8 +342,8 @@ export default function AboutPage() {
                 </h2>
                 <p className="text-[16px] text-[#64748b] leading-[1.8] max-w-2xl mx-auto font-light">
                   {lang === "ar"
-                    ? "بناءً على إرث ستة عقود من مجموعة ماسكو، أُسست لوميرون في 2025 ضمن MASCO Digital — لتقديم حلول مراكز بيانات عالمية، أتمتة صناعية، ذكاء اصطناعي، وأمن سيبراني للمملكة وما وراءها."
-                    : "Building on six decades of MASCO Group's legacy, Lumeron was established in 2025 under MASCO Digital — bringing world-class data center solutions, industrial automation, AI, and cybersecurity to the Kingdom and beyond."}
+                    ? "بناءً على إرث ستة عقود من البنية التحتية الوطنية، أُسست لوميرون في 2025 لتقديم حلول مراكز بيانات عالمية، أتمتة صناعية، ذكاء اصطناعي، وأمن سيبراني للمملكة وما وراءها."
+                    : "Building on six decades of national infrastructure heritage, Lumeron was established in 2025 — bringing world-class data center solutions, industrial automation, AI, and cybersecurity to the Kingdom and beyond."}
                 </p>
               </div>
 
@@ -376,8 +376,8 @@ export default function AboutPage() {
                 style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif' }}
               >
                 {lang === "ar"
-                  ? "من الطرق إلى مراكز البيانات — مجموعة ماسكو تستمر في بناء مستقبل المملكة."
-                  : "From roads to data centers — MASCO Group continues to build Saudi Arabia's future."}
+                  ? "من الطرق إلى مراكز البيانات — لوميرون تواصل بناء مستقبل المملكة."
+                  : "From roads to data centers — Lumeron continues to build Saudi Arabia's future."}
               </p>
             </div>
           </div>

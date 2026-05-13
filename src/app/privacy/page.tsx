@@ -6,7 +6,7 @@ import Footer from "@/components/sections/footer";
 const sections = [
   {
     title: "1. Who We Are",
-    content: `Lumeron Technology Company ("Lumeron", "we", "us", or "our") is MASCO Digital, registered and operating in the Kingdom of Saudi Arabia as part of MASCO Energy Group. We are committed to protecting your personal information in accordance with the Personal Data Protection Law (PDPL) of Saudi Arabia and other applicable regulations.`,
+    content: `Lumeron Technology Company ("Lumeron", "we", "us", or "our") is registered and operating in the Kingdom of Saudi Arabia. We are committed to protecting your personal information in accordance with the Personal Data Protection Law (PDPL) of Saudi Arabia and other applicable regulations.`,
   },
   {
     title: "2. Information We Collect",
@@ -22,7 +22,7 @@ const sections = [
   },
   {
     title: "5. Data Sharing and Disclosure",
-    content: `Lumeron does not sell, trade, or rent your personal data to third parties. We may share data with:\n\n• MASCO Group subsidiaries and affiliates for internal business operations.\n• Trusted service providers who assist us in operating our website and services, under strict confidentiality obligations.\n• Regulatory authorities or law enforcement where required by applicable Saudi law.\n\nAll third-party recipients are bound by data protection obligations consistent with this notice.`,
+    content: `Lumeron does not sell, trade, or rent your personal data to third parties. We may share data with:\n\n• Affiliated entities for internal business operations where applicable.\n• Trusted service providers who assist us in operating our website and services, under strict confidentiality obligations.\n• Regulatory authorities or law enforcement where required by applicable Saudi law.\n\nAll third-party recipients are bound by data protection obligations consistent with this notice.`,
   },
   {
     title: "6. Data Retention",
@@ -46,7 +46,7 @@ const sections = [
   },
   {
     title: "11. Contact Us",
-    content: `For any privacy-related questions, requests, or complaints, please contact our Data Protection Officer:\n\nEmail: privacy@lumeron.sa\nPostal address: Lumeron Technology Company, MASCO Group, Riyadh, Kingdom of Saudi Arabia`,
+    content: `For any privacy-related questions, requests, or complaints, please contact our Data Protection Officer:\n\nEmail: privacy@lumeron.sa\nPostal address: Lumeron Technology Company, Al Khobar, Kingdom of Saudi Arabia`,
   },
 ];
 

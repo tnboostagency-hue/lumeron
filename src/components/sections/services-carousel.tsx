@@ -97,8 +97,8 @@ const SERVICES: ServiceItem[] = [
     number: "03",
     titleEn: "Industrial Digitalization (Industry 4.0)",
     titleAr: "التحول الصناعي الرقمي (الصناعة 4.0)",
-    descEn: "Bridging MASCO's industrial heritage with cutting-edge digital operations — IIoT, digital twins, and smart factory integration for world-class operational efficiency.",
-    descAr: "ربط الإرث الصناعي لماسكو بالعمليات الرقمية المتطورة — إنترنت الأشياء الصناعي والتوائم الرقمية وتكامل المصانع الذكية.",
+    descEn: "Bridging deep industrial experience with cutting-edge digital operations — IIoT, digital twins, and smart factory integration for world-class operational efficiency.",
+    descAr: "ربط خبرة صناعية عميقة بالعمليات الرقمية المتطورة — إنترنت الأشياء الصناعي والتوائم الرقمية وتكامل المصانع الذكية.",
     link: "/services/industrial",
     color: "#1a8077",
     steps: [

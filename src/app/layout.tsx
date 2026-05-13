@@ -12,7 +12,7 @@ import { LanguageProvider } from "@/context/LanguageContext";
 export const metadata: Metadata = {
   title: "Lumeron | Enabling Digital Confidence",
   description:
-    "Enabling Digital Confidence — MASCO Digital accelerates Vision 2030 through resilient infrastructure, managed services, and emerging technologies.",
+    "Enabling Digital Confidence — Lumeron accelerates Vision 2030 through resilient infrastructure, managed services, and emerging technologies.",
   icons: {
     icon: [{ url: "/favicon.png", type: "image/png" }],
     apple: [{ url: "/favicon.png", type: "image/png" }],
