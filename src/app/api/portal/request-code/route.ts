@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
-import { getResendApiKey, getResendFrom } from "@/lib/resend-env";
+import { getResendApiKey, getResendFrom, DEFAULT_RESEND_FROM_PORTAL } from "@/lib/resend-env";
 import {
   normalizePortalEmail,
   PORTAL_PENDING_COOKIE,
@@ -10,7 +10,7 @@ import {
 
 export const dynamic = "force-dynamic";
 
-const DEFAULT_FROM = "Lumeron Website <onboarding@resend.dev>";
+const DEFAULT_FROM = DEFAULT_RESEND_FROM_PORTAL;
 
 function escapeHtml(s: string): string {
   return s

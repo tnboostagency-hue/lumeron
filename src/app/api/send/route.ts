@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
-import { getResendApiKey, getResendFrom } from "@/lib/resend-env";
+import { getResendApiKey, getResendFrom, DEFAULT_RESEND_FROM_CONTACT } from "@/lib/resend-env";
 
 export const dynamic = "force-dynamic";
 
@@ -12,9 +12,7 @@ function escapeHtml(s: string): string {
     .replace(/"/g, "&quot;");
 }
 
-/** Verified sender in Resend (e.g. Lumeron <noreply@yourdomain.com>). Falls back to Resend test inbox. */
-const DEFAULT_FROM = "Lumeron Website <onboarding@resend.dev>";
-/** All contact inquiries go here (not configurable — avoids mis-sent mail from env typos). */
+/** All contact inquiries are delivered here. */
 const INBOX = "info@lumeron.sa";
 
 export async function POST(req: NextRequest) {
@@ -28,7 +26,7 @@ export async function POST(req: NextRequest) {
   }
 
   const resend = new Resend(apiKey);
-  const from = getResendFrom(DEFAULT_FROM);
+  const from = getResendFrom(DEFAULT_RESEND_FROM_CONTACT);
 
   try {
     const body = await req.json();

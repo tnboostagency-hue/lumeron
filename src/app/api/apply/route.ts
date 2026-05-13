@@ -2,13 +2,13 @@ import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { getResendApiKey, getResendFrom } from "@/lib/resend-env";
+import { getResendApiKey, getResendFrom, DEFAULT_RESEND_FROM_CAREERS } from "@/lib/resend-env";
 import { getDb } from "@/db";
 import { jobApplications } from "@/db/schema";
 
 export const dynamic = "force-dynamic";
 
-const DEFAULT_FROM_APPLY = "Lumeron Careers <onboarding@resend.dev>";
+const DEFAULT_FROM_APPLY = DEFAULT_RESEND_FROM_CAREERS;
 /** Careers applications (contact form uses info@lumeron.sa only). */
 const CAREERS_INBOX = "HR@lumeron.sa";
 

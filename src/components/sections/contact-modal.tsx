@@ -168,8 +168,17 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                       : "We couldn't send your message. Please try again or contact us at info@lumeron.sa"}
                   </p>
                   {sendErrorDetail ? (
-                    <p className="text-left w-full max-w-sm mx-auto text-[12px] text-slate-500 font-mono bg-slate-50 border border-slate-200 rounded-lg p-3 mb-4 break-words">
+                    <p className="text-left w-full max-w-sm mx-auto text-[12px] text-slate-500 font-mono bg-slate-50 border border-slate-200 rounded-lg p-3 mb-3 break-words">
                       {sendErrorDetail}
+                    </p>
+                  ) : null}
+                  {sendErrorDetail &&
+                  (sendErrorDetail.includes("only send testing") ||
+                    sendErrorDetail.toLowerCase().includes("verify a domain")) ? (
+                    <p className="text-[13px] text-slate-600 max-w-sm mx-auto mb-4 leading-relaxed text-left">
+                      {lang === "ar"
+                        ? "يجب أن يكون عنوان المرسل من نطاق موثّق في Resend (مثل lumeron.sa). تم ضبط الإرسال الافتراضي على noreply@lumeron.sa — أعد المحاولة بعد نشر التحديث، أو عيّن RESEND_FROM في Cloudflare."
+                        : "Resend requires the sender to use your verified domain. This app now defaults to noreply@lumeron.sa. Deploy the latest build, try again, or set RESEND_FROM in Cloudflare to any verified address on lumeron.sa."}
                     </p>
                   ) : null}
                   <button
