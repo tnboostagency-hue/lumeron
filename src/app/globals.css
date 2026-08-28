@@ -33,7 +33,13 @@ html.lenis body {
 }
 
 .lumeron-leaflet-map .leaflet-tile-pane {
-  filter: grayscale(1) saturate(0.2) contrast(0.94) brightness(1.06);
+  filter: grayscale(1) sepia(0.12) hue-rotate(118deg) saturate(0.6) contrast(0.92) brightness(1.08);
+}
+
+/* Apply the treatment to the individual raster tiles as well: Leaflet moves
+   these tiles independently while the map is dragged. */
+.lumeron-leaflet-map .leaflet-tile {
+  filter: grayscale(1) sepia(0.12) hue-rotate(118deg) saturate(0.6) contrast(0.92) brightness(1.08);
 }
 
 .lumeron-location-marker__halo {
