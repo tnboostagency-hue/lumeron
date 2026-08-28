@@ -1,13 +1,20 @@
 "use client";
 
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { Mail, Phone, MapPin, Clock, Send, ArrowUpRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ParallaxWrapper from '@/components/animations/parallax-wrapper';
 import { useLanguage } from '@/context/LanguageContext';
 
+const LumeronLocationMap = dynamic(() => import('./lumeron-location-map'), {
+  ssr: false,
+  loading: () => <div className="h-full w-full animate-pulse bg-primary/10" />,
+});
+
 export default function ContactSection() {
   const { lang, t } = useLanguage();
+  const mapsUrl = "https://maps.app.goo.gl/941sLW8n7d3y4Fyv9?g_st=ic";
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -73,7 +80,7 @@ export default function ContactSection() {
       icon: MapPin,
       label: lang === 'ar' ? "العنوان" : "Address",
       value: lang === 'ar' ? "شارع الأمير تركي، برج الفرادان، الطابق الثالث\nالخبر 34413، المملكة العربية السعودية" : "Prince Turkey Street, Al Fardan Tower, Floor 3\nAl Khobar 34413, Saudi Arabia",
-      href: "https://www.google.com/maps/search/Prince+Turkey+Street+Al+Fardan+Tower+Al+Khobar"
+      href: mapsUrl
     },
     {
       icon: Clock,
@@ -267,27 +274,45 @@ export default function ContactSection() {
                   <h3 className={`text-[24px] font-semibold text-foreground mb-6 ${lang === 'ar' ? 'text-right' : ''}`}>
                     {lang === 'ar' ? "موقعنا" : "Our Location"}
                   </h3>
-                    <div className="relative rounded-[20px] overflow-hidden border border-border bg-muted h-[240px] sm:h-[300px] md:h-[360px]" data-lenis-prevent>
-                    <iframe
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3623.1!2d50.2!3d26.22!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e49f5e9b0000000%3A0x1!2sPrince+Turkey+Street%2C+Al+Fardan+Tower%2C+Al+Khobar+34413%2C+Saudi+Arabia!5e0!3m2!1sen!2ssa!4v1740000000000!5m2!1sen!2ssa"
-                      width="100%"
-                      height="100%"
-                      style={{ border: 0 }}
-                      allowFullScreen
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      className="grayscale opacity-90 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
-                    />
-                    
+                    <div className="relative rounded-[24px] overflow-hidden border border-primary/20 bg-muted h-[280px] sm:h-[330px] md:h-[380px] shadow-[0_20px_50px_rgba(34,147,136,0.12)]" data-lenis-prevent>
+                    <LumeronLocationMap mapsUrl={mapsUrl} />
+
+                    {/* Brand tint keeps the map visually connected to Lumeron without obscuring it. */}
+                    <div className="pointer-events-none absolute inset-0 z-[400] bg-gradient-to-b from-primary/10 via-transparent to-foreground/30" />
+
+                    <div className={`absolute top-4 z-[500] ${lang === 'ar' ? 'right-4' : 'left-4'} flex items-center gap-3 rounded-2xl border border-white/70 bg-white/90 px-3 py-2.5 shadow-lg backdrop-blur-md`}>
+                      <img src="/lumeron-map-icon.svg" alt="Lumeron" className="h-9 w-9 rounded-xl shadow-[0_6px_18px_rgba(34,147,136,0.34)]" />
+                      <div className={lang === 'ar' ? 'text-right' : ''}>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">{lang === 'ar' ? 'لوميرون' : 'Lumeron'}</p>
+                        <p className="text-xs font-medium text-foreground">{lang === 'ar' ? 'المقر الرئيسي · الخبر' : 'Headquarters · Al Khobar'}</p>
+                        <a
+                          href={mapsUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`mt-1 inline-flex items-center gap-1 text-[11px] font-semibold text-primary transition-colors hover:text-primary/70 ${lang === 'ar' ? 'flex-row-reverse' : ''}`}
+                        >
+                          {lang === 'ar' ? 'زيارتنا على الخريطة' : 'Visit us on Maps'}
+                          <ArrowUpRight size={12} className={lang === 'ar' ? 'rotate-[-90deg]' : ''} />
+                        </a>
+                      </div>
+                    </div>
+
                     {/* Map overlay link */}
                     <a 
-                      href="https://www.google.com/maps/search/Prince+Turkey+Street+Al+Fardan+Tower+Al+Khobar"
+                      href={mapsUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`absolute bottom-4 ${lang === 'ar' ? 'left-4 flex-row-reverse' : 'right-4'} bg-white rounded-full px-4 py-2 flex items-center gap-2 text-[14px] font-semibold text-foreground shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5`}
+                      aria-label={lang === 'ar' ? "الحصول على الاتجاهات إلى مقر لوميرون" : "Get directions to Lumeron headquarters"}
+                      className={`absolute bottom-4 z-[500] ${lang === 'ar' ? 'left-4 text-right' : 'right-4'} flex max-w-[calc(100%-2rem)] items-center gap-3 rounded-2xl border border-white/70 bg-white/95 px-3 py-3 text-[14px] font-semibold text-foreground shadow-xl backdrop-blur-md transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-2xl`}
                     >
-                      {lang === 'ar' ? "افتح في الخرائط" : "Open in Maps"}
-                      <ArrowUpRight size={16} />
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-white">
+                        <MapPin size={18} strokeWidth={2} />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block text-[11px] font-medium uppercase tracking-[0.1em] text-muted-foreground">{lang === 'ar' ? 'الفرع الرئيسي' : 'Visit us'}</span>
+                        <span className="block whitespace-nowrap">{lang === 'ar' ? 'الحصول على الاتجاهات' : 'Get directions'}</span>
+                      </span>
+                      <ArrowUpRight size={18} className={lang === 'ar' ? 'rotate-[-90deg]' : ''} />
                     </a>
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 /* Updated: Cyberani-Inspired Redesign */
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "leaflet/dist/leaflet.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -24,6 +25,54 @@ html.lenis body {
 
 .lenis.lenis-smooth iframe {
   pointer-events: none;
+}
+
+.lumeron-location-marker {
+  background: transparent;
+  border: 0;
+}
+
+.lumeron-leaflet-map .leaflet-tile-pane {
+  filter: grayscale(1) saturate(0.2) contrast(0.94) brightness(1.06);
+}
+
+.lumeron-location-marker__halo {
+  position: absolute;
+  inset: 11px 6px 5px;
+  border-radius: 9999px;
+  background: rgba(34, 147, 136, 0.32);
+  filter: blur(9px);
+}
+
+.lumeron-location-marker__pin {
+  position: relative;
+  display: flex;
+  height: 48px;
+  width: 48px;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid rgba(255, 255, 255, 0.94);
+  border-radius: 18px 18px 18px 5px;
+  box-shadow: 0 12px 24px rgba(34, 147, 136, 0.42);
+  overflow: hidden;
+  transform: rotate(-45deg);
+}
+
+.lumeron-location-marker__pin img {
+  height: 100%;
+  width: 100%;
+  transform: rotate(45deg) scale(1.42);
+}
+
+.lumeron-location-marker__tip {
+  position: absolute;
+  bottom: 0;
+  left: 24px;
+  height: 7px;
+  width: 7px;
+  border-radius: 9999px;
+  background: #229388;
+  box-shadow: 0 2px 7px rgba(34, 147, 136, 0.64);
 }
 
 /* Primary font - Avenir Next Arabic */
