@@ -1,7 +1,6 @@
 /* Updated: Cyberani-Inspired Redesign */
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "leaflet/dist/leaflet.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -27,58 +26,8 @@ html.lenis body {
   pointer-events: none;
 }
 
-.lumeron-location-marker {
-  background: transparent;
-  border: 0;
-}
-
-.lumeron-leaflet-map .leaflet-tile-pane {
-  filter: grayscale(1) sepia(0.12) hue-rotate(118deg) saturate(0.6) contrast(0.92) brightness(1.08);
-}
-
-/* Apply the treatment to the individual raster tiles as well: Leaflet moves
-   these tiles independently while the map is dragged. */
-.lumeron-leaflet-map .leaflet-tile {
-  filter: grayscale(1) sepia(0.12) hue-rotate(118deg) saturate(0.6) contrast(0.92) brightness(1.08);
-}
-
-.lumeron-location-marker__halo {
-  position: absolute;
-  inset: 11px 6px 5px;
-  border-radius: 9999px;
-  background: rgba(34, 147, 136, 0.32);
-  filter: blur(9px);
-}
-
-.lumeron-location-marker__pin {
-  position: relative;
-  display: flex;
-  height: 48px;
-  width: 48px;
-  align-items: center;
-  justify-content: center;
-  border: 3px solid rgba(255, 255, 255, 0.94);
-  border-radius: 18px 18px 18px 5px;
-  box-shadow: 0 12px 24px rgba(34, 147, 136, 0.42);
-  overflow: hidden;
-  transform: rotate(-45deg);
-}
-
-.lumeron-location-marker__pin img {
-  height: 100%;
-  width: 100%;
-  transform: rotate(45deg) scale(1.42);
-}
-
-.lumeron-location-marker__tip {
-  position: absolute;
-  bottom: 0;
-  left: 24px;
-  height: 7px;
-  width: 7px;
-  border-radius: 9999px;
-  background: #229388;
-  box-shadow: 0 2px 7px rgba(34, 147, 136, 0.64);
+.lenis.lenis-smooth iframe.lumeron-google-map {
+  pointer-events: auto;
 }
 
 /* Primary font - Avenir Next Arabic */

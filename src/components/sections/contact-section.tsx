@@ -1,20 +1,15 @@
 "use client";
 
 import React, { useState } from 'react';
-import dynamic from 'next/dynamic';
 import { Mail, Phone, MapPin, Clock, Send, ArrowUpRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ParallaxWrapper from '@/components/animations/parallax-wrapper';
 import { useLanguage } from '@/context/LanguageContext';
 
-const LumeronLocationMap = dynamic(() => import('./lumeron-location-map'), {
-  ssr: false,
-  loading: () => <div className="h-full w-full animate-pulse bg-primary/10" />,
-});
-
 export default function ContactSection() {
   const { lang, t } = useLanguage();
   const mapsUrl = "https://maps.app.goo.gl/941sLW8n7d3y4Fyv9?g_st=ic";
+  const googleMapsEmbedUrl = "https://www.google.com/maps?output=embed&q=Al+Fardan+Tower%2C+Prince+Turkey+Street%2C+Al+Khobar+34413%2C+Saudi+Arabia";
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -275,7 +270,14 @@ export default function ContactSection() {
                     {lang === 'ar' ? "موقعنا" : "Our Location"}
                   </h3>
                     <div className="relative rounded-[24px] overflow-hidden border border-primary/20 bg-muted h-[280px] sm:h-[330px] md:h-[380px] shadow-[0_20px_50px_rgba(34,147,136,0.12)]" data-lenis-prevent>
-                    <LumeronLocationMap mapsUrl={mapsUrl} />
+                    <iframe
+                      src={googleMapsEmbedUrl}
+                      title={lang === 'ar' ? 'خريطة موقع مقر لوميرون في الخبر' : 'Map of Lumeron headquarters in Al Khobar'}
+                      className="lumeron-google-map h-full w-full border-0"
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      allowFullScreen
+                    />
 
                     {/* Brand tint keeps the map visually connected to Lumeron without obscuring it. */}
                     <div className="pointer-events-none absolute inset-0 z-[400] bg-gradient-to-b from-primary/10 via-transparent to-foreground/30" />
