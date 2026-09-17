@@ -32,7 +32,7 @@ function Toolbar({ editor }: { editor: Editor }) {
     else editor.chain().focus().extendMarkRange("link").setLink({ href: url.trim() }).run();
   };
   return (
-    <div className="sticky top-0 z-10 flex flex-wrap items-center gap-1 border-b border-[#e2e8f0] bg-[#fbfdfd]/95 p-2 backdrop-blur">
+    <div className="sticky top-0 z-10 flex max-w-full flex-wrap items-center gap-1 border-b border-[#e2e8f0] bg-[#fbfdfd]/95 p-2 backdrop-blur">
       <EditorButton editor={editor} label="Heading" active={editor.isActive("heading", { level: 2 })} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}><Heading2 size={16} /></EditorButton>
       <EditorButton editor={editor} label="Subheading" active={editor.isActive("heading", { level: 3 })} onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}><Heading3 size={16} /></EditorButton>
       <EditorButton editor={editor} label="Paragraph" active={editor.isActive("paragraph")} onClick={() => editor.chain().focus().setParagraph().run()}><Text size={16} /></EditorButton>
@@ -62,7 +62,7 @@ export default function ArticleEditor({ value, onChange }: Props) {
     onUpdate: ({ editor: instance }) => onChange(instance.getHTML()),
     editorProps: {
       attributes: {
-        class: "article-editor-content min-h-[500px] px-6 py-8 text-[16px] leading-8 text-[#334155] outline-none md:min-h-[580px] md:px-10 md:py-10",
+        class: "article-editor-content min-h-[360px] px-5 py-6 text-[16px] leading-8 text-[#334155] outline-none sm:min-h-[500px] sm:px-6 sm:py-8 md:min-h-[580px] md:px-10 md:py-10",
         "aria-label": "Article body",
       },
     },

@@ -588,9 +588,9 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#f8fafc" }}>
+    <div className="min-h-screen overflow-x-clip" style={{ background: "#f8fafc" }}>
       <div
-        className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 shadow-sm"
+        className="sticky top-0 z-50 flex items-center justify-between gap-3 px-4 py-4 shadow-sm sm:px-6"
         style={{ background: "white", borderBottom: "1px solid #e2e8f0" }}
       >
         <div className="flex items-center gap-3">
@@ -606,12 +606,12 @@ export default function AdminPage() {
             Lumeron Admin
           </span>
         </div>
-        <button onClick={handleLogout} className="flex items-center gap-2 text-[13px] text-[#64748b] hover:text-[#ef4444] transition-colors font-medium">
-          <LogOut size={15} /> Sign Out
+        <button onClick={handleLogout} className="flex shrink-0 items-center gap-2 text-[13px] text-[#64748b] hover:text-[#ef4444] transition-colors font-medium">
+          <LogOut size={15} /> <span className="hidden sm:inline">Sign Out</span>
         </button>
       </div>
 
-      <div className="mx-auto max-w-[1440px] px-6 py-10 md:px-8">
+      <div className="mx-auto max-w-[1440px] px-4 py-6 sm:px-6 sm:py-10 md:px-8">
         <div className="flex flex-wrap gap-3 mb-8">
           {(
             [
@@ -811,8 +811,8 @@ export default function AdminPage() {
         )}
 
         {tab === "news" && (
-          <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">
-            <div className="bg-white rounded-2xl border border-[#e2e8f0] p-7 shadow-sm">
+          <div className="grid items-start gap-5 sm:gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">
+            <div className="min-w-0 bg-white rounded-2xl border border-[#e2e8f0] p-4 shadow-sm sm:p-7">
               <div className="flex items-start justify-between gap-4 mb-6">
                 <h2 className="font-bold text-[20px] text-[#111827]" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif' }}>
                   {editingArticleId ? "Edit article" : "Publish a news article"}
@@ -841,7 +841,7 @@ export default function AdminPage() {
                     className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] text-[14px] text-[#111827] focus:outline-none focus:border-[#229388] focus:ring-2 focus:ring-[#229388]/10 transition-all"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label className="block text-[11px] font-bold uppercase tracking-[0.08em] text-[#94a3b8] mb-1.5">Category</label>
                     <select
@@ -879,7 +879,7 @@ export default function AdminPage() {
                   <label className="block text-[11px] font-bold uppercase tracking-[0.08em] text-[#94a3b8] mb-1.5">Cover image</label>
                   <p className="text-[12px] text-[#94a3b8] mb-2">Add up to {MAX_NEWS_COVER_IMAGES} images. The public article uses them as an auto-playing, swipeable gallery. JPEG, PNG, GIF, or WebP — max 1.5MB each.</p>
                   {articleForm.coverImages.length > 0 && (
-                    <div className="mb-3 grid grid-cols-3 gap-2">
+                    <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
                       {articleForm.coverImages.map((image, index) => (
                         <div key={`${image.slice(0, 32)}-${index}`} className="relative aspect-[4/3] overflow-hidden rounded-xl border border-[#e2e8f0] bg-[#f8fafc]">
                           <img src={image} alt="" className="h-full w-full object-cover" />
