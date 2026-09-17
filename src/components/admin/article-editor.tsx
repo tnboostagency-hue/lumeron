@@ -62,7 +62,7 @@ export default function ArticleEditor({ value, onChange }: Props) {
     onUpdate: ({ editor: instance }) => onChange(instance.getHTML()),
     editorProps: {
       attributes: {
-        class: "article-editor-content min-h-[300px] px-5 py-6 text-[15px] leading-7 text-[#334155] outline-none",
+        class: "article-editor-content min-h-[500px] px-6 py-8 text-[16px] leading-8 text-[#334155] outline-none md:min-h-[580px] md:px-10 md:py-10",
         "aria-label": "Article body",
       },
     },

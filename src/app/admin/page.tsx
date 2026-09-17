@@ -611,7 +611,7 @@ export default function AdminPage() {
         </button>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-10">
+      <div className="mx-auto max-w-[1440px] px-6 py-10 md:px-8">
         <div className="flex flex-wrap gap-3 mb-8">
           {(
             [
@@ -811,7 +811,7 @@ export default function AdminPage() {
         )}
 
         {tab === "news" && (
-          <div className="grid lg:grid-cols-[1fr_380px] gap-8 items-start">
+          <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">
             <div className="bg-white rounded-2xl border border-[#e2e8f0] p-7 shadow-sm">
               <div className="flex items-start justify-between gap-4 mb-6">
                 <h2 className="font-bold text-[20px] text-[#111827]" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif' }}>
