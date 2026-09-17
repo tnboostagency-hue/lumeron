@@ -35,8 +35,8 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
     if (body.excerpt != null) patch.excerpt = String(body.excerpt).trim();
     if (body.content != null) patch.content = sanitizeArticleHtml(body.content);
     if (typeof body.published === "boolean") patch.published = body.published;
-    if ("coverImage" in body) {
-      const coverParsed = parseNewsCoverInput(body.coverImage);
+    if ("coverImages" in body || "coverImage" in body) {
+      const coverParsed = parseNewsCoverInput(body.coverImages ?? body.coverImage);
       if (!coverParsed.ok) {
         return NextResponse.json({ error: coverParsed.error }, { status: 400 });
       }

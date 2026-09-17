@@ -16,11 +16,11 @@ import {
   Download,
   Link2,
 } from "lucide-react";
-import { MAX_NEWS_COVER_DATA_URL_LENGTH } from "@/lib/news-cover";
+import { getNewsCoverImages, MAX_NEWS_COVER_DATA_URL_LENGTH, MAX_NEWS_COVER_IMAGES } from "@/lib/news-cover";
 import { articleTextFromHtml } from "@/lib/article-content";
 import ArticleEditor from "@/components/admin/article-editor";
 
-const MAX_COVER_FILE_BYTES = 2 * 1024 * 1024;
+const MAX_COVER_FILE_BYTES = 1.5 * 1024 * 1024;
 
 interface Job {
   id: string;
@@ -40,8 +40,8 @@ interface Article {
   date: string;
   excerpt: string;
   content: string;
-  /** data:image/...;base64,... or null */
-  coverImage: string | null;
+  /** One or more data:image/...;base64 covers; legacy rows are normalized. */
+  coverImages: string[];
   published: boolean;
 }
 
@@ -89,8 +89,8 @@ const EMPTY_ARTICLE: Omit<Article, "id"> = {
   date: new Date().toISOString().split("T")[0],
   excerpt: "",
   content: "",
-  coverImage: null,
-  published: true,
+  coverImages: [],
+  published: false,
 };
 const EMPTY_LINKS: LinksProfile = {
   id: "primary",
@@ -124,7 +124,7 @@ function normalizeArticleRow(row: Record<string, unknown>): Article {
     date: String(row.date),
     excerpt: String(row.excerpt),
     content: String(row.content ?? ""),
-    coverImage: typeof c === "string" && c.length > 0 ? c : null,
+    coverImages: getNewsCoverImages(c),
     published: Boolean(row.published),
   };
 }
@@ -455,7 +455,7 @@ export default function AdminPage() {
       date: /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : new Date().toISOString().split("T")[0]!,
       excerpt: article.excerpt,
       content: article.content,
-      coverImage: article.coverImage,
+      coverImages: article.coverImages,
       published: article.published,
     });
     setArticleFormError(null);
@@ -877,16 +877,21 @@ export default function AdminPage() {
                 </div>
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-[0.08em] text-[#94a3b8] mb-1.5">Cover image</label>
-                  <p className="text-[12px] text-[#94a3b8] mb-2">Shown on the public news page. JPEG, PNG, GIF, or WebP — max ~2MB.</p>
-                  {articleForm.coverImage && (
-                    <div className="mb-3 relative rounded-xl overflow-hidden border border-[#e2e8f0] bg-[#f8fafc] max-h-[200px]">
-                      <img src={articleForm.coverImage} alt="" className="w-full max-h-[200px] object-cover" />
+                  <p className="text-[12px] text-[#94a3b8] mb-2">Add up to {MAX_NEWS_COVER_IMAGES} images. The public article uses them as an auto-playing, swipeable gallery. JPEG, PNG, GIF, or WebP — max 1.5MB each.</p>
+                  {articleForm.coverImages.length > 0 && (
+                    <div className="mb-3 grid grid-cols-3 gap-2">
+                      {articleForm.coverImages.map((image, index) => (
+                        <div key={`${image.slice(0, 32)}-${index}`} className="relative aspect-[4/3] overflow-hidden rounded-xl border border-[#e2e8f0] bg-[#f8fafc]">
+                          <img src={image} alt="" className="h-full w-full object-cover" />
+                          <button type="button" onClick={() => setArticleForm((v) => ({ ...v, coverImages: v.coverImages.filter((_, current) => current !== index) }))} className="absolute right-1.5 top-1.5 rounded-full bg-white/95 p-1 text-[#64748b] shadow hover:text-[#ef4444]" aria-label={`Remove image ${index + 1}`}><X size={14} /></button>
+                        </div>
+                      ))}
                     </div>
                   )}
                   <div className="flex flex-wrap items-center gap-3">
                     <label className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#e2e8f0] text-[13px] font-semibold text-[#374151] cursor-pointer hover:bg-[#f8fafc] transition-colors">
                       <ImagePlus size={16} className="text-[#229388]" />
-                      {articleForm.coverImage ? "Replace image" : "Upload image"}
+                      Add image
                       <input
                         type="file"
                         accept="image/jpeg,image/png,image/gif,image/webp"
@@ -899,8 +904,12 @@ export default function AdminPage() {
                             setArticleFormError("Please choose an image file.");
                             return;
                           }
+                          if (articleForm.coverImages.length >= MAX_NEWS_COVER_IMAGES) {
+                            setArticleFormError(`Use up to ${MAX_NEWS_COVER_IMAGES} cover images.`);
+                            return;
+                          }
                           if (file.size > MAX_COVER_FILE_BYTES) {
-                            setArticleFormError("Image must be under 2MB.");
+                            setArticleFormError("Each image must be under 1.5MB.");
                             return;
                           }
                           const reader = new FileReader();
@@ -911,22 +920,14 @@ export default function AdminPage() {
                               return;
                             }
                             setArticleFormError(null);
-                            setArticleForm((v) => ({ ...v, coverImage: dataUrl || null }));
+                            setArticleForm((v) => ({ ...v, coverImages: dataUrl ? [...v.coverImages, dataUrl] : v.coverImages }));
                           };
                           reader.onerror = () => setArticleFormError("Could not read file.");
                           reader.readAsDataURL(file);
                         }}
                       />
                     </label>
-                    {articleForm.coverImage && (
-                      <button
-                        type="button"
-                        onClick={() => setArticleForm((v) => ({ ...v, coverImage: null }))}
-                        className="text-[13px] font-semibold text-[#64748b] hover:text-[#ef4444]"
-                      >
-                        Remove cover
-                      </button>
-                    )}
+                    {articleForm.coverImages.length > 0 && <span className="text-[12px] text-[#64748b]">{articleForm.coverImages.length} / {MAX_NEWS_COVER_IMAGES} selected</span>}
                   </div>
                 </div>
                 <div>
@@ -986,7 +987,7 @@ export default function AdminPage() {
                       <div><p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#229388]">Pre-publish review</p><p className="mt-0.5 text-[13px] text-[#64748b]">This is how the article content will read.</p></div>
                       <button type="button" onClick={() => setArticlePreviewOpen(false)} className="rounded-lg p-2 text-[#64748b] hover:bg-[#f1f5f9]" aria-label="Close preview"><X size={18} /></button>
                     </div>
-                    {articleForm.coverImage && <img src={articleForm.coverImage} alt="" className="h-64 w-full object-cover" />}
+                    {articleForm.coverImages[0] && <img src={articleForm.coverImages[0]} alt="" className="h-64 w-full object-cover" />}
                     <article className="p-6 sm:p-10">
                       <div className="mb-5 flex items-center gap-3 text-[12px] font-semibold text-[#229388]"><span className="rounded-full bg-[#eaf8f6] px-3 py-1">{articleForm.category}</span><span className="text-[#94a3b8]">{formatAdminArticleDate(articleForm.date)}</span></div>
                       <h2 className="max-w-2xl text-[30px] font-bold leading-tight tracking-tight text-[#111827]">{articleForm.title}</h2>
@@ -1012,9 +1013,9 @@ export default function AdminPage() {
                     }`}
                   >
                     <div className="min-w-0 flex-1 flex gap-3">
-                      {article.coverImage ? (
+                      {article.coverImages[0] ? (
                         <div className="w-14 h-14 rounded-lg overflow-hidden border border-[#e2e8f0] shrink-0 bg-[#f1f5f9]">
-                          <img src={article.coverImage} alt="" className="w-full h-full object-cover" />
+                          <img src={article.coverImages[0]} alt="" className="w-full h-full object-cover" />
                         </div>
                       ) : null}
                       <div className="min-w-0 flex-1">

@@ -22,9 +22,10 @@ export function sanitizeArticleHtml(value: unknown): string {
   });
 
   html = html
-    .replace(/<(p|h2|h3|strong|em|ul|ol|li|blockquote)\b[^>]*>/gi, "<$1>")
+    .replace(/<(p|h2|h3|strong|em|s|code|ul|ol|li|blockquote)\b[^>]*>/gi, "<$1>")
     .replace(/<br\b[^>]*>/gi, "<br>")
-    .replace(/<\/?(?!p\b|h2\b|h3\b|strong\b|em\b|ul\b|ol\b|li\b|blockquote\b|br\b|a\b)[^>]*>/gi, "");
+    .replace(/<hr\b[^>]*>/gi, "<hr>")
+    .replace(/<\/?(?!p\b|h2\b|h3\b|strong\b|em\b|s\b|code\b|ul\b|ol\b|li\b|blockquote\b|br\b|hr\b|a\b)[^>]*>/gi, "");
 
   return html;
 }

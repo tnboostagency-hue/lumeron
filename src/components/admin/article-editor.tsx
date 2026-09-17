@@ -4,7 +4,7 @@ import { useEditor, EditorContent, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import { useEffect } from "react";
-import { Bold, Heading2, Heading3, Italic, Link2, List, ListOrdered, Quote, RotateCcw, RotateCw, Text } from "lucide-react";
+import { Bold, Code2, Heading2, Heading3, Italic, Link2, List, ListOrdered, Minus, Quote, RotateCcw, RotateCw, Strikethrough, Text } from "lucide-react";
 
 type Props = { value: string; onChange: (html: string) => void };
 
@@ -39,11 +39,14 @@ function Toolbar({ editor }: { editor: Editor }) {
       <span className="mx-1 h-5 w-px bg-[#e2e8f0]" />
       <EditorButton editor={editor} label="Bold" active={editor.isActive("bold")} onClick={() => editor.chain().focus().toggleBold().run()}><Bold size={16} /></EditorButton>
       <EditorButton editor={editor} label="Italic" active={editor.isActive("italic")} onClick={() => editor.chain().focus().toggleItalic().run()}><Italic size={16} /></EditorButton>
+      <EditorButton editor={editor} label="Strikethrough" active={editor.isActive("strike")} onClick={() => editor.chain().focus().toggleStrike().run()}><Strikethrough size={16} /></EditorButton>
+      <EditorButton editor={editor} label="Inline code" active={editor.isActive("code")} onClick={() => editor.chain().focus().toggleCode().run()}><Code2 size={16} /></EditorButton>
       <EditorButton editor={editor} label="Link" active={editor.isActive("link")} onClick={setLink}><Link2 size={16} /></EditorButton>
       <span className="mx-1 h-5 w-px bg-[#e2e8f0]" />
       <EditorButton editor={editor} label="Bulleted list" active={editor.isActive("bulletList")} onClick={() => editor.chain().focus().toggleBulletList().run()}><List size={16} /></EditorButton>
       <EditorButton editor={editor} label="Numbered list" active={editor.isActive("orderedList")} onClick={() => editor.chain().focus().toggleOrderedList().run()}><ListOrdered size={16} /></EditorButton>
       <EditorButton editor={editor} label="Quote" active={editor.isActive("blockquote")} onClick={() => editor.chain().focus().toggleBlockquote().run()}><Quote size={16} /></EditorButton>
+      <EditorButton editor={editor} label="Divider" onClick={() => editor.chain().focus().setHorizontalRule().run()}><Minus size={16} /></EditorButton>
       <span className="mx-1 h-5 w-px bg-[#e2e8f0]" />
       <EditorButton editor={editor} label="Undo" onClick={() => editor.chain().focus().undo().run()}><RotateCcw size={16} /></EditorButton>
       <EditorButton editor={editor} label="Redo" onClick={() => editor.chain().focus().redo().run()}><RotateCw size={16} /></EditorButton>
@@ -74,7 +77,7 @@ export default function ArticleEditor({ value, onChange }: Props) {
     <div className="overflow-hidden rounded-xl border border-[#e2e8f0] bg-white focus-within:border-[#229388] focus-within:ring-2 focus-within:ring-[#229388]/10">
       <Toolbar editor={editor} />
       <EditorContent editor={editor} />
-      <div className="border-t border-[#e2e8f0] px-4 py-2 text-[11px] text-[#94a3b8]">Use headings to create scannable sections. Links open in a new tab on the public site.</div>
+      <div className="border-t border-[#e2e8f0] px-4 py-2 text-[11px] text-[#94a3b8]">Headings, lists, quotes, links, code and dividers are supported. Links open in a new tab on the public site.</div>
     </div>
   );
 }

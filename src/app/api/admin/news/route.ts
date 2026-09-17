@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     if (!title || !excerpt) {
       return NextResponse.json({ error: "title and excerpt required" }, { status: 400 });
     }
-    const coverParsed = parseNewsCoverInput(body?.coverImage);
+    const coverParsed = parseNewsCoverInput(body?.coverImages ?? body?.coverImage);
     if (!coverParsed.ok) {
       return NextResponse.json({ error: coverParsed.error }, { status: 400 });
     }

@@ -5,7 +5,8 @@ import Navbar from "@/components/sections/navbar";
 import Footer from "@/components/sections/footer";
 import ContactModal from "@/components/sections/contact-modal";
 import PageWrapper from "@/components/ui/page-wrapper";
-import { Calendar, Tag, ChevronDown } from "lucide-react";
+import { Calendar, Tag, ArrowUpRight } from "lucide-react";
+import { getNewsCoverImages } from "@/lib/news-cover";
 
 interface Article {
   id: string;
@@ -14,7 +15,7 @@ interface Article {
   date: string;
   excerpt: string;
   content: string;
-  coverImage: string | null;
+  coverImages: string[];
 }
 
 interface FeedItem {
@@ -44,7 +45,7 @@ function mapApiArticle(row: Record<string, unknown>): Article {
     date: formatArticleDate(rawDate),
     excerpt: String(row.excerpt ?? ""),
     content: String(row.content ?? ""),
-    coverImage: typeof c === "string" && c.length > 0 ? c : null,
+    coverImages: getNewsCoverImages(c),
   };
 }
 
@@ -62,7 +63,6 @@ export default function NewsPage() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadNote, setLoadNote] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState<string | null>(null);
   const [filter, setFilter] = useState("All");
   const [careerFeed, setCareerFeed] = useState<FeedItem[]>([]);
 
@@ -208,12 +208,12 @@ export default function NewsPage() {
                 {/* Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filtered.map((article) => (
-                    <div key={article.id} className="bg-white rounded-2xl border border-[#e2e8f0] overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
-                      {article.coverImage ? (
+                    <a key={article.id} href={`/news/${article.id}`} className="block bg-white rounded-2xl border border-[#e2e8f0] overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+                      {article.coverImages[0] ? (
                         <>
                           <div className="aspect-[16/10] w-full bg-[#f1f5f9]">
                             <img
-                              src={article.coverImage}
+                              src={article.coverImages[0]}
                               alt=""
                               className="w-full h-full object-cover"
                             />
@@ -235,24 +235,9 @@ export default function NewsPage() {
                         <h3 className="font-bold text-[18px] text-[#111827] mb-3 leading-snug" style={{ fontFamily: '"Avenir Next Arabic","Inter",sans-serif' }}>{article.title}</h3>
                         <p className="text-[13px] text-[#64748b] leading-[1.75] mb-5">{article.excerpt}</p>
 
-                        {article.content && (
-                          <button
-                            onClick={() => setExpanded(expanded === article.id ? null : article.id)}
-                            className="flex items-center gap-2 text-[13px] font-semibold text-[#229388] hover:opacity-70 transition-opacity"
-                          >
-                            {expanded === article.id ? "Show Less" : "Read More"}
-                            <ChevronDown size={14} className={`transition-transform duration-200 ${expanded === article.id ? "rotate-180" : ""}`} />
-                          </button>
-                        )}
-
-                        {expanded === article.id && (
-                          <div
-                            className="article-public-content mt-4 border-t border-[#e2e8f0] pt-4 text-[13px] text-[#64748b] leading-[1.85]"
-                            dangerouslySetInnerHTML={{ __html: article.content }}
-                          />
-                        )}
+                        <span className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#229388]">Read article <ArrowUpRight size={14} /></span>
                       </div>
-                    </div>
+                    </a>
                   ))}
                 </div>
               </>

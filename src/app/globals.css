@@ -58,6 +58,10 @@ html.lenis body {
 .article-public-content blockquote { border-left: 3px solid #3ec8ba; color: #475569; font-style: italic; padding-left: 1rem; }
 .article-editor-content a,
 .article-public-content a { color: #229388; text-decoration: underline; text-underline-offset: 4px; }
+.article-editor-content code,
+.article-public-content code { border-radius: 0.25rem; background: #eff6f5; padding: 0.12rem 0.3rem; color: #16766e; font-size: 0.9em; }
+.article-editor-content hr,
+.article-public-content hr { margin: 1.5rem 0; border: 0; border-top: 1px solid #dbe7e5; }
 
 /* Primary font - Avenir Next Arabic */
 @font-face {
