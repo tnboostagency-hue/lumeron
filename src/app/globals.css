@@ -30,6 +30,35 @@ html.lenis body {
   pointer-events: auto;
 }
 
+.article-editor-content > * + *,
+.article-public-content > * + * {
+  margin-top: 1rem;
+}
+
+.article-editor-content h2,
+.article-public-content h2 {
+  color: #111827;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.article-editor-content h3,
+.article-public-content h3 {
+  color: #111827;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.article-editor-content ul,
+.article-public-content ul { list-style: disc; padding-left: 1.5rem; }
+.article-editor-content ol,
+.article-public-content ol { list-style: decimal; padding-left: 1.5rem; }
+.article-editor-content blockquote,
+.article-public-content blockquote { border-left: 3px solid #3ec8ba; color: #475569; font-style: italic; padding-left: 1rem; }
+.article-editor-content a,
+.article-public-content a { color: #229388; text-decoration: underline; text-underline-offset: 4px; }
+
 /* Primary font - Avenir Next Arabic */
 @font-face {
   font-family: 'Avenir Next Arabic';

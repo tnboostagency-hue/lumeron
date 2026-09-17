@@ -246,9 +246,10 @@ export default function NewsPage() {
                         )}
 
                         {expanded === article.id && (
-                          <div className="mt-4 pt-4 border-t border-[#e2e8f0] text-[13px] text-[#64748b] leading-[1.85] whitespace-pre-wrap">
-                            {article.content}
-                          </div>
+                          <div
+                            className="article-public-content mt-4 border-t border-[#e2e8f0] pt-4 text-[13px] text-[#64748b] leading-[1.85]"
+                            dangerouslySetInnerHTML={{ __html: article.content }}
+                          />
                         )}
                       </div>
                     </div>

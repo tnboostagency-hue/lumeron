@@ -4,6 +4,7 @@ import { getDb } from "@/db";
 import { newsArticles } from "@/db/schema";
 import { requireAdminSession } from "@/lib/admin-api";
 import { parseNewsCoverInput } from "@/lib/news-cover";
+import { sanitizeArticleHtml } from "@/lib/article-content";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +33,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
     if (body.category != null) patch.category = String(body.category).trim();
     if (body.date != null) patch.date = String(body.date).trim();
     if (body.excerpt != null) patch.excerpt = String(body.excerpt).trim();
-    if (body.content != null) patch.content = String(body.content).trim();
+    if (body.content != null) patch.content = sanitizeArticleHtml(body.content);
     if (typeof body.published === "boolean") patch.published = body.published;
     if ("coverImage" in body) {
       const coverParsed = parseNewsCoverInput(body.coverImage);

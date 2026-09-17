@@ -5,6 +5,7 @@ import { getDb } from "@/db";
 import { newsArticles } from "@/db/schema";
 import { requireAdminSession } from "@/lib/admin-api";
 import { parseNewsCoverInput } from "@/lib/news-cover";
+import { sanitizeArticleHtml } from "@/lib/article-content";
 
 export const dynamic = "force-dynamic";
 
@@ -49,7 +50,7 @@ export async function POST(req: NextRequest) {
       category,
       date,
       excerpt,
-      content: String(body?.content ?? "").trim(),
+      content: sanitizeArticleHtml(body?.content),
       coverImage: coverParsed.value,
       published: body?.published !== false,
       createdAt: t,

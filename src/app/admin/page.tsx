@@ -17,6 +17,8 @@ import {
   Link2,
 } from "lucide-react";
 import { MAX_NEWS_COVER_DATA_URL_LENGTH } from "@/lib/news-cover";
+import { articleTextFromHtml } from "@/lib/article-content";
+import ArticleEditor from "@/components/admin/article-editor";
 
 const MAX_COVER_FILE_BYTES = 2 * 1024 * 1024;
 
@@ -78,7 +80,7 @@ const EMPTY_JOB: Omit<Job, "id"> = {
   location: "Al Khobar, Saudi Arabia",
   type: "Full-time",
   description: "",
-  published: true,
+  published: false,
   sortOrder: 0,
 };
 const EMPTY_ARTICLE: Omit<Article, "id"> = {
@@ -152,11 +154,13 @@ export default function AdminPage() {
   const [articleForm, setArticleForm] = useState<Omit<Article, "id">>(EMPTY_ARTICLE);
   const [jobSuccess, setJobSuccess] = useState(false);
   const [articleSuccess, setArticleSuccess] = useState(false);
+  const [articleSavedAsPublished, setArticleSavedAsPublished] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [editingJobId, setEditingJobId] = useState<string | null>(null);
   const [editingArticleId, setEditingArticleId] = useState<string | null>(null);
   const [jobFormError, setJobFormError] = useState<string | null>(null);
   const [articleFormError, setArticleFormError] = useState<string | null>(null);
+  const [articlePreviewOpen, setArticlePreviewOpen] = useState(false);
   const [linksFormError, setLinksFormError] = useState<string | null>(null);
   const [linksSuccess, setLinksSuccess] = useState(false);
 
@@ -333,6 +337,10 @@ export default function AdminPage() {
   const postArticle = async (e: React.FormEvent) => {
     e.preventDefault();
     setArticleFormError(null);
+    if (!articleTextFromHtml(articleForm.content)) {
+      setArticleFormError("Add the article body before saving.");
+      return;
+    }
     const url = editingArticleId ? `/api/admin/news/${editingArticleId}` : "/api/admin/news";
     const method = editingArticleId ? "PATCH" : "POST";
     const r = await fetch(url, {
@@ -346,8 +354,10 @@ export default function AdminPage() {
       setArticleFormError(typeof d.error === "string" ? d.error : "Could not save article.");
       return;
     }
+    setArticleSavedAsPublished(articleForm.published);
     setEditingArticleId(null);
     setArticleForm(EMPTY_ARTICLE);
+    setArticlePreviewOpen(false);
     setArticleSuccess(true);
     setTimeout(() => setArticleSuccess(false), 3000);
     await refreshNews();
@@ -450,12 +460,15 @@ export default function AdminPage() {
     });
     setArticleFormError(null);
     setArticleSuccess(false);
+    setArticleSavedAsPublished(article.published);
+    setArticlePreviewOpen(false);
   };
 
   const cancelEditArticle = () => {
     setEditingArticleId(null);
     setArticleForm(EMPTY_ARTICLE);
     setArticleFormError(null);
+    setArticlePreviewOpen(false);
   };
 
   if (authState === "loading") {
@@ -917,38 +930,73 @@ export default function AdminPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-[0.08em] text-[#94a3b8] mb-1.5">Full Content</label>
-                  <textarea
-                    rows={6}
-                    value={articleForm.content}
-                    onChange={(e) => setArticleForm((v) => ({ ...v, content: e.target.value }))}
-                    placeholder="Full article body shown when &quot;Read More&quot; is clicked..."
-                    className="w-full px-4 py-3 rounded-xl border border-[#e2e8f0] text-[14px] text-[#111827] focus:outline-none focus:border-[#229388] focus:ring-2 focus:ring-[#229388]/10 transition-all resize-none"
-                  />
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <label className="block text-[11px] font-bold uppercase tracking-[0.08em] text-[#94a3b8]">Article body *</label>
+                    <span className="text-[11px] text-[#94a3b8]">{articleTextFromHtml(articleForm.content).split(/\s+/).filter(Boolean).length} words</span>
+                  </div>
+                  <ArticleEditor value={articleForm.content} onChange={(content) => setArticleForm((v) => ({ ...v, content }))} />
                 </div>
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={articleForm.published}
-                    onChange={(e) => setArticleForm((v) => ({ ...v, published: e.target.checked }))}
-                    className="h-4 w-4 rounded border-[#e2e8f0] text-[#229388] focus:ring-[#229388]"
-                  />
-                  <span className="text-[14px] text-[#374151]">Visible on public news page</span>
-                </label>
+                <div className="rounded-xl border border-[#e2e8f0] bg-[#f8fafc] p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                      <p className="text-[13px] font-semibold text-[#111827]">Publishing status</p>
+                      <p className="mt-0.5 text-[12px] text-[#64748b]">{articleForm.published ? "This article will appear on the public news page immediately." : "This stays private in the newsroom until you publish it."}</p>
+                    </div>
+                    <label className="inline-flex cursor-pointer items-center gap-2 text-[13px] font-semibold text-[#374151]">
+                      <input
+                        type="checkbox"
+                        checked={articleForm.published}
+                        onChange={(e) => setArticleForm((v) => ({ ...v, published: e.target.checked }))}
+                        className="h-4 w-4 rounded border-[#e2e8f0] text-[#229388] focus:ring-[#229388]"
+                      />
+                      Publish on save
+                    </label>
+                  </div>
+                </div>
                 {articleSuccess && (
-                  <div className="rounded-xl px-4 py-3 text-[13px] font-semibold text-[#229388]" style={{ background: "rgba(34,147,136,0.08)" }}>
-                    ✓ Article saved — synced to <a href="/news" className="underline">/news</a> when published.
+                  <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#bde7e1] bg-[#eefaf8] px-4 py-3 text-[13px] font-semibold text-[#16766e]">
+                    <span>✓ {articleSavedAsPublished ? "Article published and ready for readers." : "Draft saved to the newsroom."}</span>
+                    <a href="/news" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">Open news page</a>
                   </div>
                 )}
-                <button
-                  type="submit"
-                  className="flex items-center justify-center gap-2 py-3.5 rounded-xl font-semibold text-white text-[14px] transition-all hover:opacity-90"
-                  style={{ background: "linear-gradient(135deg,#229388,#3ec8ba)" }}
-                >
-                  {editingArticleId ? <Pencil size={16} /> : <Plus size={16} />}
-                  {editingArticleId ? "Save changes" : "Publish article"}
-                </button>
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setArticlePreviewOpen(true)}
+                    disabled={!articleForm.title || !articleForm.excerpt || !articleTextFromHtml(articleForm.content)}
+                    className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-[#b9ddd8] bg-white py-3.5 text-[14px] font-semibold text-[#16766e] transition-all hover:bg-[#f0fdfc] disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <Eye size={16} /> Review before posting
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex flex-[1.25] items-center justify-center gap-2 rounded-xl py-3.5 text-[14px] font-semibold text-white transition-all hover:opacity-90"
+                    style={{ background: "linear-gradient(135deg,#229388,#3ec8ba)" }}
+                  >
+                    {editingArticleId ? <Pencil size={16} /> : <Plus size={16} />}
+                    {editingArticleId ? "Save changes" : articleForm.published ? "Publish article" : "Save draft"}
+                  </button>
+                </div>
               </form>
+
+              {articlePreviewOpen && (
+                <div className="fixed inset-0 z-[100] flex items-end justify-center bg-[#0d2e2c]/45 p-4 sm:items-center" role="dialog" aria-modal="true" aria-label="Article preview">
+                  <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
+                    <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#e2e8f0] bg-white/95 px-6 py-4 backdrop-blur">
+                      <div><p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#229388]">Pre-publish review</p><p className="mt-0.5 text-[13px] text-[#64748b]">This is how the article content will read.</p></div>
+                      <button type="button" onClick={() => setArticlePreviewOpen(false)} className="rounded-lg p-2 text-[#64748b] hover:bg-[#f1f5f9]" aria-label="Close preview"><X size={18} /></button>
+                    </div>
+                    {articleForm.coverImage && <img src={articleForm.coverImage} alt="" className="h-64 w-full object-cover" />}
+                    <article className="p-6 sm:p-10">
+                      <div className="mb-5 flex items-center gap-3 text-[12px] font-semibold text-[#229388]"><span className="rounded-full bg-[#eaf8f6] px-3 py-1">{articleForm.category}</span><span className="text-[#94a3b8]">{formatAdminArticleDate(articleForm.date)}</span></div>
+                      <h2 className="max-w-2xl text-[30px] font-bold leading-tight tracking-tight text-[#111827]">{articleForm.title}</h2>
+                      <p className="mt-5 max-w-2xl border-l-2 border-[#3ec8ba] pl-4 text-[16px] leading-7 text-[#475569]">{articleForm.excerpt}</p>
+                      <div className="article-public-content mt-8 text-[15px] leading-8 text-[#475569]" dangerouslySetInnerHTML={{ __html: articleForm.content }} />
+                    </article>
+                    <div className="sticky bottom-0 flex justify-end gap-3 border-t border-[#e2e8f0] bg-white px-6 py-4"><button type="button" onClick={() => setArticlePreviewOpen(false)} className="rounded-xl border border-[#e2e8f0] px-4 py-2.5 text-[13px] font-semibold text-[#475569]">Keep editing</button><button type="button" onClick={() => { setArticlePreviewOpen(false); setArticleForm((v) => ({ ...v, published: true })); }} className="rounded-xl bg-[#229388] px-4 py-2.5 text-[13px] font-semibold text-white">Ready to publish</button></div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="flex flex-col gap-4">
