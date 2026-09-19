@@ -41,6 +41,35 @@ body {
   margin-top: 1rem;
 }
 
+.article-editor-content,
+.article-public-content {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-weight: 400;
+}
+
+.article-editor-content p,
+.article-editor-content li,
+.article-public-content p,
+.article-public-content li {
+  font-weight: 400;
+}
+
+.article-editor-content strong,
+.article-editor-content b,
+.article-public-content strong,
+.article-public-content b {
+  font-weight: 700;
+}
+
+/* Imported articles often wrap complete paragraphs in bold tags. */
+.article-editor-content p > strong:only-child,
+.article-editor-content p > b:only-child,
+.article-public-content p > strong:only-child,
+.article-public-content p > b:only-child {
+  font-weight: 400;
+}
+
 .article-editor-content h2,
 .article-public-content h2 {
   color: #111827;
@@ -68,6 +97,19 @@ body {
 .article-public-content code { border-radius: 0.25rem; background: #eff6f5; padding: 0.12rem 0.3rem; color: #16766e; font-size: 0.9em; }
 .article-editor-content hr,
 .article-public-content hr { margin: 1.5rem 0; border: 0; border-top: 1px solid #dbe7e5; }
+
+@media (max-width: 639px) {
+  .article-editor-content > * + *,
+  .article-public-content > * + * { margin-top: 0.85rem; }
+  .article-editor-content h2,
+  .article-public-content h2 { font-size: 1.25rem; }
+  .article-editor-content h3,
+  .article-public-content h3 { font-size: 1.05rem; }
+  .article-editor-content ul,
+  .article-editor-content ol,
+  .article-public-content ul,
+  .article-public-content ol { padding-left: 1.25rem; }
+}
 
 /* Primary font - Avenir Next Arabic */
 @font-face {

@@ -30,15 +30,15 @@ export default function ArticleGallery({ images, alt }: { images: string[]; alt:
         <div className="flex touch-pan-y">
           {images.map((src, index) => (
             <div className="min-w-0 flex-[0_0_100%]" key={`${src.slice(0, 36)}-${index}`}>
-              <img src={src} alt={index === 0 ? alt : `${alt} — image ${index + 1}`} className="aspect-[16/8] w-full object-cover" />
+              <img src={src} alt={index === 0 ? alt : `${alt} — image ${index + 1}`} className="aspect-[4/3] w-full object-cover sm:aspect-[16/9] lg:aspect-[16/8]" />
             </div>
           ))}
         </div>
       </div>
       {images.length > 1 && (
         <>
-          <button type="button" onClick={previous} aria-label="Previous image" className="absolute left-4 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-[#16766e] shadow-lg opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100"><ChevronLeft size={20} /></button>
-          <button type="button" onClick={next} aria-label="Next image" className="absolute right-4 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-[#16766e] shadow-lg opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100"><ChevronRight size={20} /></button>
+          <button type="button" onClick={previous} aria-label="Previous image" className="absolute left-2 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-[#16766e] shadow-lg opacity-100 transition-opacity sm:left-4 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100"><ChevronLeft size={20} /></button>
+          <button type="button" onClick={next} aria-label="Next image" className="absolute right-2 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-[#16766e] shadow-lg opacity-100 transition-opacity sm:right-4 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100"><ChevronRight size={20} /></button>
           <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5 rounded-full bg-[#0d2e2c]/50 px-3 py-2">
             {images.map((_, index) => <button key={index} onClick={() => embla?.scrollTo(index)} aria-label={`Show image ${index + 1}`} className={`h-1.5 rounded-full transition-all ${selected === index ? "w-5 bg-white" : "w-1.5 bg-white/55"}`} />)}
           </div>

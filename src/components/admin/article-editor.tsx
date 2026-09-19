@@ -8,6 +8,67 @@ import { Bold, Code2, Heading2, Heading3, Italic, Link2, List, ListOrdered, Minu
 
 type Props = { value: string; onChange: (html: string) => void };
 
+const ALLOWED_PASTE_TAGS = new Set(["p", "h2", "h3", "strong", "em", "s", "code", "ul", "ol", "li", "blockquote", "a", "br", "hr"]);
+const REMOVED_PASTE_TAGS = "script, style, noscript, iframe, object, embed, form, button, input, select, textarea, svg, canvas, nav, header, footer, aside";
+
+/**
+ * Converts copied web pages into the small semantic subset supported by the
+ * newsroom. It removes foreign CSS/classes and repairs overly-bold pastes
+ * before TipTap adds them to the document.
+ */
+function cleanPastedArticleHtml(html: string): string {
+  if (typeof DOMParser === "undefined") return html;
+
+  const document = new DOMParser().parseFromString(html, "text/html");
+  document.body.querySelectorAll(REMOVED_PASTE_TAGS).forEach((node) => node.remove());
+
+  const replacements: Record<string, string> = {
+    h1: "h2",
+    h4: "h3",
+    h5: "h3",
+    h6: "h3",
+    b: "strong",
+    i: "em",
+  };
+
+  Array.from(document.body.querySelectorAll("*")).reverse().forEach((element) => {
+    let current = element;
+    let tag = current.tagName.toLowerCase();
+    const replacementTag = replacements[tag];
+
+    if (replacementTag) {
+      const replacement = document.createElement(replacementTag);
+      while (current.firstChild) replacement.appendChild(current.firstChild);
+      current.replaceWith(replacement);
+      current = replacement;
+      tag = replacementTag;
+    }
+
+    if (!ALLOWED_PASTE_TAGS.has(tag)) {
+      current.replaceWith(...Array.from(current.childNodes));
+      return;
+    }
+
+    const href = tag === "a" ? (current.getAttribute("href") ?? "").trim() : "";
+    Array.from(current.attributes).forEach((attribute) => current.removeAttribute(attribute.name));
+
+    if (tag === "a") {
+      if (/^(https?:\/\/|mailto:)/i.test(href)) current.setAttribute("href", href);
+      else current.replaceWith(...Array.from(current.childNodes));
+    }
+  });
+
+  const bodyTextLength = (document.body.textContent ?? "").replace(/\s+/g, "").length;
+  const boldTextLength = Array.from(document.body.querySelectorAll("strong"))
+    .reduce((total, node) => total + (node.textContent ?? "").replace(/\s+/g, "").length, 0);
+
+  if (bodyTextLength > 0 && boldTextLength / bodyTextLength > 0.8) {
+    document.body.querySelectorAll("strong").forEach((node) => node.replaceWith(...Array.from(node.childNodes)));
+  }
+
+  return document.body.innerHTML;
+}
+
 function EditorButton({ editor, label, active, onClick, children }: { editor: Editor; label: string; active?: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
     <button
@@ -61,6 +122,8 @@ export default function ArticleEditor({ value, onChange }: Props) {
     content: value,
     onUpdate: ({ editor: instance }) => onChange(instance.getHTML()),
     editorProps: {
+      transformPastedHTML: cleanPastedArticleHtml,
+      transformPastedText: (text) => text.replace(/\r\n?/g, "\n").replace(/\n{3,}/g, "\n\n"),
       attributes: {
         class: "article-editor-content min-h-[360px] px-5 py-6 text-[16px] leading-8 text-[#334155] outline-none sm:min-h-[500px] sm:px-6 sm:py-8 md:min-h-[580px] md:px-10 md:py-10",
         "aria-label": "Article body",
@@ -77,7 +140,7 @@ export default function ArticleEditor({ value, onChange }: Props) {
     <div className="overflow-hidden rounded-xl border border-[#e2e8f0] bg-white focus-within:border-[#229388] focus-within:ring-2 focus-within:ring-[#229388]/10">
       <Toolbar editor={editor} />
       <EditorContent editor={editor} />
-      <div className="border-t border-[#e2e8f0] px-4 py-2 text-[11px] text-[#94a3b8]">Headings, lists, quotes, links, code and dividers are supported. Links open in a new tab on the public site.</div>
+      <div className="border-t border-[#e2e8f0] px-4 py-2 text-[11px] leading-5 text-[#94a3b8]">Paste freely from Word or other websites—we automatically remove foreign fonts, colors, oversized text and broken bold formatting. Headings, lists, quotes and safe links are preserved.</div>
     </div>
   );
 }

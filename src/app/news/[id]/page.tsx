@@ -24,7 +24,7 @@ export default function ArticlePage() {
   useEffect(() => {
     if (!params.id) return;
     fetch(`/api/news/${params.id}`, { cache: "no-store" })
-      .then(async (response) => ({ response, data: await response.json() }))
+      .then(async (response) => ({ response, data: await response.json() as { article?: Article } }))
       .then(({ response, data }) => {
         if (!response.ok || !data.article) setStatus("missing");
         else setArticle(data.article as Article);
@@ -37,10 +37,10 @@ export default function ArticlePage() {
       {status === "loading" && !article ? <main className="min-h-[70vh] grid place-items-center text-[#64748b]">Loading article…</main> : !article ? (
         <main className="min-h-[70vh] grid place-items-center px-6 text-center"><div><p className="text-[12px] font-bold uppercase tracking-[0.16em] text-[#229388]">Newsroom</p><h1 className="mt-3 text-3xl font-bold text-[#111827]">Article not found</h1><a href="/news" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#229388]"><ArrowLeft size={16} /> Back to news</a></div></main>
       ) : (
-        <main className="bg-white pb-24 pt-28"><div className="mx-auto max-w-5xl px-6 md:px-8"><a href="/news" className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#229388] hover:opacity-70"><ArrowLeft size={16} /> All news</a>
-          <header className="mx-auto max-w-3xl py-12 text-center"><div className="mb-5 flex flex-wrap items-center justify-center gap-3 text-[12px]"><span className="inline-flex items-center gap-1.5 rounded-full bg-[#eaf8f6] px-3 py-1 font-bold uppercase tracking-[0.09em] text-[#16766e]"><Tag size={11} /> {article.category}</span><span className="inline-flex items-center gap-1.5 text-[#94a3b8]"><Calendar size={13} /> {formatDate(article.date)}</span></div><h1 className="text-[clamp(34px,5vw,62px)] font-bold leading-[1.04] tracking-[-0.035em] text-[#111827]">{article.title}</h1><p className="mx-auto mt-7 max-w-2xl text-[18px] leading-8 text-[#64748b]">{article.excerpt}</p></header>
+        <main className="bg-white pb-16 pt-24 sm:pb-24 sm:pt-28"><div className="mx-auto max-w-5xl px-4 sm:px-6 md:px-8"><a href="/news" className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#229388] hover:opacity-70"><ArrowLeft size={16} /> All news</a>
+          <header className="mx-auto max-w-3xl py-8 text-center sm:py-12"><div className="mb-4 flex flex-wrap items-center justify-center gap-3 text-[12px] sm:mb-5"><span className="inline-flex items-center gap-1.5 rounded-full bg-[#eaf8f6] px-3 py-1 font-bold uppercase tracking-[0.09em] text-[#16766e]"><Tag size={11} /> {article.category}</span><span className="inline-flex items-center gap-1.5 text-[#94a3b8]"><Calendar size={13} /> {formatDate(article.date)}</span></div><h1 className="text-[clamp(30px,9vw,62px)] font-bold leading-[1.08] tracking-[-0.035em] text-[#111827]">{article.title}</h1><p className="mx-auto mt-5 max-w-2xl text-[16px] leading-7 text-[#64748b] sm:mt-7 sm:text-[18px] sm:leading-8">{article.excerpt}</p></header>
           {getNewsCoverImages(article.coverImage).length > 0 && <ArticleGallery images={getNewsCoverImages(article.coverImage)} alt={article.title} />}
-          <article className="article-public-content mx-auto mt-12 max-w-3xl text-[16px] leading-8 text-[#475569]" dangerouslySetInnerHTML={{ __html: article.content }} />
+          <article className="article-public-content mx-auto mt-8 max-w-3xl text-[16px] leading-7 text-[#475569] sm:mt-12 sm:leading-8" dangerouslySetInnerHTML={{ __html: article.content }} />
         </div></main>
       )}
     </PageWrapper><Footer /></>
