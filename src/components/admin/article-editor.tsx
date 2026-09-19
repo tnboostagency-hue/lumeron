@@ -3,8 +3,8 @@
 import { useEditor, EditorContent, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
-import { useEffect } from "react";
-import { Bold, Code2, Heading2, Heading3, Italic, Link2, List, ListOrdered, Minus, Quote, RotateCcw, RotateCw, Strikethrough, Text } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Bold, Check, Code2, ExternalLink, Heading2, Heading3, Italic, Link2, List, ListOrdered, Minus, Quote, RotateCcw, RotateCw, Strikethrough, Text, Unlink, X } from "lucide-react";
 
 type Props = { value: string; onChange: (html: string) => void };
 
@@ -84,14 +84,128 @@ function EditorButton({ editor, label, active, onClick, children }: { editor: Ed
   );
 }
 
-function Toolbar({ editor }: { editor: Editor }) {
-  const setLink = () => {
-    const current = editor.getAttributes("link").href as string | undefined;
-    const url = window.prompt("Paste a complete URL (https://…):", current ?? "");
-    if (url === null) return;
-    if (!url.trim()) editor.chain().focus().unsetLink().run();
-    else editor.chain().focus().extendMarkRange("link").setLink({ href: url.trim() }).run();
+function normalizeLink(value: string): string | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  const candidate = /^(https?:\/\/|mailto:)/i.test(trimmed) ? trimmed : `https://${trimmed}`;
+
+  try {
+    const parsed = new URL(candidate);
+    return ["http:", "https:", "mailto:"].includes(parsed.protocol) ? candidate : null;
+  } catch {
+    return null;
+  }
+}
+
+function LinkManager({ editor }: { editor: Editor }) {
+  const [open, setOpen] = useState(false);
+  const [href, setHref] = useState("");
+  const [selectionLabel, setSelectionLabel] = useState("");
+  const [error, setError] = useState("");
+  const managerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const linkActive = editor.isActive("link");
+
+  const openManager = () => {
+    const { from, to } = editor.state.selection;
+    const selectedText = editor.state.doc.textBetween(from, to, " ").trim();
+    const currentHref = String(editor.getAttributes("link").href ?? "");
+    setHref(currentHref);
+    setSelectionLabel(selectedText || (linkActive ? "Linked text" : "No text selected"));
+    setError("");
+    setOpen(true);
   };
+
+  useEffect(() => {
+    if (!open) return;
+    inputRef.current?.focus();
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!managerRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
+
+  const saveLink = () => {
+    const normalized = normalizeLink(href);
+    if (!normalized) {
+      setError("Enter a valid website or email link.");
+      return;
+    }
+
+    const chain = editor.chain().focus();
+    if (linkActive && editor.state.selection.empty) chain.extendMarkRange("link");
+    chain.setLink({ href: normalized }).run();
+    setOpen(false);
+  };
+
+  const removeLink = () => {
+    const chain = editor.chain().focus();
+    if (editor.state.selection.empty) chain.extendMarkRange("link");
+    chain.unsetLink().run();
+    setOpen(false);
+  };
+
+  const canAddLink = linkActive || !editor.state.selection.empty;
+  const previewHref = normalizeLink(href);
+
+  return (
+    <div className="relative" ref={managerRef}>
+      <button
+        type="button"
+        title="Manage link"
+        aria-label="Manage link"
+        aria-expanded={open}
+        onClick={openManager}
+        className={`grid h-9 min-w-9 place-items-center rounded-lg px-2 text-xs font-semibold transition-colors ${linkActive ? "bg-[#229388] text-white shadow-sm" : "text-[#475569] hover:bg-[#eef8f7] hover:text-[#229388]"}`}
+      >
+        <Link2 size={16} />
+      </button>
+
+      {open ? (
+        <div className="fixed inset-x-3 top-24 z-50 mx-auto w-auto max-w-[380px] rounded-2xl border border-[#dbe7e5] bg-white p-4 text-left shadow-[0_22px_60px_rgba(15,81,76,0.22)] sm:absolute sm:inset-x-auto sm:left-0 sm:top-[calc(100%+10px)] sm:mx-0 sm:w-[360px]">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#229388]">{linkActive ? "Edit link" : "Add link"}</p>
+              <p className="mt-1 truncate text-[13px] text-[#64748b]" title={selectionLabel}>{selectionLabel}</p>
+            </div>
+            <button type="button" onClick={() => setOpen(false)} aria-label="Close link manager" className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-[#64748b] hover:bg-[#f1f5f9] hover:text-[#111827]"><X size={16} /></button>
+          </div>
+
+          {canAddLink ? (
+            <form className="mt-3" onSubmit={(event) => { event.preventDefault(); saveLink(); }}>
+              <label htmlFor="article-link-url" className="text-[12px] font-semibold text-[#334155]">Destination</label>
+              <div className="mt-1.5 flex items-center rounded-xl border border-[#cbd5e1] bg-white px-3 focus-within:border-[#229388] focus-within:ring-2 focus-within:ring-[#229388]/10">
+                <Link2 size={15} className="shrink-0 text-[#94a3b8]" />
+                <input ref={inputRef} id="article-link-url" value={href} onChange={(event) => { setHref(event.target.value); setError(""); }} placeholder="example.com/page" inputMode="url" autoComplete="url" className="min-w-0 flex-1 bg-transparent px-2 py-2.5 text-[14px] text-[#111827] outline-none placeholder:text-[#94a3b8]" />
+              </div>
+              {error ? <p role="alert" className="mt-1.5 text-[12px] font-medium text-red-600">{error}</p> : <p className="mt-1.5 text-[11px] leading-4 text-[#94a3b8]">Web addresses open in a new tab. You can also use mailto: links.</p>}
+
+              <div className="mt-4 flex flex-wrap items-center gap-2">
+                <button type="submit" className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#229388] px-3.5 text-[12px] font-bold text-white transition-colors hover:bg-[#197c73]"><Check size={14} /> {linkActive ? "Update link" : "Add link"}</button>
+                {linkActive ? <button type="button" onClick={removeLink} className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-red-200 px-3 text-[12px] font-semibold text-red-600 hover:bg-red-50"><Unlink size={14} /> Unlink</button> : null}
+                {linkActive && previewHref ? <a href={previewHref} target="_blank" rel="noopener noreferrer" className="ml-auto inline-flex h-9 items-center gap-1.5 px-2 text-[12px] font-semibold text-[#229388] hover:underline"><ExternalLink size={14} /> Open</a> : null}
+              </div>
+            </form>
+          ) : (
+            <div className="mt-3 rounded-xl bg-[#f0f9f8] p-3 text-[12px] leading-5 text-[#476862]">Select the words you want to link, then open this manager again.</div>
+          )}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function Toolbar({ editor }: { editor: Editor }) {
   return (
     <div className="sticky top-0 z-10 flex max-w-full flex-wrap items-center gap-1 border-b border-[#e2e8f0] bg-[#fbfdfd]/95 p-2 backdrop-blur">
       <EditorButton editor={editor} label="Heading" active={editor.isActive("heading", { level: 2 })} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}><Heading2 size={16} /></EditorButton>
@@ -102,7 +216,7 @@ function Toolbar({ editor }: { editor: Editor }) {
       <EditorButton editor={editor} label="Italic" active={editor.isActive("italic")} onClick={() => editor.chain().focus().toggleItalic().run()}><Italic size={16} /></EditorButton>
       <EditorButton editor={editor} label="Strikethrough" active={editor.isActive("strike")} onClick={() => editor.chain().focus().toggleStrike().run()}><Strikethrough size={16} /></EditorButton>
       <EditorButton editor={editor} label="Inline code" active={editor.isActive("code")} onClick={() => editor.chain().focus().toggleCode().run()}><Code2 size={16} /></EditorButton>
-      <EditorButton editor={editor} label="Link" active={editor.isActive("link")} onClick={setLink}><Link2 size={16} /></EditorButton>
+      <LinkManager editor={editor} />
       <span className="mx-1 h-5 w-px bg-[#e2e8f0]" />
       <EditorButton editor={editor} label="Bulleted list" active={editor.isActive("bulletList")} onClick={() => editor.chain().focus().toggleBulletList().run()}><List size={16} /></EditorButton>
       <EditorButton editor={editor} label="Numbered list" active={editor.isActive("orderedList")} onClick={() => editor.chain().focus().toggleOrderedList().run()}><ListOrdered size={16} /></EditorButton>
@@ -137,7 +251,7 @@ export default function ArticleEditor({ value, onChange }: Props) {
 
   if (!editor) return <div className="min-h-[360px] animate-pulse rounded-xl bg-[#f8fafc]" />;
   return (
-    <div className="overflow-hidden rounded-xl border border-[#e2e8f0] bg-white focus-within:border-[#229388] focus-within:ring-2 focus-within:ring-[#229388]/10">
+    <div className="relative rounded-xl border border-[#e2e8f0] bg-white focus-within:border-[#229388] focus-within:ring-2 focus-within:ring-[#229388]/10">
       <Toolbar editor={editor} />
       <EditorContent editor={editor} />
       <div className="border-t border-[#e2e8f0] px-4 py-2 text-[11px] leading-5 text-[#94a3b8]">Paste freely from Word or other websites—we automatically remove foreign fonts, colors, oversized text and broken bold formatting. Headings, lists, quotes and safe links are preserved.</div>
