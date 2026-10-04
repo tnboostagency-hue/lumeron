@@ -24,7 +24,7 @@ const EMPTY_LINKS: LinksProfile = {
 };
 
 const SAMPLE_LINKS: LinksProfile = {
-  phoneContact: "+966138888888",
+  phoneContact: "0138697594",
   whatsapp: "https://wa.me/966500000000",
   linkedin: "https://www.linkedin.com/company/lumeron",
   website: "https://lumeron.sa",

@@ -41,9 +41,12 @@ body {
   margin-top: 1rem;
 }
 
+.article-editor-content {
+  max-width: 100%;
+}
+
 .article-editor-content,
 .article-public-content {
-  max-width: 100%;
   overflow-wrap: anywhere;
   font-weight: 400;
 }
@@ -78,11 +81,22 @@ body {
   line-height: 1.35;
 }
 
+.article-public-content h2 {
+  margin-top: 2.5rem;
+  letter-spacing: -0.02em;
+}
+
 .article-editor-content h3,
 .article-public-content h3 {
   color: #111827;
   font-size: 1.1rem;
   font-weight: 700;
+}
+
+.article-public-content h3 {
+  margin-top: 0.6rem;
+  color: #334155;
+  font-size: 1rem;
 }
 
 .article-editor-content ul,
@@ -91,6 +105,7 @@ body {
 .article-public-content ol { list-style: decimal; padding-left: 1.5rem; }
 .article-editor-content blockquote,
 .article-public-content blockquote { border-left: 3px solid #3ec8ba; color: #475569; font-style: italic; padding-left: 1rem; }
+.article-public-content blockquote { margin: 2rem 0; border-radius: 0 14px 14px 0; background: #f3faf9; padding: 1.25rem 1.25rem 1.25rem 1.5rem; color: #274d49; font-size: 1.03em; line-height: 1.75; }
 .article-editor-content a,
 .article-public-content a { color: #229388; text-decoration: underline; text-underline-offset: 4px; }
 .article-editor-content code,
@@ -98,17 +113,50 @@ body {
 .article-editor-content hr,
 .article-public-content hr { margin: 1.5rem 0; border: 0; border-top: 1px solid #dbe7e5; }
 
+.article-public-content .article-key-points {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0 0 2.25rem;
+  border: 1px solid #d7ebe8;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #f4fbfa 0%, #ffffff 100%);
+  padding: 1.15rem 1.2rem;
+  list-style: none;
+}
+
+.article-public-content .article-key-points li {
+  position: relative;
+  padding-left: 1.25rem;
+  color: #345c57;
+  font-size: 0.94em;
+  line-height: 1.65;
+}
+
+.article-public-content .article-key-points li::before {
+  position: absolute;
+  top: 0.68em;
+  left: 0;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: #229388;
+  content: "";
+}
+
 @media (max-width: 639px) {
   .article-editor-content > * + *,
   .article-public-content > * + * { margin-top: 0.85rem; }
   .article-editor-content h2,
   .article-public-content h2 { font-size: 1.25rem; }
+  .article-public-content h2 { margin-top: 2rem; }
   .article-editor-content h3,
   .article-public-content h3 { font-size: 1.05rem; }
   .article-editor-content ul,
   .article-editor-content ol,
   .article-public-content ul,
   .article-public-content ol { padding-left: 1.25rem; }
+  .article-public-content blockquote { margin: 1.5rem 0; padding: 1rem 1rem 1rem 1.2rem; }
+  .article-public-content .article-key-points { margin-bottom: 1.75rem; border-radius: 16px; padding: 1rem; }
 }
 
 /* Primary font - Avenir Next Arabic */

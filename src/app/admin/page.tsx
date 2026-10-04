@@ -17,8 +17,9 @@ import {
   Link2,
 } from "lucide-react";
 import { getNewsCoverImages, MAX_NEWS_COVER_DATA_URL_LENGTH, MAX_NEWS_COVER_IMAGES } from "@/lib/news-cover";
-import { articleTextFromHtml } from "@/lib/article-content";
+import { articleTextFromHtml, formatArticleHtmlForDisplay } from "@/lib/article-content";
 import ArticleEditor from "@/components/admin/article-editor";
+import ArticleGallery from "@/components/news/article-gallery";
 
 const MAX_COVER_FILE_BYTES = 1.5 * 1024 * 1024;
 
@@ -877,7 +878,7 @@ export default function AdminPage() {
                 </div>
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-[0.08em] text-[#94a3b8] mb-1.5">Cover image</label>
-                  <p className="text-[12px] text-[#94a3b8] mb-2">Add up to {MAX_NEWS_COVER_IMAGES} images. The public article uses them as an auto-playing, swipeable gallery. JPEG, PNG, GIF, or WebP — max 1.5MB each.</p>
+                  <p className="text-[12px] text-[#94a3b8] mb-2">Add up to {MAX_NEWS_COVER_IMAGES} images. Every article uses the same compact, framed gallery with automatic playback and manual swipe controls. JPEG, PNG, GIF, or WebP — max 1.5MB each.</p>
                   {articleForm.coverImages.length > 0 && (
                     <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
                       {articleForm.coverImages.map((image, index) => (
@@ -982,17 +983,21 @@ export default function AdminPage() {
 
               {articlePreviewOpen && (
                 <div className="fixed inset-0 z-[100] flex items-end justify-center bg-[#0d2e2c]/45 p-4 sm:items-center" role="dialog" aria-modal="true" aria-label="Article preview">
-                  <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
+                  <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
                     <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#e2e8f0] bg-white/95 px-6 py-4 backdrop-blur">
                       <div><p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#229388]">Pre-publish review</p><p className="mt-0.5 text-[13px] text-[#64748b]">This is how the article content will read.</p></div>
                       <button type="button" onClick={() => setArticlePreviewOpen(false)} className="rounded-lg p-2 text-[#64748b] hover:bg-[#f1f5f9]" aria-label="Close preview"><X size={18} /></button>
                     </div>
-                    {articleForm.coverImages[0] && <img src={articleForm.coverImages[0]} alt="" className="h-64 w-full object-cover" />}
+                    {articleForm.coverImages.length > 0 && (
+                      <div className="px-5 pt-6 sm:px-8 sm:pt-8">
+                        <ArticleGallery images={articleForm.coverImages} alt={articleForm.title || "Article cover"} />
+                      </div>
+                    )}
                     <article className="p-6 sm:p-10">
                       <div className="mb-5 flex items-center gap-3 text-[12px] font-semibold text-[#229388]"><span className="rounded-full bg-[#eaf8f6] px-3 py-1">{articleForm.category}</span><span className="text-[#94a3b8]">{formatAdminArticleDate(articleForm.date)}</span></div>
                       <h2 className="max-w-2xl text-[30px] font-bold leading-tight tracking-tight text-[#111827]">{articleForm.title}</h2>
                       <p className="mt-5 max-w-2xl border-l-2 border-[#3ec8ba] pl-4 text-[16px] leading-7 text-[#475569]">{articleForm.excerpt}</p>
-                      <div className="article-public-content mt-8 text-[15px] leading-8 text-[#475569]" dangerouslySetInnerHTML={{ __html: articleForm.content }} />
+                      <div className="article-public-content mt-8 text-[15px] leading-8 text-[#475569]" dangerouslySetInnerHTML={{ __html: formatArticleHtmlForDisplay(articleForm.content) }} />
                     </article>
                     <div className="sticky bottom-0 flex justify-end gap-3 border-t border-[#e2e8f0] bg-white px-6 py-4"><button type="button" onClick={() => setArticlePreviewOpen(false)} className="rounded-xl border border-[#e2e8f0] px-4 py-2.5 text-[13px] font-semibold text-[#475569]">Keep editing</button><button type="button" onClick={() => { setArticlePreviewOpen(false); setArticleForm((v) => ({ ...v, published: true })); }} className="rounded-xl bg-[#229388] px-4 py-2.5 text-[13px] font-semibold text-white">Ready to publish</button></div>
                   </div>

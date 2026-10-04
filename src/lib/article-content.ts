@@ -33,3 +33,71 @@ export function sanitizeArticleHtml(value: unknown): string {
 export function articleTextFromHtml(value: string): string {
   return value.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 }
+
+/** Adds an editorial hierarchy to older articles that were pasted as flat paragraphs. */
+export function formatArticleHtmlForDisplay(value: string): string {
+  const safeHtml = sanitizeArticleHtml(value);
+  if (typeof DOMParser === "undefined") return safeHtml;
+
+  const document = new DOMParser().parseFromString(safeHtml, "text/html");
+  const initialChildren = Array.from(document.body.children);
+  let startIndex = initialChildren.findIndex((node) => (node.textContent ?? "").trim().length > 0);
+
+  if (startIndex >= 0) {
+    const takeaways: Element[] = [];
+    for (let index = startIndex; index < initialChildren.length; index += 1) {
+      const node = initialChildren[index];
+      const text = (node.textContent ?? "").trim();
+      if (node.tagName !== "P" || !text || text.length > 260 || /[.!?]$/.test(text)) break;
+      takeaways.push(node);
+      if (takeaways.length === 4) break;
+    }
+
+    if (takeaways.length >= 2) {
+      const list = document.createElement("ul");
+      list.className = "article-key-points";
+      takeaways.forEach((paragraph) => {
+        const item = document.createElement("li");
+        item.innerHTML = paragraph.innerHTML;
+        list.appendChild(item);
+      });
+      takeaways[0].replaceWith(list);
+      takeaways.slice(1).forEach((paragraph) => paragraph.remove());
+    }
+  }
+
+  let previousWasHeading = false;
+  Array.from(document.body.children).forEach((node) => {
+    const text = (node.textContent ?? "").trim();
+    if (!text) {
+      node.remove();
+      return;
+    }
+
+    if (node.tagName === "P" && /^[“”\"]/.test(text) && text.length > 140) {
+      const quote = document.createElement("blockquote");
+      quote.innerHTML = node.innerHTML;
+      node.replaceWith(quote);
+      previousWasHeading = false;
+      return;
+    }
+
+    const isSectionLabel = node.tagName === "P"
+      && text.length >= 8
+      && text.length <= 90
+      && !/[.!?;,]$/.test(text)
+      && !text.includes("@")
+      && !text.includes(":");
+
+    if (isSectionLabel) {
+      const heading = document.createElement(previousWasHeading ? "h3" : "h2");
+      heading.innerHTML = node.innerHTML;
+      node.replaceWith(heading);
+      previousWasHeading = true;
+    } else {
+      previousWasHeading = node.tagName === "H2" || node.tagName === "H3";
+    }
+  });
+
+  return document.body.innerHTML;
+}

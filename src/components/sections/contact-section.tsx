@@ -68,8 +68,8 @@ export default function ContactSection() {
     {
       icon: Phone,
       label: lang === 'ar' ? "الهاتف" : "Phone",
-      value: "+966138048367",
-      href: "tel:+966138048367"
+      value: "0138697594",
+      href: "tel:+966138697594"
     },
     {
       icon: MapPin,

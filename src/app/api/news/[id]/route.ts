@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { newsArticles } from "@/db/schema";
+import { sanitizeArticleHtml } from "@/lib/article-content";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +13,7 @@ export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> 
     const db = getDb();
     const [article] = await db.select().from(newsArticles).where(and(eq(newsArticles.id, id), eq(newsArticles.published, true))).limit(1);
     if (!article) return NextResponse.json({ error: "Article not found" }, { status: 404 });
-    return NextResponse.json({ article });
+    return NextResponse.json({ article: { ...article, content: sanitizeArticleHtml(article.content) } });
   } catch (error) {
     console.error("GET /api/news/[id]", error);
     return NextResponse.json({ error: "Article unavailable" }, { status: 500 });
